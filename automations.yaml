@@ -5,3 +5,4 @@ automation:
         minutes: "/30"
     actions:
       - action: shell_command.git_snapshot
+      
