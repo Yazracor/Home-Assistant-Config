@@ -5,8 +5,7 @@ flur_eg,Flur EG,erdgeschoss,EG_Flur;Diele;Galerie
 treppe_eg_kg,Treppe EG/KG,erdgeschoss,EG_UG_Treppe;EG/KG Treppe
 gaeste_wc,Gäste-WC,erdgeschoss,EG_GaesteWC;EG WC
 garderobe,Garderobe,erdgeschoss,EG_Garderobe;Schuhschrank
-esszimmer,Esszimmer,erdgeschoss,Esszimmer
-kueche,Küche,erdgeschoss,Kueche;Kochen;EG Küche
+kueche,Küche,erdgeschoss,Kueche;Kochen;EG Küche;Esszimmer
 wohnzimmer,Wohnzimmer,erdgeschoss,Wohnz;Wohnzimmer
 vorratsraum,Vorratsraum,erdgeschoss,EG_Vorratsraum;Vorrat
 technik,Technik,erdgeschoss,EG Technik;Technik
