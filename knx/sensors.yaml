@@ -9,4 +9,4 @@
 - name: "Windwaechter_Messwert"
   state_address: "1/1/1"
   type: "wind_speed_ms"
-  sync_state: true
+  

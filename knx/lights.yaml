@@ -13,7 +13,7 @@
   state_address: "3/0/3"
   brightness_address: "3/0/2"
   brightness_state_address: "3/0/4"
-  sync_state: true
+  
 
 # FHEM: OG_Flur
 # FHEM room: OG_Flur,KNX,homebridge
@@ -26,7 +26,7 @@
   state_address: "3/0/9"
   brightness_address: "3/0/8"
   brightness_state_address: "3/0/10"
-  sync_state: true
+  
 
 # FHEM: OG_Schlafzimmer
 # FHEM room: Schlafzimmer,KNX,homebridge
@@ -39,7 +39,7 @@
   state_address: "3/0/27"
   brightness_address: "3/0/26"
   brightness_state_address: "3/0/28"
-  sync_state: true
+  
 
 # FHEM: OG_Bad.Decke
 # FHEM room: OG_Bad,KNX,homebridge
@@ -52,7 +52,7 @@
   state_address: "3/0/33"
   brightness_address: "3/0/32"
   brightness_state_address: "3/0/34"
-  sync_state: true
+  
 
 # FHEM: OG_Treppe
 # FHEM room: KNX,OG_Flur,homebridge
@@ -107,7 +107,7 @@
   state_address: "3/0/39"
   brightness_address: "3/0/38"
   brightness_state_address: "3/0/40"
-  sync_state: true
+  
 
 # FHEM: Buero.Bad
 # FHEM room: Buero,KNX,homebridge
@@ -118,7 +118,7 @@
 - name: "Buero.Bad"
   address: "2/0/26"
   state_address: "2/0/27"
-  sync_state: true
+  
 
 # FHEM: Wohnzimmer.Decke_Mitte
 # FHEM room: Wohnzimmer,KNX,homebridge
@@ -131,7 +131,7 @@
   state_address: "3/0/51"
   brightness_address: "3/0/50"
   brightness_state_address: "3/0/52"
-  sync_state: true
+  
 
 # FHEM: Wohnzimmer.Decke_Seiten
 # FHEM room: Wohnzimmer,KNX,homebridge
@@ -144,7 +144,7 @@
   state_address: "3/0/57"
   brightness_address: "3/0/56"
   brightness_state_address: "3/0/58"
-  sync_state: true
+  
 
 # FHEM: EG_UG_Treppe
 # FHEM room: EG_Flur,KNX,homebridge
@@ -183,7 +183,7 @@
 - name: "Licht_Vorratsraum"
   address: "2/0/20"
   state_address: "2/0/21"
-  sync_state: true
+  
 
 # FHEM: EG_Flur.Decke
 # FHEM room: EG_Flur,KNX,homebridge
@@ -196,7 +196,7 @@
   state_address: "3/0/15"
   brightness_address: "3/0/14"
   brightness_state_address: "3/0/16"
-  sync_state: true
+  
 
 # FHEM: Buero.Decke
 # FHEM room: Buero,KNX,homebridge
@@ -209,7 +209,7 @@
   state_address: "3/0/63"
   brightness_address: "3/0/62"
   brightness_state_address: "3/0/64"
-  sync_state: true
+  
 
 # FHEM: Sauna.Decke
 # FHEM room: KG_Sauna,KNX,homebridge
@@ -222,7 +222,7 @@
   state_address: "3/1/3"
   brightness_address: "3/1/2"
   brightness_state_address: "3/1/4"
-  sync_state: true
+  
 
 # FHEM: KG_Gast.Decke
 # FHEM room: KG_Gast,KNX,homebridge
@@ -235,7 +235,7 @@
   state_address: "3/1/9"
   brightness_address: "3/1/8"
   brightness_state_address: "3/1/10"
-  sync_state: true
+  
 
 # FHEM: KG_Sinja.Decke
 # FHEM room: KG_Sinja,KNX,homebridge
@@ -248,7 +248,7 @@
   state_address: "3/1/15"
   brightness_address: "3/1/14"
   brightness_state_address: "3/1/16"
-  sync_state: true
+  
 
 # FHEM: KG_Silas.Decke
 # FHEM room: KG_Silas,KNX,homebridge
@@ -261,7 +261,7 @@
   state_address: "3/1/21"
   brightness_address: "3/1/20"
   brightness_state_address: "3/1/22"
-  sync_state: true
+  
 
 # FHEM: KG_Flur.Decke
 # FHEM room: KG_Flur,KNX,homebridge
@@ -274,7 +274,7 @@
   state_address: "3/1/29"
   brightness_address: "3/1/28"
   brightness_state_address: "3/1/30"
-  sync_state: true
+  
 
 # FHEM: KG_Kinderbad.Decke
 # FHEM room: KNX,KG_Kinderbad,homebridge

@@ -15,7 +15,7 @@
   position_state_address: "4/0/78"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_EG_Buero_Fenster_Vorgarten
 # FHEM room: Buero,KNX,homebridge
@@ -30,7 +30,7 @@
   position_state_address: "4/0/82"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_EG_Wohnzimmer_Panorama
 # FHEM room: Wohnzimmer,KNX,homebridge
@@ -45,7 +45,7 @@
   position_state_address: "4/0/58"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_EG_Wohnzimmer_Terrasse
 # FHEM room: Wohnzimmer,KNX,homebridge
@@ -60,7 +60,7 @@
   position_state_address: "4/0/62"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_EG_Kueche_Terrasse
 # FHEM room: Kueche,KNX,homebridge
@@ -75,7 +75,7 @@
   position_state_address: "4/0/66"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_EG_Kueche_Seite
 # FHEM room: Kueche,KNX,homebridge
@@ -90,7 +90,7 @@
   position_state_address: "4/0/70"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_EG_Kueche_Nebeneingang
 # FHEM room: Kueche,KNX,homebridge
@@ -105,7 +105,7 @@
   position_state_address: "4/0/74"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_EG_Kueche_Sonnensegel
 # FHEM room: Kueche,KNX,homebridge
@@ -120,7 +120,7 @@
   position_state_address: "4/0/96"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_OG_Schlafzimmer_Innen_Front
 # FHEM room: Schlafzimmer,KNX,homebridge
@@ -135,7 +135,7 @@
   move_short_address: "4/2/1"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_OG_Schlafzimmer_Innen_Panorama
 # FHEM room: Schlafzimmer,KNX,homebridge
@@ -150,7 +150,7 @@
   position_state_address: "4/1/22"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_OG_Schlafzimmer_Aussen_Front_1
 # FHEM room: Schlafzimmer_hidden,KNX
@@ -165,7 +165,7 @@
   position_state_address: "4/0/42"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_OG_Schlafzimmer_Aussen_Front_2
 # FHEM room: Schlafzimmer_hidden,KNX
@@ -180,7 +180,7 @@
   position_state_address: "4/0/38"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_OG_Schlafzimmer_Aussen_Front_3
 # FHEM room: Schlafzimmer_hidden,KNX
@@ -195,7 +195,7 @@
   position_state_address: "4/0/46"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_OG_Schlafzimmer_Aussen_Panorama
 # FHEM room: Schlafzimmer,KNX,homebridge
@@ -210,7 +210,7 @@
   position_state_address: "4/0/50"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_OG_Buero
 # FHEM room: Buero_OG,KNX,homebridge
@@ -225,7 +225,7 @@
   position_state_address: "4/0/6"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_OG_Ankleide
 # FHEM room: Ankleide,KNX,homebridge
@@ -240,7 +240,7 @@
   position_state_address: "4/0/2"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_OG_Flur
 # FHEM room: OG_Flur,KNX,homebridge
@@ -255,7 +255,7 @@
   position_state_address: "4/0/30"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_OG_Treppe
 # FHEM room: OG_Flur,KNX,homebridge
@@ -270,7 +270,7 @@
   position_state_address: "4/0/54"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_OG_WC
 # FHEM room: OG_Bad,KNX,homebridge
@@ -285,7 +285,7 @@
   position_state_address: "4/0/10"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_OG_Bad_Innen
 # FHEM room: OG_Bad,KNX,homebridge
@@ -300,7 +300,7 @@
   position_state_address: "4/1/2"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_OG_Bad_Aussen_Balkon
 # FHEM room: OG_Bad,KNX,homebridge
@@ -315,7 +315,7 @@
   position_state_address: "4/0/14"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
 
 # FHEM: Jalousie_OG_Bad_Aussen_Panorama
 # FHEM room: OG_Bad,KNX,homebridge
@@ -330,4 +330,4 @@
   position_state_address: "4/0/14"
   travelling_time_down: 27
   travelling_time_up: 27
-  sync_state: true
+  
