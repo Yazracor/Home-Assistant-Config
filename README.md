@@ -57,9 +57,8 @@ Damit werden sowohl bereits vorhandene als auch nach dem YAML-Update neu
 geschriebene Entities passenden Räumen zugeordnet.
 
 Der Hintergrundlauf schreibt nach `/config/.knx-area-assignment.log`. Die
-Wartezeiten können mit `KNX_AREA_ASSIGNMENT_DELAY_SECONDS`,
-`HA_CORE_STOP_WAIT_SECONDS` und `HA_ENTITY_REGISTRY_WAIT_SECONDS` angepasst
-werden.
+Startverzögerung nach dem Pull kann mit `KNX_AREA_ASSIGNMENT_DELAY_SECONDS`
+angepasst werden.
 
 Der Installer setzt außerdem `git config pull.rebase false`, damit lokale
 HA-Snapshot-Commits und Remote-Änderungen per Merge zusammengeführt werden.

@@ -7,8 +7,6 @@ export PATH
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 marker_file="$repo_root/.pending_knx_area_assignment"
 lock_dir="$repo_root/.pending_knx_area_assignment.lock"
-wait_seconds="${HA_ENTITY_REGISTRY_WAIT_SECONDS:-120}"
-stop_wait_seconds="${HA_CORE_STOP_WAIT_SECONDS:-15}"
 force=0
 ha_stopped=0
 
@@ -55,8 +53,6 @@ fi
 stop_ha() {
   ha core stop
   ha_stopped=1
-  echo "Waiting ${stop_wait_seconds}s for Home Assistant Core to stop..."
-  sleep "$stop_wait_seconds"
 }
 
 start_ha() {
@@ -76,8 +72,6 @@ apply_assignments
 
 echo "Starting Home Assistant Core so YAML entity changes are written to the registry..."
 start_ha
-echo "Waiting ${wait_seconds}s for Home Assistant to load entities..."
-sleep "$wait_seconds"
 
 echo "Stopping Home Assistant Core for second registry patch..."
 stop_ha
