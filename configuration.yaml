@@ -14,4 +14,4 @@ scene: !include scenes.yaml
 knx: !include knx.yaml
 
 # Virtual devices
-virtual: !include virtual.yaml
+virtual: !include_dir_named virtual
