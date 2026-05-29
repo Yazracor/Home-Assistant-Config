@@ -16,15 +16,20 @@ delay_seconds="${KNX_AREA_ASSIGNMENT_DELAY_SECONDS:-10}"
   echo "PATH=$PATH"
   date -u '+%Y-%m-%dT%H:%M:%SZ' > "$marker_file"
   echo "Marked pending KNX area assignment: $marker_file"
-  if [ -x "$runner" ]; then
-    (
-      sleep "$delay_seconds"
-      exec "$runner"
-    ) >> "$runner_log" 2>&1 &
+  : >> "$runner_log"
+  if [ -f "$runner" ]; then
+    nohup sh -c '
+      echo "$(date -u "+%Y-%m-%dT%H:%M:%SZ") runner scheduled after ${1}s: ${2}"
+      sleep "$1"
+      echo "$(date -u "+%Y-%m-%dT%H:%M:%SZ") runner starting: ${2}"
+      exec sh "$2"
+    ' knx-area-assignment "$delay_seconds" "$runner" >> "$runner_log" 2>&1 < /dev/null &
+    runner_pid=$!
     echo "Started detached KNX area assignment runner after ${delay_seconds}s: $runner"
+    echo "Runner pid: $runner_pid"
     echo "Runner log: $runner_log"
   else
-    echo "Runner not executable: $runner"
+    echo "Runner not found: $runner"
   fi
   echo "$(date -u '+%Y-%m-%dT%H:%M:%SZ') post-merge hook finished"
 } >> "$log_file" 2>&1
