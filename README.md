@@ -62,7 +62,15 @@ angepasst werden. Zum Stoppen und Starten von Home Assistant Core nutzt das
 Script zuerst `ha`; wenn das Kommando in der Hook-Umgebung nicht verfügbar ist,
 fällt es auf die Supervisor-API mit `SUPERVISOR_TOKEN` zurück. Für das
 Registry-Patch-Script muss in der Hook-Umgebung Python verfügbar sein; falls
-Python nicht im `PATH` liegt, kann der Pfad mit `PYTHON_BIN` gesetzt werden.
+Python nicht im `PATH` liegt, kann der Pfad mit `PYTHON_BIN` gesetzt werden,
+zum Beispiel in `/config/.knx-area-assignment.env`:
+
+```bash
+PYTHON_BIN=/usr/bin/python3
+```
+
+Wenn Python fehlt, schreibt der Runner Diagnoseinformationen inklusive eines
+kompletten Filetrees ab `/` ins Log.
 
 Der Installer setzt außerdem `git config pull.rebase false`, damit lokale
 HA-Snapshot-Commits und Remote-Änderungen per Merge zusammengeführt werden.
