@@ -245,7 +245,7 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
         # If multiple candidates ever occur, prefer same domain.
         if candidates:
             expected_domain = a.get('domain')
-            e = next((x for x in candidates if x.get('entity_id','').startswith(expected_domain + '.')), candidates[0])
+            e = next((x for x in candidates if x.get('entity_id','').startswith(expected_domain + '.')), None)
         if e is None:
             e = by_eid.get(a.get('expected_entity_id'))
         if e is None:
