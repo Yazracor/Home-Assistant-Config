@@ -1,0 +1,16 @@
+# Automatisch aus fhem.cfg und KNX.xml erzeugt.
+# Quelle: FHEM-KNX-Konfiguration; Namen entsprechen den FHEM-Device-Namen.
+# Datei: knx/climate.yaml
+
+# FHEM: TH_EG_Buero
+# FHEM room: Buero,KNX,homebridge
+# temperature_address: 5/0/79 -> EG Gast Ist-Temp | Heizung > EG / OG
+# target_temperature_address: 5/0/81 -> EG Gast Soll-Temp | Heizung > EG / OG
+# target_temperature_state_address: 5/0/81 -> EG Gast Soll-Temp | Heizung > EG / OG
+# HINWEIS: Konvertiert als KNX climate mit Ist-Temperatur und Sollwert. Heiz-/Kühlmeldung zusätzlich als binary_sensor.
+- name: "TH_EG_Buero"
+  temperature_address: "5/0/79"
+  target_temperature_address: "5/0/81"
+  target_temperature_state_address: "5/0/81"
+  min_temp: 7.0
+  max_temp: 32.0

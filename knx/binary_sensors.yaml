@@ -1,0 +1,25 @@
+# Automatisch aus fhem.cfg und KNX.xml erzeugt.
+# Quelle: FHEM-KNX-Konfiguration; Namen entsprechen den FHEM-Device-Namen.
+# Datei: knx/binary_sensors.yaml
+
+# FHEM: TH_EG_Buero
+# FHEM room: Buero,KNX,homebridge
+# state_address: 5/0/77 -> EG Gast Meldung Heizen | Heizung > EG / OG
+# HINWEIS: Heizmeldung aus FHEM alias heiz.
+- name: "TH_EG_Buero heiz"
+  state_address: "5/0/77"
+
+# FHEM: TH_EG_Buero
+# FHEM room: Buero,KNX,homebridge
+# state_address: 5/0/80 -> EG Gast Meldung Kühlen | Heizung > EG / OG
+# HINWEIS: Kühlmeldung aus FHEM alias kuehl.
+- name: "TH_EG_Buero kuehl"
+  state_address: "5/0/80"
+
+# FHEM: Garagentuer
+# FHEM room: Garage,homebridge
+# state_address: 2/3/15 -> Torzustand RM (Zu=230V) | Schalten > Aussen/Garage
+# HINWEIS: DPT1.009 Torzustand. Wenn Status invertiert angezeigt wird, invert: true ergänzen.
+- name: "Garagentuer CurrentDoorState"
+  state_address: "2/3/15"
+  device_class: "garage_door"

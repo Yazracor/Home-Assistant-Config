@@ -1,0 +1,26 @@
+# Nicht automatisch aktivierte oder prüfpflichtige FHEM-KNX-Einträge.
+# Diese Datei wird NICHT eingebunden.
+
+- fhem_device: "EG_Buero_Soll"
+  kind: "duplicate_setpoint"
+  address: "5/0/81"
+  reason: "Gleiche Sollwert-Adresse wie TH_EG_Buero; nicht zusätzlich als number aktiviert, um doppelte Bedienung desselben Gruppenobjekts zu vermeiden."
+  # 5/0/81: EG Gast Soll-Temp |  | Heizung > EG / OG
+
+- fhem_device: "TH_EG_Buero"
+  kind: "thermostat_extra"
+  address: "5/0/75"
+  reason: "Erste DPT9.001-Adresse ohne FHEM-Alias; ETS-Name: --1A6 EG Gast Basis Sollwert. Nicht automatisch in climate eingebunden."
+  # 5/0/75: --1A6 EG Gast Basis Sollwert |  | Heizung > EG / OG
+
+- fhem_device: "Jal_OG_Schlafzimmer_Aussen_Front_All_lang"
+  kind: "command_group"
+  address: "4/2/7"
+  reason: "Einzelne Jalousie-Gruppenadresse ohne Richtungspaar/Status; nicht als cover oder button aktiviert."
+  # 4/2/7: OG Schlafz. 3x aussen Front KZ |  | Jalousien > Gruppen
+
+- fhem_device: "KNX_Esszimmer.Tisch_knx"
+  kind: "wireless_function"
+  address: "6/4/10"
+  reason: "ETS-Pfad/Funktion wirkt wie Funk-/Tasterfunktion, nicht wie Aktorausgang; nicht automatisch als light/switch aktiviert."
+  # 6/4/10: Esstisch Dimmen Funk |  | Eldat Funk > Funktionen

@@ -1,0 +1,11 @@
+# Automatisch aus fhem.cfg und KNX.xml erzeugt.
+# Quelle: FHEM-KNX-Konfiguration; Namen entsprechen den FHEM-Device-Namen.
+# Datei: knx/buttons.yaml
+
+# FHEM: Garagentuer
+# FHEM room: Garage,homebridge
+# address: 2/3/14 -> Garagentor Öffner/Schließer | Schalten > Aussen/Garage
+# HINWEIS: Garagentor-Fahrt als KNX button; Status separat als binary_sensor.
+- name: "Garagentuer"
+  address: "2/3/14"
+  payload: 1

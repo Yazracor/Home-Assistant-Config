@@ -9,3 +9,6 @@ frontend:
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+
+# KNX entities converted from FHEM/ETS
+knx: !include knx.yaml

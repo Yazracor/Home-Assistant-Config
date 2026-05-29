@@ -1,0 +1,12 @@
+# Automatisch aus fhem.cfg und KNX.xml erzeugt.
+# Quelle: FHEM-KNX-Konfiguration; Namen entsprechen den FHEM-Device-Namen.
+# Datei: knx/sensors.yaml
+
+# FHEM: Windwaechter_Messwert
+# FHEM room: Wetter
+# state_address: 1/1/1 -> Messwert Wind | Zentralfunktionen > Wetterstation
+# HINWEIS: DPT9.005 als wind_speed_ms.
+- name: "Windwaechter_Messwert"
+  state_address: "1/1/1"
+  type: "wind_speed_ms"
+  sync_state: true
