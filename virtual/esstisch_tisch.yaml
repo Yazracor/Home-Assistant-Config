@@ -7,6 +7,11 @@ script:
         data:
           address: "6/4/10"
           payload: 1
+      - delay: "00:00:01"
+      - action: knx.send
+        data:
+          address: "6/4/10"
+          payload: 0
 
 template:
   - switch:
@@ -17,6 +22,3 @@ template:
 
         turn_on:
           - action: script.esstisch_tisch_impuls
-
-        turn_off:
-          - delay: "00:00:00"
