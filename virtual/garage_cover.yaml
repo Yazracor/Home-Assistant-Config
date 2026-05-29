@@ -1,6 +1,6 @@
 script:
   garagentor_impuls:
-    alias: Garagentür Impuls
+    alias: Garagentor Impuls
     sequence:
       - action: button.press
         target:
