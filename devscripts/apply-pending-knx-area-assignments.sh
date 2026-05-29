@@ -38,6 +38,17 @@ cleanup() {
 trap cleanup EXIT
 
 find_python() {
+  if [ -n "${PYTHON_BIN:-}" ]; then
+    if [ -x "$PYTHON_BIN" ]; then
+      printf '%s\n' "$PYTHON_BIN"
+      return 0
+    fi
+    if command -v "$PYTHON_BIN" >/dev/null 2>&1; then
+      command -v "$PYTHON_BIN"
+      return 0
+    fi
+  fi
+
   for candidate in \
     python3 \
     python \
@@ -52,7 +63,13 @@ find_python() {
     /usr/local/bin/python3.12 \
     /usr/local/bin/python3.11 \
     /usr/bin/python3 \
-    /usr/bin/python
+    /usr/bin/python \
+    /opt/venv/bin/python3 \
+    /opt/venv/bin/python \
+    /srv/homeassistant/bin/python3 \
+    /srv/homeassistant/bin/python \
+    /config/venv/bin/python3 \
+    /config/venv/bin/python
   do
     if command -v "$candidate" >/dev/null 2>&1; then
       command -v "$candidate"
@@ -64,7 +81,7 @@ find_python() {
 
 python_bin="$(find_python || true)"
 if [ -z "$python_bin" ]; then
-  echo "python not found in PATH=$PATH" >&2
+  echo "python not found; set PYTHON_BIN to a Python executable. PATH=$PATH" >&2
   exit 1
 fi
 echo "Using Python: $python_bin"
@@ -85,32 +102,23 @@ fi
 
 supervisor_api() {
   action="$1"
-  "$python_bin" - "$supervisor_endpoint/core/$action" "$supervisor_token" <<'PY'
-import sys
-import urllib.error
-import urllib.request
-
-url = sys.argv[1]
-token = sys.argv[2]
-request = urllib.request.Request(
-    url,
-    method="POST",
-    headers={"Authorization": f"Bearer {token}"},
-)
-
-try:
-    with urllib.request.urlopen(request, timeout=600) as response:
-        body = response.read().decode("utf-8", "replace").strip()
-        if body:
-            print(body)
-except urllib.error.HTTPError as err:
-    body = err.read().decode("utf-8", "replace").strip()
-    print(f"Supervisor API error {err.code} for {url}: {body}", file=sys.stderr)
-    raise SystemExit(1)
-except urllib.error.URLError as err:
-    print(f"Supervisor API request failed for {url}: {err}", file=sys.stderr)
-    raise SystemExit(1)
-PY
+  url="$supervisor_endpoint/core/$action"
+  if command -v curl >/dev/null 2>&1; then
+    curl --fail --silent --show-error \
+      --max-time 600 \
+      -X POST \
+      -H "Authorization: Bearer $supervisor_token" \
+      "$url"
+  elif command -v wget >/dev/null 2>&1; then
+    wget -qO- \
+      --timeout=600 \
+      --header="Authorization: Bearer $supervisor_token" \
+      --post-data='' \
+      "$url"
+  else
+    echo "Neither curl nor wget is available for Supervisor API calls." >&2
+    exit 1
+  fi
 }
 
 core_action() {
