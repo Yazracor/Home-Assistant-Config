@@ -12,13 +12,19 @@ template:
         unique_id: knx_garagentuer_virtual_cover
         device_class: garage
 
+        availability: >
+          {{ states('binary_sensor.garagentor_status') in ['on', 'off']
+             or states('binary_sensor.garagentuer_currentdoorstate') in ['on', 'off'] }}
+
         state: >
-          {% if is_state('binary_sensor.garagentor_status', 'on') %}
+          {% set door_state = states('binary_sensor.garagentor_status') %}
+          {% if door_state not in ['on', 'off'] %}
+            {% set door_state = states('binary_sensor.garagentuer_currentdoorstate') %}
+          {% endif %}
+          {% if door_state == 'on' %}
             open
-          {% elif is_state('binary_sensor.garagentor_status', 'off') %}
-            closed
           {% else %}
-            unknown
+            closed
           {% endif %}
 
         open_cover:
