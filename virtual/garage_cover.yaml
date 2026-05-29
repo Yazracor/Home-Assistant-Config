@@ -2,18 +2,9 @@ script:
   garagentor_impuls:
     alias: Garagentor Impuls
     sequence:
-      - variables:
-          impulse_button: >-
-            {% if states.button.aussenbereich_garage_garagentor_impuls is defined -%}
-            button.aussenbereich_garage_garagentor_impuls
-            {%- elif states.button.garage_aussenbereich_garagentor_impuls is defined -%}
-            button.garage_aussenbereich_garagentor_impuls
-            {%- else -%}
-            button.garagentor_impuls
-            {%- endif %}
       - action: button.press
         target:
-          entity_id: "{{ impulse_button | trim }}"
+          entity_id: button.aussenbereich_garage_garagentor_impuls
 
 template:
   - cover:
@@ -22,22 +13,10 @@ template:
         device_class: garage
 
         availability: >
-          {{ states('binary_sensor.aussenbereich_garage_garagentor_status') in ['on', 'off']
-             or states('binary_sensor.garage_aussenbereich_garagentor_status') in ['on', 'off']
-             or states('binary_sensor.garagentor_status') in ['on', 'off']
-             or states('binary_sensor.garagentuer_currentdoorstate') in ['on', 'off'] }}
+          {{ states('binary_sensor.aussenbereich_garage_garagentor_status') in ['on', 'off'] }}
 
         state: >
           {% set door_state = states('binary_sensor.aussenbereich_garage_garagentor_status') %}
-          {% if door_state not in ['on', 'off'] %}
-            {% set door_state = states('binary_sensor.garage_aussenbereich_garagentor_status') %}
-          {% endif %}
-          {% if door_state not in ['on', 'off'] %}
-            {% set door_state = states('binary_sensor.garagentor_status') %}
-          {% endif %}
-          {% if door_state not in ['on', 'off'] %}
-            {% set door_state = states('binary_sensor.garagentuer_currentdoorstate') %}
-          {% endif %}
           {% if door_state == 'on' %}
             open
           {% else %}
