@@ -72,5 +72,9 @@ PYTHON_BIN=/usr/bin/python3
 Wenn Python fehlt, schreibt der Runner Diagnoseinformationen inklusive eines
 kompletten Filetrees ab `/` ins Log.
 
+In Alpine-basierten Hook-Umgebungen installiert der Runner fehlendes Python
+automatisch mit `apk add --no-cache python3`. Das kann mit
+`KNX_AREA_ASSIGNMENT_AUTO_INSTALL_PYTHON=0` deaktiviert werden.
+
 Der Installer setzt außerdem `git config pull.rebase false`, damit lokale
 HA-Snapshot-Commits und Remote-Änderungen per Merge zusammengeführt werden.

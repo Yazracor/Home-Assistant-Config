@@ -16,6 +16,7 @@ fi
 
 supervisor_endpoint="${SUPERVISOR_ENDPOINT:-http://supervisor}"
 supervisor_token="${SUPERVISOR_TOKEN:-${HASSIO_TOKEN:-}}"
+auto_install_python="${KNX_AREA_ASSIGNMENT_AUTO_INSTALL_PYTHON:-1}"
 core_control=""
 force=0
 ha_stopped=0
@@ -115,7 +116,25 @@ print_python_diagnostics() {
   echo "  In that case, run the assignment from an environment with Python or install Python in this add-on/container."
 }
 
+install_python_if_possible() {
+  if [ "$auto_install_python" = "0" ]; then
+    echo "Automatic Python installation is disabled by KNX_AREA_ASSIGNMENT_AUTO_INSTALL_PYTHON=0."
+    return 1
+  fi
+  if command -v apk >/dev/null 2>&1; then
+    echo "Python not found; installing python3 with apk..."
+    apk add --no-cache python3
+    return 0
+  fi
+  echo "Python not found and no supported package manager for automatic installation is available."
+  return 1
+}
+
 python_bin="$(find_python || true)"
+if [ -z "$python_bin" ]; then
+  install_python_if_possible || true
+  python_bin="$(find_python || true)"
+fi
 if [ -z "$python_bin" ]; then
   print_python_diagnostics
   echo "python not found; set PYTHON_BIN in $env_file or in the hook environment. PATH=$PATH" >&2
