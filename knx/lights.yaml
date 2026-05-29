@@ -289,6 +289,126 @@
 # FHEM: Eingangsbereich
 # FHEM room: KNX,Aussen,homebridge
 # address: 2/3/21 -> Dauerschaltung Eingangsb. | Schalten > Aussen/Garage
+# state_address: 2/3/22 -> Dauerschaltung Eingangsb.  RM | Schalten > Aussen/Garage
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "Eingangsbereich"
+- name: "Eingangsbereich Dauer"
   address: "2/3/21"
+  state_address: "2/3/22"
+
+# Quelle: KNX.xml
+# address: 2/3/20 -> Zeitschaltung Eingangsb. | Schalten > Aussen/Garage
+# HINWEIS: Separater Zeit-/Bewegungsmelder-Impuls fuer den Eingangsbereich.
+- name: "Eingangsbereich Zeit"
+  address: "2/3/20"
+
+# Quelle: KNX.xml
+# address: 2/0/16 -> EG Eingang Vordach 1.A9 | Schalten > EG/OG Beleuchtung
+# state_address: 2/0/17 -> EG Eingang Vordach 1.A9 RM | Schalten > EG/OG Beleuchtung
+# HINWEIS: Ein-/Aus-Licht aus DPT1.
+- name: "Eingang Vordach"
+  address: "2/0/16"
+  state_address: "2/0/17"
+
+# Quelle: KNX.xml
+# address: 2/0/22 -> EG Terrasse 1.A12 | Schalten > EG/OG Beleuchtung
+# state_address: 2/0/23 -> EG Terrasse 1.A12 RM | Schalten > EG/OG Beleuchtung
+# HINWEIS: Ein-/Aus-Licht aus DPT1.
+- name: "Terrasse EG"
+  address: "2/0/22"
+  state_address: "2/0/23"
+
+# Quelle: KNX.xml
+# address: 2/0/30 -> Aussenleuchten rechte Seite 1.A16 | Schalten > EG/OG Beleuchtung
+# state_address: 2/0/31 -> Aussenleuchten rechte Seite 1.A16 RM | Schalten > EG/OG Beleuchtung
+# HINWEIS: Ein-/Aus-Licht aus DPT1.
+- name: "Aussenleuchten rechte Seite"
+  address: "2/0/30"
+  state_address: "2/0/31"
+
+# Quelle: KNX.xml
+# address: 2/0/32 -> EG Terrassenbalken 2.A1 | Schalten > EG/OG Beleuchtung
+# state_address: 2/0/33 -> EG Terrassenbalken 2.A1 RM | Schalten > EG/OG Beleuchtung
+# HINWEIS: Ein-/Aus-Licht aus DPT1.
+- name: "Terrassenbalken"
+  address: "2/0/32"
+  state_address: "2/0/33"
+
+# Quelle: KNX.xml
+# address: 2/0/34 -> OG Aussenbeleuchtung 2.A2 | Schalten > EG/OG Beleuchtung
+# state_address: 2/0/35 -> OG Aussenbeleuchtung 2.A2 RM | Schalten > EG/OG Beleuchtung
+# HINWEIS: Ein-/Aus-Licht aus DPT1.
+- name: "Aussenbeleuchtung OG"
+  address: "2/0/34"
+  state_address: "2/0/35"
+
+# Quelle: KNX.xml
+# address: 2/1/0 -> Terrasse KG A1 | DPST-1-1 | Schalten > KG Beleuchtung
+# state_address: 2/1/1 -> Terrasse KG A1 RM | DPST-1-1 | Schalten > KG Beleuchtung
+# HINWEIS: Ein-/Aus-Licht aus DPT1.
+- name: "Terrasse KG"
+  address: "2/1/0"
+  state_address: "2/1/1"
+
+# Quelle: KNX.xml
+# address: 2/3/0 -> Garage 4x Innen | Schalten > Aussen/Garage
+# state_address: 2/3/1 -> Garage 4x Innen  RM | Schalten > Aussen/Garage
+# HINWEIS: Ein-/Aus-Licht aus DPT1.
+- name: "Garage Innen"
+  address: "2/3/0"
+  state_address: "2/3/1"
+
+# Quelle: KNX.xml
+# address: 2/3/2 -> Treppe+3x an Garage | Schalten > Aussen/Garage
+# state_address: 2/3/3 -> Treppe+3x an Garage  RM | Schalten > Aussen/Garage
+# HINWEIS: Ein-/Aus-Licht aus DPT1.
+- name: "Treppe und Garage"
+  address: "2/3/2"
+  state_address: "2/3/3"
+
+# Quelle: KNX.xml
+# address: 2/3/4 -> Hof 2xBega, Baumstrahler | Schalten > Aussen/Garage
+# state_address: 2/3/5 -> Hof 2xBega, Baumstrahler  RM | Schalten > Aussen/Garage
+# HINWEIS: Ein-/Aus-Licht aus DPT1.
+- name: "Hof Bega Baumstrahler"
+  address: "2/3/4"
+  state_address: "2/3/5"
+
+# Quelle: KNX.xml
+# address: 2/3/6 -> Haus-Nr. | Schalten > Aussen/Garage
+# state_address: 2/3/7 -> Haus-Nr.  RM | Schalten > Aussen/Garage
+# HINWEIS: Ein-/Aus-Licht aus DPT1.
+- name: "Hausnummer"
+  address: "2/3/6"
+  state_address: "2/3/7"
+
+# Quelle: KNX.xml
+# address: 2/3/25 -> Strahler Mauer (Dusche) | Schalten > Aussen/Garage
+# state_address: 2/3/26 -> Strahler Mauer (Dusche)  RM | Schalten > Aussen/Garage
+# HINWEIS: Ein-/Aus-Licht aus DPT1.
+- name: "Strahler Mauer Dusche"
+  address: "2/3/25"
+  state_address: "2/3/26"
+
+# Quelle: KNX.xml
+# address: 2/3/27 -> Unterwasserstrahler | Schalten > Aussen/Garage
+# state_address: 2/3/28 -> Unterwasserstrahler  RM | Schalten > Aussen/Garage
+# HINWEIS: Ein-/Aus-Licht aus DPT1.
+- name: "Unterwasserstrahler"
+  address: "2/3/27"
+  state_address: "2/3/28"
+
+# Quelle: KNX.xml
+# address: 2/3/29 -> Wegebeleuchtung nach oben | Schalten > Aussen/Garage
+# state_address: 2/3/30 -> Wegebeleuchtung nach oben  RM | Schalten > Aussen/Garage
+# HINWEIS: Ein-/Aus-Licht aus DPT1.
+- name: "Wegebeleuchtung nach oben"
+  address: "2/3/29"
+  state_address: "2/3/30"
+
+# Quelle: KNX.xml
+# address: 2/3/31 -> Wegebeleuchtung nach unten | Schalten > Aussen/Garage
+# state_address: 2/3/32 -> Wegebeleuchtung nach unten  RM | Schalten > Aussen/Garage
+# HINWEIS: Ein-/Aus-Licht aus DPT1.
+- name: "Wegebeleuchtung nach unten"
+  address: "2/3/31"
+  state_address: "2/3/32"
