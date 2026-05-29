@@ -2,6 +2,9 @@
 # Loads default set of integrations. Do not remove.
 default_config:
 
+homeassistant:
+  packages: !include_dir_named virtual
+
 # Load frontend themes from the themes folder
 frontend:
   themes: !include_dir_merge_named themes
@@ -12,6 +15,3 @@ scene: !include scenes.yaml
 
 # KNX entities converted from FHEM/ETS
 knx: !include knx.yaml
-
-# Virtual devices
-virtual: !include_dir_named virtual
