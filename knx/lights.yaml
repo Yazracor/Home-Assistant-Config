@@ -184,7 +184,7 @@
 # state_address: 3/0/63 -> Büro EG/Gast S RM | Dimmen > EG / OG
 # brightness_address: 3/0/62 -> Büro EG/Gast HW | Dimmen > EG / OG
 # brightness_state_address: 3/0/64 -> Büro EG/Gast HW RM | Dimmen > EG / OG
-- name: "Büro EG Decke"
+- name: "Decke"
   address: "3/0/60"
   state_address: "3/0/63"
   brightness_address: "3/0/62"

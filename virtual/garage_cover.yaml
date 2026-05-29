@@ -2,9 +2,16 @@ script:
   garagentor_impuls:
     alias: Garagentor Impuls
     sequence:
+      - variables:
+          impulse_button: >
+            {% if states('button.garage_aussenbereich_garagentor_impuls') not in ['unknown', 'unavailable'] %}
+              button.garage_aussenbereich_garagentor_impuls
+            {% else %}
+              button.garagentor_impuls
+            {% endif %}
       - action: button.press
         target:
-          entity_id: button.garagentor_impuls
+          entity_id: "{{ impulse_button }}"
 
 template:
   - cover:
@@ -13,11 +20,15 @@ template:
         device_class: garage
 
         availability: >
-          {{ states('binary_sensor.garagentor_status') in ['on', 'off']
+          {{ states('binary_sensor.garage_aussenbereich_garagentor_status') in ['on', 'off']
+             or states('binary_sensor.garagentor_status') in ['on', 'off']
              or states('binary_sensor.garagentuer_currentdoorstate') in ['on', 'off'] }}
 
         state: >
-          {% set door_state = states('binary_sensor.garagentor_status') %}
+          {% set door_state = states('binary_sensor.garage_aussenbereich_garagentor_status') %}
+          {% if door_state not in ['on', 'off'] %}
+            {% set door_state = states('binary_sensor.garagentor_status') %}
+          {% endif %}
           {% if door_state not in ['on', 'off'] %}
             {% set door_state = states('binary_sensor.garagentuer_currentdoorstate') %}
           {% endif %}

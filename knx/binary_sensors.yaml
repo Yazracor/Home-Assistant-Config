@@ -6,14 +6,14 @@
 # FHEM room: Buero,KNX,homebridge
 # state_address: 5/0/77 -> EG Gast Meldung Heizen | Heizung > EG / OG
 # HINWEIS: Gira Tastsensor 3 Plus Meldung Heizenergie: 1 = Energie-Anforderung, 0 = keine Energie-Anforderung.
-- name: "Arbeitszimmer Anforderung Heizen"
+- name: "Anforderung Heizen"
   state_address: "5/0/77"
 
 # FHEM: TH_EG_Buero
 # FHEM room: Buero,KNX,homebridge
 # state_address: 5/0/80 -> EG Gast Meldung Kühlen | Heizung > EG / OG
 # HINWEIS: Gira Tastsensor 3 Plus Meldung Kühlenergie: 1 = Energie-Anforderung, 0 = keine Energie-Anforderung.
-- name: "Arbeitszimmer Anforderung Kühlen"
+- name: "Anforderung Kühlen"
   state_address: "5/0/80"
 
 # FHEM: Garagentuer

@@ -1,63 +1,64 @@
 domain,name,expected_entity_id,unique_id,area_id,area_name,floor_id,floor_name,source,notes
 light,Büro OG Decke,light.buro_og_decke,3/0/0,buero_og,Büro OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
 light,Flur OG Decke,light.flur_og_decke,3/0/6,flur_og,Flur OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
-light,Schlafzimmer Decke,light.schlafzimmer_decke,3/0/24,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
+light,Schlafzimmer Decke,light.schlafzimmer_og_decke,3/0/24,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.schlafzimmer_decke
 light,Bad OG Decke,light.bad_og_decke,3/0/30,bad_og,Bad OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
 light,Treppe OG,light.treppe_og,2/0/6,treppe_og,Treppe OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
-light,Ankleide Decke,light.ankleide_decke,2/0/4,ankleide,Ankleide,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
+light,Ankleide Decke,light.ankleide_og_decke,2/0/4,ankleide,Ankleide,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.ankleide_decke
 light,Bad OG Waschtisch,light.bad_og_waschtisch,2/0/2,bad_og,Bad OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
 light,WC OG Decke,light.wc_og_decke,2/0/0,wc_og,WC OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
-light,Gäste-WC Decke,light.gaste_wc_decke,2/0/12,gaeste_wc,Gäste-WC,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
-light,Garderobe Decke,light.garderobe_decke,2/0/28,garderobe,Garderobe,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
-light,Küche Decke,light.kuche_decke,3/0/36,kueche,Küche,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,"FHEM-Raum Esszimmer, KNX/ETS nennt EG Küche Decke; daher Küche."
-light,Gästebad Decke,light.gastebad_decke,2/0/26,gaestebad,Gästebad,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,"FHEM-Raum Buero, aber KNX/ETS-Adresse nennt EG Gästebad; daher Gästebad."
-light,Wohnzimmer Decke Mitte,light.wohnzimmer_decke_mitte,3/0/48,wohnzimmer,Wohnzimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
-light,Wohnzimmer Decke Seiten,light.wohnzimmer_decke_seiten,3/0/54,wohnzimmer,Wohnzimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
+light,Gäste-WC Decke,light.gaeste_wc_eg_decke,2/0/12,gaeste_wc,Gäste-WC,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.gaste_wc_decke
+light,Garderobe Decke,light.garderobe_eg_decke,2/0/28,garderobe,Garderobe,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.garderobe_decke
+light,Küche Decke,light.kueche_eg_decke,3/0/36,kueche,Küche,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,"FHEM-Raum Esszimmer, KNX/ETS nennt EG Küche Decke; daher Küche. legacy_entity_ids=light.kuche_decke"
+light,Gästebad Decke,light.gaestebad_eg_decke,2/0/26,gaestebad,Gästebad,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,"FHEM-Raum Buero, aber KNX/ETS-Adresse nennt EG Gästebad; daher Gästebad. legacy_entity_ids=light.gastebad_decke"
+light,Wohnzimmer Decke Mitte,light.wohnzimmer_eg_decke_mitte,3/0/48,wohnzimmer,Wohnzimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.wohnzimmer_decke_mitte
+light,Wohnzimmer Decke Seiten,light.wohnzimmer_eg_decke_seiten,3/0/54,wohnzimmer,Wohnzimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.wohnzimmer_decke_seiten
 light,Treppe EG/KG,light.treppe_eg_kg,2/0/14,treppe_eg_kg,Treppe EG/KG,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
-light,Arbeitszimmer Flur,light.arbeitszimmer_flur,2/0/24,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
+light,Arbeitszimmer Flur,light.arbeitszimmer_eg_flur,2/0/24,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.arbeitszimmer_flur
 light,Flur EG Galerie,light.flur_eg_galerie,2/0/18,flur_eg,Flur EG,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
-light,Garderobe Schuhschrank,light.garderobe_schuhschrank,2/0/10,garderobe,Garderobe,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
-light,Vorratsraum Decke,light.vorratsraum_decke,2/0/20,vorratsraum,Vorratsraum,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
+light,Garderobe Schuhschrank,light.garderobe_eg_schuhschrank,2/0/10,garderobe,Garderobe,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.garderobe_schuhschrank
+light,Vorratsraum Decke,light.vorratsraum_eg_decke,2/0/20,vorratsraum,Vorratsraum,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.vorratsraum_decke
 light,Flur EG Decke,light.flur_eg_decke,3/0/12,flur_eg,Flur EG,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
-light,Büro EG Decke,light.arbeitszimmer_decke,3/0/60,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,Aktuelle HA-Entity-ID für die Arbeitszimmer-Deckenleuchte.
-light,Sauna Decke,light.sauna_decke,3/1/0,sauna,Sauna,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,
-light,Gast/Hobby Decke,light.gast_hobby_decke,3/1/6,gast_hobby,Gast/Hobby,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,
-light,Zimmer Sinja Decke,light.zimmer_sinja_decke,3/1/12,zimmer_sinja,Zimmer Sinja,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,
-light,Zimmer Silas Decke,light.zimmer_silas_decke,3/1/18,zimmer_silas,Zimmer Silas,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,
+light,Decke,light.arbeitszimmer_eg_decke,3/0/60,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.buero_decke;light.arbeitszimmer_decke
+light,Sauna Decke,light.sauna_kg_decke,3/1/0,sauna,Sauna,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.sauna_decke
+light,Gast/Hobby Decke,light.gast_hobby_kg_decke,3/1/6,gast_hobby,Gast/Hobby,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.gast_hobby_decke
+light,Zimmer Sinja Decke,light.zimmer_sinja_kg_decke,3/1/12,zimmer_sinja,Zimmer Sinja,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.zimmer_sinja_decke
+light,Zimmer Silas Decke,light.zimmer_silas_kg_decke,3/1/18,zimmer_silas,Zimmer Silas,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.zimmer_silas_decke
 light,Flur KG Decke,light.flur_kg_decke,3/1/26,flur_kg,Flur KG,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,
-light,Kinderbad Decke,light.kinderbad_decke,2/1/6,kinderbad,Kinderbad,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,
-light,Waschküche Decke,light.waschkuche_decke,2/1/4,waschkueche,Waschküche,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,
-light,Keller hinten,light.keller_hinten,2/1/8,keller,Keller,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,
-light,Keller klein,light.keller_klein,2/1/12,keller,Keller,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,
-light,Keller vorn,light.keller_vorn,2/1/14,keller,Keller,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,
-light,Keller alle,light.keller_alle,2/2/0,keller,Keller,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,
-light,Eingangsbereich,light.eingangsbereich,2/3/21,eingangsbereich,Eingangsbereich,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,
-cover,Arbeitszimmer Garten,cover.arbeitszimmer_garten,4/0/76_4/0/79,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,"Fenster des Arbeitszimmers, nicht Außenbereich."
-cover,Arbeitszimmer Vorgarten,cover.arbeitszimmer_vorgarten,4/0/80_4/0/83,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,"Fenster des Arbeitszimmers, nicht Außenbereich."
-cover,Wohnzimmer Panorama,cover.wohnzimmer_panorama,4/0/56_4/0/59,wohnzimmer,Wohnzimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
-cover,Wohnzimmer Terrasse,cover.wohnzimmer_terrasse,4/0/60_4/0/63,wohnzimmer,Wohnzimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
-cover,Küche Terrasse,cover.kuche_terrasse,4/0/64_4/0/67,kueche,Küche,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
-cover,Küche Seite,cover.kuche_seite,4/0/68_4/0/71,kueche,Küche,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
-cover,Küche Nebeneingang,cover.kuche_nebeneingang,4/0/72_4/0/75,kueche,Küche,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
-cover,Sonnensegel,cover.sonnensegel,4/0/94_4/0/97,terrasse,Terrasse,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,"FHEM-Raum Kueche, physisch außen/Terrasse; daher Terrasse."
-cover,Schlafzimmer Front innen,cover.schlafzimmer_front_innen,4/2/0_None,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
-cover,Schlafzimmer Panorama innen,cover.schlafzimmer_panorama_innen,4/1/20_4/1/23,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
-cover,Schlafzimmer Front Mitte,cover.schlafzimmer_front_mitte,4/0/40_4/0/43,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
-cover,Schlafzimmer Front rechts,cover.schlafzimmer_front_rechts,4/0/36_4/0/39,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
-cover,Schlafzimmer Front links,cover.schlafzimmer_front_links,4/0/44_4/0/47,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
-cover,Schlafzimmer Panorama außen,cover.schlafzimmer_panorama_aussen,4/0/48_4/0/51,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
+light,Kinderbad Decke,light.kinderbad_kg_decke,2/1/6,kinderbad,Kinderbad,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.kinderbad_decke
+light,Waschküche Decke,light.waschkueche_kg_decke,2/1/4,waschkueche,Waschküche,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.waschkuche_decke
+light,Keller hinten,light.keller_kg_hinten,2/1/8,keller,Keller,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.keller_hinten
+light,Keller klein,light.keller_kg_klein,2/1/12,keller,Keller,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.keller_klein
+light,Keller vorn,light.keller_kg_vorn,2/1/14,keller,Keller,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.keller_vorn
+light,Keller alle,light.keller_kg_alle,2/2/0,keller,Keller,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.keller_alle
+light,Eingangsbereich,light.eingangsbereich_aussenbereich,2/3/21,eingangsbereich,Eingangsbereich,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.eingangsbereich
+cover,Arbeitszimmer Garten,cover.arbeitszimmer_eg_garten,4/0/76_4/0/79,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,"Fenster des Arbeitszimmers, nicht Außenbereich. legacy_entity_ids=cover.arbeitszimmer_garten"
+cover,Arbeitszimmer Vorgarten,cover.arbeitszimmer_eg_vorgarten,4/0/80_4/0/83,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,"Fenster des Arbeitszimmers, nicht Außenbereich. legacy_entity_ids=cover.arbeitszimmer_vorgarten"
+cover,Wohnzimmer Panorama,cover.wohnzimmer_eg_panorama,4/0/56_4/0/59,wohnzimmer,Wohnzimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=cover.wohnzimmer_panorama
+cover,Wohnzimmer Terrasse,cover.wohnzimmer_eg_terrasse,4/0/60_4/0/63,wohnzimmer,Wohnzimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=cover.wohnzimmer_terrasse
+cover,Küche Terrasse,cover.kueche_eg_terrasse,4/0/64_4/0/67,kueche,Küche,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=cover.kuche_terrasse
+cover,Küche Seite,cover.kueche_eg_seite,4/0/68_4/0/71,kueche,Küche,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=cover.kuche_seite
+cover,Küche Nebeneingang,cover.kueche_eg_nebeneingang,4/0/72_4/0/75,kueche,Küche,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=cover.kuche_nebeneingang
+cover,Sonnensegel,cover.terrasse_aussenbereich_sonnensegel,4/0/94_4/0/97,terrasse,Terrasse,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,"FHEM-Raum Kueche, physisch außen/Terrasse; daher Terrasse. legacy_entity_ids=cover.sonnensegel"
+cover,Schlafzimmer Front innen,cover.schlafzimmer_og_front_innen,4/2/0_None,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=cover.schlafzimmer_front_innen
+cover,Schlafzimmer Panorama innen,cover.schlafzimmer_og_panorama_innen,4/1/20_4/1/23,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=cover.schlafzimmer_panorama_innen
+cover,Schlafzimmer Front Mitte,cover.schlafzimmer_og_front_mitte,4/0/40_4/0/43,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=cover.schlafzimmer_front_mitte
+cover,Schlafzimmer Front rechts,cover.schlafzimmer_og_front_rechts,4/0/36_4/0/39,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=cover.schlafzimmer_front_rechts
+cover,Schlafzimmer Front links,cover.schlafzimmer_og_front_links,4/0/44_4/0/47,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=cover.schlafzimmer_front_links
+cover,Schlafzimmer Panorama außen,cover.schlafzimmer_og_panorama_aussen,4/0/48_4/0/51,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=cover.schlafzimmer_panorama_aussen
 cover,Büro OG Fenster,cover.buro_og_fenster,4/0/4_4/0/7,buero_og,Büro OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
-cover,Ankleide Fenster,cover.ankleide_fenster,4/0/0_4/0/3,ankleide,Ankleide,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
+cover,Ankleide Fenster,cover.ankleide_og_fenster,4/0/0_4/0/3,ankleide,Ankleide,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=cover.ankleide_fenster
 cover,Flur OG Fenster,cover.flur_og_fenster,4/2/14_4/0/31,flur_og,Flur OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
 cover,Treppe OG,cover.treppe_og,4/0/52_4/0/55,treppe_og,Treppe OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
 cover,WC OG Fenster,cover.wc_og_fenster,4/0/8_4/0/11,wc_og,WC OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
 cover,Bad OG innen,cover.bad_og_innen,4/2/2_4/1/3,bad_og,Bad OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
 cover,Bad OG Balkon,cover.bad_og_balkon,4/2/8_4/0/15,bad_og,Bad OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
 cover,Bad OG Panorama außen,cover.bad_og_panorama_aussen,4/0/12_4/0/15,bad_og,Bad OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
-climate,Arbeitszimmer Thermostat,climate.arbeitszimmer_thermostat,5/0/79_5/0/81_5/0/75_None,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
-binary_sensor,Arbeitszimmer Anforderung Heizen,binary_sensor.arbeitszimmer_anforderung_heizen,5/0/77,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
-binary_sensor,Arbeitszimmer Anforderung Kühlen,binary_sensor.arbeitszimmer_anforderung_kuhlen,5/0/80,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
-binary_sensor,Garagentor Status,binary_sensor.garagentor_status,2/3/15,garage,Garage,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,
-sensor,Wetterstation Wind,sensor.wetterstation_wind,1/1/1,wetterstation,Wetterstation,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,
-button,Garagentor Impuls,button.garagentor_impuls,2/3/14_1,garage,Garage,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,
-cover,Garagentor,cover.garagentor,knx_garagentor_virtual_cover,garage,Garage,aussenbereich,Außenbereich,virtual template,Virtuelles Cover aus Garagentor-Impuls und KNX-Status.
+climate,Thermostat,climate.arbeitszimmer_eg_thermostat,5/0/79_5/0/81_5/0/75_None,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=climate.th_eg_buero_2;climate.th_eg_buero;climate.arbeitszimmer_thermostat
+binary_sensor,Anforderung Heizen,binary_sensor.arbeitszimmer_eg_anforderung_heizen,5/0/77,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=binary_sensor.arbeitszimmer_anforderung_heizen
+binary_sensor,Anforderung Kühlen,binary_sensor.arbeitszimmer_eg_anforderung_kuhlen,5/0/80,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=binary_sensor.arbeitszimmer_anforderung_kuhlen
+sensor,Energieanforderung,sensor.arbeitszimmer_eg_energieanforderung,arbeitszimmer_energieanforderung,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,virtual template,Virtueller Status aus Meldung Heizen/Kühlen. legacy_entity_ids=sensor.arbeitszimmer_energieanforderung
+binary_sensor,Garagentor Status,binary_sensor.garage_aussenbereich_garagentor_status,2/3/15,garage,Garage,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,legacy_entity_ids=binary_sensor.garagentor_status
+sensor,Wetterstation Wind,sensor.wetterstation_aussenbereich_wind,1/1/1,wetterstation,Wetterstation,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,legacy_entity_ids=sensor.wetterstation_wind
+button,Garagentor Impuls,button.garage_aussenbereich_garagentor_impuls,2/3/14_1,garage,Garage,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,legacy_entity_ids=button.garagentor_impuls
+cover,Garagentor,cover.garage_aussenbereich_garagentor,knx_garagentor_virtual_cover,garage,Garage,aussenbereich,Außenbereich,virtual template,Virtuelles Cover aus Garagentor-Impuls und KNX-Status. legacy_entity_ids=cover.garagentor

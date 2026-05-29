@@ -30,6 +30,15 @@ def load_csv(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(f))
 
 
+def legacy_entity_ids(row: dict[str, str]) -> list[str]:
+    notes = row.get('notes') or ''
+    marker = 'legacy_entity_ids='
+    if marker not in notes:
+        return []
+    raw = notes.split(marker, 1)[1].split()[0]
+    return [item for item in raw.split(';') if item]
+
+
 def backup(path: Path) -> None:
     if path.exists():
         stamp = datetime.now().strftime('%Y%m%d-%H%M%S')
@@ -136,7 +145,7 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
     assignments = [r for r in load_csv(assignments_csv) if r.get('area_id')]
     path = storage / 'core.entity_registry'
     if not path.exists():
-        return 0, len(assignments), ['core.entity_registry nicht gefunden; KNX-Entitäten zuerst einmal von HA anlegen lassen.'], {}
+        return 0, 0, len(assignments), ['core.entity_registry nicht gefunden; KNX-Entitäten zuerst einmal von HA anlegen lassen.'], {}
     with path.open(encoding='utf-8') as f:
         store = json.load(f)
     entities = store.get('data', {}).get('entities', [])
@@ -164,6 +173,8 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
         if e is None:
             e = by_eid.get(a.get('expected_entity_id'))
         if e is None:
+            e = next((by_eid[x] for x in legacy_entity_ids(a) if x in by_eid), None)
+        if e is None:
             unmatched.append(f"{a.get('domain')}.{a.get('name')} / unique_id={a.get('unique_id')} / expected={a.get('expected_entity_id')}")
             continue
         expected_entity_id = a.get('expected_entity_id')
@@ -181,7 +192,7 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
             changed += 1
         if e.get('device_id'):
             device_area[e['device_id']] = a['area_id']
-    if changed and not dry_run:
+    if (changed or renamed) and not dry_run:
         write_store(path, store, dry_run=False)
     elif dry_run:
         # no write
