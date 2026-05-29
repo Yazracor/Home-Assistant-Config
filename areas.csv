@@ -24,7 +24,7 @@ flur_kg,Flur KG,kellergeschoss,KG_Flur
 kinderbad,Kinderbad,kellergeschoss,KG_Kinderbad;Bad Kinder
 waschkueche,Waschküche,kellergeschoss,KG_Waschkueche;Waschküche
 keller,Keller,kellergeschoss,KG_Keller;UV-Raum;Keller klein;Keller vorn;Keller hinten
-terrasse,Terrasse,aussenbereich,Sonnensegel;Terrasse
+balkon,Balkon,aussenbereich,Sonnensegel;Terrasse;Balkon
 garage,Garage,aussenbereich,Garagentuer;Garagentor
 eingangsbereich,Eingangsbereich,aussenbereich,Eingang;Vorgarten
 wetterstation,Wetterstation,aussenbereich,Wetter;Windwächter;Windwaechter

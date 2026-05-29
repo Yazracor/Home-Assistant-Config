@@ -47,7 +47,7 @@
 # move_short_address: 4/0/61 -> 3A4 EG Wohnz. Terrasse KZ | Jalousien > OG/EG/KG Aussen
 # position_address: 4/0/63 -> 3A4 EG Wohnz. Terrasse JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/62 -> 3A4 EG Wohnz. Terrasse R JP | Jalousien > OG/EG/KG Aussen
-- name: "Wohnzimmer Terrasse"
+- name: "Wohnzimmer Balkon"
   move_long_address: "4/0/60"
   move_short_address: "4/0/61"
   position_address: "4/0/63"
@@ -60,7 +60,7 @@
 # move_short_address: 4/0/65 -> 3A5 EG Küche Terrasse KZ | Jalousien > OG/EG/KG Aussen
 # position_address: 4/0/67 -> 3A5 EG Küche Terrasse JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/66 -> 3A5 EG Küche Terrasse R JP | Jalousien > OG/EG/KG Aussen
-- name: "Küche Terrasse"
+- name: "Küche Balkon"
   move_long_address: "4/0/64"
   move_short_address: "4/0/65"
   position_address: "4/0/67"

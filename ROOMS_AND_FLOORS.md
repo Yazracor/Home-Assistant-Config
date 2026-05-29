@@ -41,7 +41,7 @@ Wichtig: Die KNX-YAML selbst enthält keine Raum-/Stockwerkzuordnung. Home Assis
 | Kellergeschoss | Kinderbad | `kinderbad` | 1 | KG_Kinderbad;Bad Kinder |
 | Kellergeschoss | Waschküche | `waschkueche` | 1 | KG_Waschkueche;Waschküche |
 | Kellergeschoss | Keller | `keller` | 4 | KG_Keller;UV-Raum;Keller klein;Keller vorn;Keller hinten |
-| Außenbereich | Terrasse | `terrasse` | 1 | Sonnensegel;Terrasse |
+| Außenbereich | Balkon | `balkon` | 1 | Sonnensegel;Terrasse;Balkon |
 | Außenbereich | Garage | `garage` | 2 | Garagentuer;Garagentor |
 | Außenbereich | Eingangsbereich | `eingangsbereich` | 1 | Eingang;Vorgarten |
 | Außenbereich | Wetterstation | `wetterstation` | 1 | Wetter;Windwächter;Windwaechter |
@@ -51,7 +51,7 @@ Wichtig: Die KNX-YAML selbst enthält keine Raum-/Stockwerkzuordnung. Home Assis
 - `Buero.Decke`, `TH_EG_Buero`, `Buero.Flur` und die beiden Büro-Fensterjalousien liegen in `Arbeitszimmer`, weil die bereits vorhandene KNX-Panel-Entität `light.arbeitszimmer_decke` diese Semantik vorgibt.
 - `Buero.Bad` liegt in `Gästebad`, weil die ETS-Gruppenadresse `EG Gästebad` nennt.
 - `Esszimmer.Decke_Kochen` liegt in `Küche`, weil Esszimmer und Küche ein gemeinsamer Raum sind und die ETS-Gruppenadressen `EG Küche Decke` nennen.
-- `Jalousie_EG_Kueche_Sonnensegel` liegt in `Terrasse`, weil das physisch Außenbereich ist, obwohl FHEM den Raum `Kueche` verwendet.
+- `Jalousie_EG_Kueche_Sonnensegel` liegt in `Balkon`, weil das physisch Außenbereich ist, obwohl FHEM den Raum `Kueche` verwendet.
 - Die Treppe ist in `Treppe OG` und `Treppe EG/KG` getrennt, weil Home Assistant Areas jeweils nur einem Stockwerk zugeordnet werden können.
 
 ## Anwendung

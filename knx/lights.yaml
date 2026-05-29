@@ -313,7 +313,7 @@
 # address: 2/0/22 -> EG Terrasse 1.A12 | Schalten > EG/OG Beleuchtung
 # state_address: 2/0/23 -> EG Terrasse 1.A12 RM | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "Terrasse EG"
+- name: "Balkon EG"
   address: "2/0/22"
   state_address: "2/0/23"
 
@@ -329,7 +329,7 @@
 # address: 2/0/32 -> EG Terrassenbalken 2.A1 | Schalten > EG/OG Beleuchtung
 # state_address: 2/0/33 -> EG Terrassenbalken 2.A1 RM | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "Terrassenbalken"
+- name: "Balkon Balken"
   address: "2/0/32"
   state_address: "2/0/33"
 
