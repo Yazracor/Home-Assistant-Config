@@ -1,0 +1,23 @@
+script:
+  esstisch_tisch_impuls:
+    alias: Tisch Impuls
+    mode: restart
+    sequence:
+      - action: knx.send
+        data:
+          address: "6/4/10"
+          payload: 1
+          type: "binary"
+
+template:
+  - switch:
+      - name: "Tisch"
+        unique_id: knx_esstisch_tisch_virtual_switch
+        state: "{{ false }}"
+        icon: "mdi:table-furniture"
+
+        turn_on:
+          - action: script.esstisch_tisch_impuls
+
+        turn_off:
+          - delay: "00:00:00"

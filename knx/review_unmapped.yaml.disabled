@@ -18,9 +18,3 @@
   address: "4/2/7"
   reason: "Einzelne Jalousie-Gruppenadresse ohne Richtungspaar/Status; nicht als cover oder button aktiviert."
   # 4/2/7: OG Schlafz. 3x aussen Front KZ |  | Jalousien > Gruppen
-
-- fhem_device: "KNX_Esszimmer.Tisch_knx"
-  kind: "wireless_function"
-  address: "6/4/10"
-  reason: "ETS-Pfad/Funktion wirkt wie Funk-/Tasterfunktion, nicht wie Aktorausgang; nicht automatisch als light/switch aktiviert."
-  # 6/4/10: Esstisch Dimmen Funk |  | Eldat Funk > Funktionen
