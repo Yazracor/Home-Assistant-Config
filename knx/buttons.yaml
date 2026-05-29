@@ -6,6 +6,6 @@
 # FHEM room: Garage,homebridge
 # address: 2/3/14 -> Garagentor Öffner/Schließer | Schalten > Aussen/Garage
 # HINWEIS: Garagentor-Fahrt als KNX button; Status separat als binary_sensor.
-- name: "Garagentuer"
+- name: "Garagentor Impuls"
   address: "2/3/14"
   payload: 1

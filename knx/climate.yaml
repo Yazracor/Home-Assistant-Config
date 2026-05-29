@@ -11,7 +11,7 @@
 # command_value_state_address: 5/0/82 -> EG Gast Stellgröße Heizen/Kühlen | Heizung > EG / OG
 # HINWEIS: Heizen/Kühlen-Umschaltung (5/0/76) erfolgt zentral und wird hier nicht bedient.
 # HINWEIS: Gira Tastsensor 3 Plus: Meldung Heizen/Kühlen sind 1-Bit-Energieanforderungen (1 = Anforderung, 0 = keine).
-- name: "TH_EG_Buero"
+- name: "Arbeitszimmer Thermostat"
   temperature_address: "5/0/79"
   target_temperature_address: "5/0/75"
   target_temperature_state_address: "5/0/81"

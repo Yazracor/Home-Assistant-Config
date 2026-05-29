@@ -1,22 +1,22 @@
 template:
   - sensor:
-      - name: "TH_EG_Buero Energieanforderung"
-        unique_id: th_eg_buero_energieanforderung
+      - name: "Arbeitszimmer Energieanforderung"
+        unique_id: arbeitszimmer_energieanforderung
         state: >
-          {% if is_state('binary_sensor.th_eg_buero_anforderung_heizen', 'on') %}
+          {% if is_state('binary_sensor.arbeitszimmer_anforderung_heizen', 'on') %}
             heizen
-          {% elif is_state('binary_sensor.th_eg_buero_anforderung_kuehlen', 'on') %}
+          {% elif is_state('binary_sensor.arbeitszimmer_anforderung_kuhlen', 'on') %}
             kuehlen
-          {% elif is_state('binary_sensor.th_eg_buero_anforderung_heizen', 'off')
-              and is_state('binary_sensor.th_eg_buero_anforderung_kuehlen', 'off') %}
+          {% elif is_state('binary_sensor.arbeitszimmer_anforderung_heizen', 'off')
+              and is_state('binary_sensor.arbeitszimmer_anforderung_kuhlen', 'off') %}
             keine
           {% else %}
             unbekannt
           {% endif %}
         icon: >
-          {% if is_state('binary_sensor.th_eg_buero_anforderung_heizen', 'on') %}
+          {% if is_state('binary_sensor.arbeitszimmer_anforderung_heizen', 'on') %}
             mdi:fire
-          {% elif is_state('binary_sensor.th_eg_buero_anforderung_kuehlen', 'on') %}
+          {% elif is_state('binary_sensor.arbeitszimmer_anforderung_kuhlen', 'on') %}
             mdi:snowflake
           {% else %}
             mdi:thermostat

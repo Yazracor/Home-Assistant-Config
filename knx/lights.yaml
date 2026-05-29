@@ -8,7 +8,7 @@
 # state_address: 3/0/3 -> 1.A1 OG Arbeiten S RM | DPST-1-11 | Dimmen > EG / OG
 # brightness_address: 3/0/2 -> 1.A1 OG Arbeiten HW | DPST-5-1 | Dimmen > EG / OG
 # brightness_state_address: 3/0/4 -> 1.A1 OG Arbeiten HW RM | DPST-5-1 | Dimmen > EG / OG
-- name: "OG_Arbeiten"
+- name: "Büro OG Decke"
   address: "3/0/0"
   state_address: "3/0/3"
   brightness_address: "3/0/2"
@@ -19,7 +19,7 @@
 # state_address: 3/0/9 -> 1.A2 OG Flur S RM | DPST-1-11 | Dimmen > EG / OG
 # brightness_address: 3/0/8 -> 1.A2 OG Flur HW | DPST-5-1 | Dimmen > EG / OG
 # brightness_state_address: 3/0/10 -> 1.A2 OG Flur HW RM | DPST-5-1 | Dimmen > EG / OG
-- name: "OG_Flur"
+- name: "Flur OG Decke"
   address: "3/0/6"
   state_address: "3/0/9"
   brightness_address: "3/0/8"
@@ -30,7 +30,7 @@
 # state_address: 3/0/27 -> 2.A1 OG Schlafzimmer S RM | Dimmen > EG / OG
 # brightness_address: 3/0/26 -> 2.A1 OG Schlafzimmer HW | Dimmen > EG / OG
 # brightness_state_address: 3/0/28 -> 2.A1 OG Schlafzimmer HW RM | Dimmen > EG / OG
-- name: "OG_Schlafzimmer"
+- name: "Schlafzimmer Decke"
   address: "3/0/24"
   state_address: "3/0/27"
   brightness_address: "3/0/26"
@@ -41,7 +41,7 @@
 # state_address: 3/0/33 -> 2.A2 OG Bad Decke S RM | Dimmen > EG / OG
 # brightness_address: 3/0/32 -> 2.A2 OG Bad Decke HW | Dimmen > EG / OG
 # brightness_state_address: 3/0/34 -> 2.A2 OG Bad Decke  HW RM | Dimmen > EG / OG
-- name: "OG_Bad.Decke"
+- name: "Bad OG Decke"
   address: "3/0/30"
   state_address: "3/0/33"
   brightness_address: "3/0/32"
@@ -50,42 +50,42 @@
 # FHEM room: KNX,OG_Flur,homebridge
 # address: 2/0/6 -> EG/OG Treppe 1.A4 | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "OG_Treppe"
+- name: "Treppe OG"
   address: "2/0/6"
 
 # FHEM: OG_Umkleide
 # FHEM room: Ankleide,KNX,homebridge
 # address: 2/0/4 -> OG Ankleide 1.A3 | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "OG_Umkleide"
+- name: "Ankleide Decke"
   address: "2/0/4"
 
 # FHEM: OG_Waschen
 # FHEM room: OG_Bad,KNX,homebridge
 # address: 2/0/2 -> OG Bad Waschtisch 1.A2 | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "OG_Waschen"
+- name: "Bad OG Waschtisch"
   address: "2/0/2"
 
 # FHEM: OG_WC
 # FHEM room: KNX,OG_Bad,homebridge
 # address: 2/0/0 -> OG WC+LED 1.A1 | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "OG_WC"
+- name: "WC OG Decke"
   address: "2/0/0"
 
 # FHEM: EG_GaesteWC
 # FHEM room: EG_Flur,KNX,homebridge
 # address: 2/0/12 -> EG WC 1.A7 | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "EG_GaesteWC"
+- name: "Gäste-WC Decke"
   address: "2/0/12"
 
 # FHEM: EG_Garderobe
 # FHEM room: EG_Flur,KNX,homebridge
 # address: 2/0/28 -> EG Gaderobe 1.A15 | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "EG_Garderobe"
+- name: "Garderobe Decke"
   address: "2/0/28"
 
 # FHEM: Esszimmer.Decke_Kochen
@@ -94,7 +94,7 @@
 # state_address: 3/0/39 -> 3.A1 EG Küche Decke S RM | Dimmen > EG / OG
 # brightness_address: 3/0/38 -> 3.A1 EG Küche Decke HW | Dimmen > EG / OG
 # brightness_state_address: 3/0/40 -> 3.A1 EG Küche Decke HW RM | Dimmen > EG / OG
-- name: "Esszimmer.Decke_Kochen"
+- name: "Küche Decke"
   address: "3/0/36"
   state_address: "3/0/39"
   brightness_address: "3/0/38"
@@ -105,7 +105,7 @@
 # state_address: 2/0/27 -> EG Gästebad 1.A14 RM | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
 # HINWEIS: Zweite DPT1-Adresse als Rückmeldeadresse verwendet.
-- name: "Buero.Bad"
+- name: "Gästebad Decke"
   address: "2/0/26"
   state_address: "2/0/27"
 # FHEM: Wohnzimmer.Decke_Mitte
@@ -114,7 +114,7 @@
 # state_address: 3/0/51 -> 4.A1 EG Wohnz. Mitte S RM | Dimmen > EG / OG
 # brightness_address: 3/0/50 -> 4.A1 EG Wohnz. Mitte HW | Dimmen > EG / OG
 # brightness_state_address: 3/0/52 -> 4.A1 EG Wohnz. Mitte HW RM | Dimmen > EG / OG
-- name: "Wohnzimmer.Decke_Mitte"
+- name: "Wohnzimmer Decke Mitte"
   address: "3/0/48"
   state_address: "3/0/51"
   brightness_address: "3/0/50"
@@ -125,7 +125,7 @@
 # state_address: 3/0/57 -> 4.A2 EG Wohnz. links/rechts S RM | Dimmen > EG / OG
 # brightness_address: 3/0/56 -> 4.A2 EG Wohnz. links/rechts HW | Dimmen > EG / OG
 # brightness_state_address: 3/0/58 -> 4.A2 EG Wohnz. links/rechts HW RM | Dimmen > EG / OG
-- name: "Wohnzimmer.Decke_Seiten"
+- name: "Wohnzimmer Decke Seiten"
   address: "3/0/54"
   state_address: "3/0/57"
   brightness_address: "3/0/56"
@@ -134,28 +134,28 @@
 # FHEM room: EG_Flur,KNX,homebridge
 # address: 2/0/14 -> EG/KG Treppe 1.A8 | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "EG_UG_Treppe"
+- name: "Treppe EG/KG"
   address: "2/0/14"
 
 # FHEM: Buero.Flur
 # FHEM room: Buero,KNX,homebridge
 # address: 2/0/24 -> EG Flur Gast 1.A13 | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "Buero.Flur"
+- name: "Arbeitszimmer Flur"
   address: "2/0/24"
 
 # FHEM: EG.Galerie
 # FHEM room: EG_Flur,KNX,homebridge
 # address: 2/0/18 -> EG Diele Lichtschiene 1.A10 | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "EG.Galerie"
+- name: "Flur EG Galerie"
   address: "2/0/18"
 
 # FHEM: EG_Schuhschrank
 # FHEM room: EG_Flur,KNX,homebridge
 # address: 2/0/10 -> EG UV 1.A6 | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "EG_Schuhschrank"
+- name: "Garderobe Schuhschrank"
   address: "2/0/10"
 
 # FHEM: Licht_Vorratsraum
@@ -164,7 +164,7 @@
 # state_address: 2/0/21 -> EG Vorratsraum 1.A11 RM | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
 # HINWEIS: Zweite DPT1-Adresse als Rückmeldeadresse verwendet.
-- name: "Licht_Vorratsraum"
+- name: "Vorratsraum Decke"
   address: "2/0/20"
   state_address: "2/0/21"
 # FHEM: EG_Flur.Decke
@@ -173,7 +173,7 @@
 # state_address: 3/0/15 -> 1.A3 EG Diele S RM | Dimmen > EG / OG
 # brightness_address: 3/0/14 -> 1.A3 EG Diele HW | Dimmen > EG / OG
 # brightness_state_address: 3/0/16 -> 1.A3 EG Diele HW RM | Dimmen > EG / OG
-- name: "EG_Flur.Decke"
+- name: "Flur EG Decke"
   address: "3/0/12"
   state_address: "3/0/15"
   brightness_address: "3/0/14"
@@ -184,7 +184,7 @@
 # state_address: 3/0/63 -> Büro EG/Gast S RM | Dimmen > EG / OG
 # brightness_address: 3/0/62 -> Büro EG/Gast HW | Dimmen > EG / OG
 # brightness_state_address: 3/0/64 -> Büro EG/Gast HW RM | Dimmen > EG / OG
-- name: "Buero.Decke"
+- name: "Büro EG Decke"
   address: "3/0/60"
   state_address: "3/0/63"
   brightness_address: "3/0/62"
@@ -195,7 +195,7 @@
 # state_address: 3/1/3 -> 1.A1 Sauna Decke S RM | DPST-1-11 | Dimmen > KG
 # brightness_address: 3/1/2 -> 1.A1 Sauna Decke HW | DPST-5-1 | Dimmen > KG
 # brightness_state_address: 3/1/4 -> 1.A1 Sauna Decke HW RM | DPST-5-1 | Dimmen > KG
-- name: "Sauna.Decke"
+- name: "Sauna Decke"
   address: "3/1/0"
   state_address: "3/1/3"
   brightness_address: "3/1/2"
@@ -206,7 +206,7 @@
 # state_address: 3/1/9 -> 1.A2 Gast/Hobby S RM | DPST-1-11 | Dimmen > KG
 # brightness_address: 3/1/8 -> 1.A2 Gast/Hobby HW | DPST-5-1 | Dimmen > KG
 # brightness_state_address: 3/1/10 -> 1.A2 Gast/Hobby HW RM | DPST-5-1 | Dimmen > KG
-- name: "KG_Gast.Decke"
+- name: "Gast/Hobby Decke"
   address: "3/1/6"
   state_address: "3/1/9"
   brightness_address: "3/1/8"
@@ -217,7 +217,7 @@
 # state_address: 3/1/15 -> 2.A1 Kind 1 S RM | DPST-1-11 | Dimmen > KG
 # brightness_address: 3/1/14 -> 2.A1 Kind 1 HW | DPST-5-1 | Dimmen > KG
 # brightness_state_address: 3/1/16 -> 2.A1 Kind 1 HW RM | DPST-5-1 | Dimmen > KG
-- name: "KG_Sinja.Decke"
+- name: "Zimmer Sinja Decke"
   address: "3/1/12"
   state_address: "3/1/15"
   brightness_address: "3/1/14"
@@ -228,7 +228,7 @@
 # state_address: 3/1/21 -> 2.A2 Kind 2 S RM | DPST-1-11 | Dimmen > KG
 # brightness_address: 3/1/20 -> 2.A2 Kind 2 HW | DPST-5-1 | Dimmen > KG
 # brightness_state_address: 3/1/22 -> 2.A2 Kind 2 HW RM | DPST-5-1 | Dimmen > KG
-- name: "KG_Silas.Decke"
+- name: "Zimmer Silas Decke"
   address: "3/1/18"
   state_address: "3/1/21"
   brightness_address: "3/1/20"
@@ -239,7 +239,7 @@
 # state_address: 3/1/29 -> 3.A1 Flur S RM | DPST-1-11 | Dimmen > KG
 # brightness_address: 3/1/28 -> 3.A1 Flur HW | DPST-5-1 | Dimmen > KG
 # brightness_state_address: 3/1/30 -> 3.A1 Flur HW RM | DPST-5-1 | Dimmen > KG
-- name: "KG_Flur.Decke"
+- name: "Flur KG Decke"
   address: "3/1/26"
   state_address: "3/1/29"
   brightness_address: "3/1/28"
@@ -248,42 +248,42 @@
 # FHEM room: KNX,KG_Kinderbad,homebridge
 # address: 2/1/6 -> Bad Kinder A4 | DPST-1-1 | Schalten > KG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "KG_Kinderbad.Decke"
+- name: "Kinderbad Decke"
   address: "2/1/6"
 
 # FHEM: KG_Waschkueche
 # FHEM room: KNX,KG_Keller,homebridge
 # address: 2/1/4 -> Waschküche A3 | DPST-1-1 | Schalten > KG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "KG_Waschkueche"
+- name: "Waschküche Decke"
   address: "2/1/4"
 
 # FHEM: KG_Keller_hinten
 # FHEM room: KNX,KG_Keller,homebridge
 # address: 2/1/8 -> Keller hinten 1 A5 | DPST-1-1 | Schalten > KG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "KG_Keller_hinten"
+- name: "Keller hinten"
   address: "2/1/8"
 
 # FHEM: KG_Keller_klein
 # FHEM room: KNX,KG_Keller,homebridge
 # address: 2/1/12 -> Keller hinten 2 A7 | DPST-1-1 | Schalten > KG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "KG_Keller_klein"
+- name: "Keller klein"
   address: "2/1/12"
 
 # FHEM: KG_Keller_vorn
 # FHEM room: KNX,KG_Keller,homebridge
 # address: 2/1/14 -> UV-Raum A8 | DPST-1-1 | Schalten > KG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "KG_Keller_vorn"
+- name: "Keller vorn"
   address: "2/1/14"
 
 # FHEM: KG_Keller_gesamt
 # FHEM room: KNX,KG_Keller,homebridge
 # address: 2/2/0 -> Keller 3 x  | Schalten > Gruppen
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "KG_Keller_gesamt"
+- name: "Keller alle"
   address: "2/2/0"
 
 # FHEM: Eingangsbereich

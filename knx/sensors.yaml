@@ -6,6 +6,6 @@
 # FHEM room: Wetter
 # state_address: 1/1/1 -> Messwert Wind | Zentralfunktionen > Wetterstation
 # HINWEIS: DPT9.005 als wind_speed_ms.
-- name: "Windwaechter_Messwert"
+- name: "Wetterstation Wind"
   state_address: "1/1/1"
   type: "wind_speed_ms"

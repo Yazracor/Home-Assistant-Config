@@ -1,31 +1,31 @@
 script:
-  garagentuer_impuls:
+  garagentor_impuls:
     alias: Garagentür Impuls
     sequence:
       - action: button.press
         target:
-          entity_id: button.garagentuer
+          entity_id: button.garagentor_impuls
 
 template:
   - cover:
-      - name: "Garagentür"
+      - name: "Garagentor"
         unique_id: knx_garagentuer_virtual_cover
         device_class: garage
 
         state: >
-          {% if is_state('binary_sensor.garagentuer_currentdoorstate', 'on') %}
+          {% if is_state('binary_sensor.garagentor_status', 'on') %}
             open
-          {% elif is_state('binary_sensor.garagentuer_currentdoorstate', 'off') %}
+          {% elif is_state('binary_sensor.garagentor_status', 'off') %}
             closed
           {% else %}
             unknown
           {% endif %}
 
         open_cover:
-          - action: script.garagentuer_impuls
+          - action: script.garagentor_impuls
 
         close_cover:
-          - action: script.garagentuer_impuls
+          - action: script.garagentor_impuls
 
         stop_cover:
-          - action: script.garagentuer_impuls
+          - action: script.garagentor_impuls
