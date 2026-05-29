@@ -1,0 +1,8 @@
+# KNX-Entitäten aus FHEM/ETS-Migration.
+# Diese Datei wird in configuration.yaml per `knx: !include knx.yaml` eingebunden.
+light: !include knx/lights.yaml
+cover: !include knx/covers.yaml
+climate: !include knx/climate.yaml
+binary_sensor: !include knx/binary_sensors.yaml
+sensor: !include knx/sensors.yaml
+button: !include knx/buttons.yaml

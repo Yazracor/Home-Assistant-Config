@@ -12,3 +12,6 @@ scene: !include scenes.yaml
 
 # KNX entities converted from FHEM/ETS
 knx: !include knx.yaml
+
+# Virtual devices
+virtual: !include virtual.yaml
