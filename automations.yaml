@@ -52,19 +52,35 @@
   - trigger: state
     entity_id:
     - cover.aussenbereich_garage_garagentor
-    attribute: current_position
-    from:
-    - Closed
-    to:
-    - Open
     for:
       hours: 0
-      minutes: 0
-      seconds: 20
+      minutes: 5
+      seconds: 0
+    to:
+    - open
   conditions: []
   actions:
-  - action: notify.mobile_app_torbens_iphone
-    metadata: {}
-    data:
-      message: Garage offen!
+  - repeat:
+      while:
+      - condition: state
+        entity_id: cover.aussenbereich_garage_garagentor
+        state:
+        - open
+      sequence:
+      - action: notify.mobile_app_torbens_iphone
+        metadata: {}
+        data:
+          message: Garage offen!
+          title: Die Garage ist noch offen!
+          data:
+            push:
+              sound:
+                name: default
+                critical: 1
+                volume: 1
+      - delay:
+          hours: 0
+          minutes: 30
+          seconds: 0
+          milliseconds: 0
   mode: single
