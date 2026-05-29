@@ -1,0 +1,62 @@
+domain,fhem_device,ha_name,addresses,room,notes
+review,EG_Buero_Soll,,5/0/81,,duplicate setpoint
+climate,TH_EG_Buero,TH_EG_Buero,5/0/75; 5/0/77; 5/0/79; 5/0/80; 5/0/81,"Buero,KNX,homebridge",climate; binary sensors for heiz/kuehl
+cover,Jalousie_EG_Buero_Fenster_Garten,Jalousie_EG_Buero_Fenster_Garten,4/0/79; 4/0/76; 4/0/77; 4/0/78,"Buero,KNX,homebridge",cover
+cover,Jalousie_EG_Buero_Fenster_Vorgarten,Jalousie_EG_Buero_Fenster_Vorgarten,4/0/83; 4/0/80; 4/0/81; 4/0/82,"Buero,KNX,homebridge",cover
+cover,Jalousie_EG_Wohnzimmer_Panorama,Jalousie_EG_Wohnzimmer_Panorama,4/0/59; 4/0/56; 4/0/57; 4/0/58,"Wohnzimmer,KNX,homebridge",cover
+cover,Jalousie_EG_Wohnzimmer_Terrasse,Jalousie_EG_Wohnzimmer_Terrasse,4/0/63; 4/0/60; 4/0/61; 4/0/62,"Wohnzimmer,KNX,homebridge",cover
+cover,Jalousie_EG_Kueche_Terrasse,Jalousie_EG_Kueche_Terrasse,4/0/67; 4/0/64; 4/0/65; 4/0/66,"Kueche,KNX,homebridge",cover
+cover,Jalousie_EG_Kueche_Seite,Jalousie_EG_Kueche_Seite,4/0/71; 4/0/68; 4/0/69; 4/0/70,"Kueche,KNX,homebridge",cover
+cover,Jalousie_EG_Kueche_Nebeneingang,Jalousie_EG_Kueche_Nebeneingang,4/0/75; 4/0/72; 4/0/73; 4/0/74,"Kueche,KNX,homebridge",cover
+cover,Jalousie_EG_Kueche_Sonnensegel,Jalousie_EG_Kueche_Sonnensegel,4/0/97; 4/0/94; 4/0/95; 4/0/96,"Kueche,KNX,homebridge",cover
+cover,Jalousie_OG_Schlafzimmer_Innen_Front,Jalousie_OG_Schlafzimmer_Innen_Front,4/2/3; 4/2/0; 4/2/1; 4/2/2,"Schlafzimmer,KNX,homebridge","cover; position_address aus Sicherheitsgründen weggelassen: ETS-Name zu 4/2/3 lautet 'OG Bad 3x innen KZ ', nicht JP. | position_state_address aus Sicherheitsgründen weggelassen: ETS-Name zu 4/2/2 lautet 'OG Bad 3x innen LZ', nicht R JP."
+cover,Jalousie_OG_Schlafzimmer_Innen_Panorama,Jalousie_OG_Schlafzimmer_Innen_Panorama,4/1/23; 4/1/20; 4/1/21; 4/1/22,"Schlafzimmer,KNX,homebridge",cover
+cover,Jalousie_OG_Schlafzimmer_Aussen_Front_1,Jalousie_OG_Schlafzimmer_Aussen_Front_1,4/0/43; 4/0/40; 4/0/41; 4/0/42,"Schlafzimmer_hidden,KNX",cover
+cover,Jalousie_OG_Schlafzimmer_Aussen_Front_2,Jalousie_OG_Schlafzimmer_Aussen_Front_2,4/0/39; 4/0/36; 4/0/37; 4/0/38,"Schlafzimmer_hidden,KNX",cover
+cover,Jalousie_OG_Schlafzimmer_Aussen_Front_3,Jalousie_OG_Schlafzimmer_Aussen_Front_3,4/0/47; 4/0/44; 4/0/45; 4/0/46,"Schlafzimmer_hidden,KNX",cover
+cover,Jalousie_OG_Schlafzimmer_Aussen_Panorama,Jalousie_OG_Schlafzimmer_Aussen_Panorama,4/0/51; 4/0/48; 4/0/49; 4/0/50,"Schlafzimmer,KNX,homebridge",cover
+cover,Jalousie_OG_Buero,Jalousie_OG_Buero,4/0/7; 4/0/4; 4/0/5; 4/0/6,"Buero_OG,KNX,homebridge",cover
+cover,Jalousie_OG_Ankleide,Jalousie_OG_Ankleide,4/0/3; 4/0/0; 4/0/1; 4/0/2,"Ankleide,KNX,homebridge",cover
+cover,Jalousie_OG_Flur,Jalousie_OG_Flur,4/0/31; 4/2/14; 4/2/15; 4/0/30,"OG_Flur,KNX,homebridge",cover
+cover,Jalousie_OG_Treppe,Jalousie_OG_Treppe,4/0/55; 4/0/52; 4/0/53; 4/0/54,"OG_Flur,KNX,homebridge",cover
+cover,Jalousie_OG_WC,Jalousie_OG_WC,4/0/11; 4/0/8; 4/0/9; 4/0/10,"OG_Bad,KNX,homebridge",cover
+cover,Jalousie_OG_Bad_Innen,Jalousie_OG_Bad_Innen,4/1/3; 4/2/2; 4/2/3; 4/1/2,"OG_Bad,KNX,homebridge",cover
+cover,Jalousie_OG_Bad_Aussen_Balkon,Jalousie_OG_Bad_Aussen_Balkon,4/0/15; 4/2/8; 4/2/9; 4/0/14,"OG_Bad,KNX,homebridge",cover
+cover,Jalousie_OG_Bad_Aussen_Panorama,Jalousie_OG_Bad_Aussen_Panorama,4/0/15; 4/0/12; 4/0/13; 4/0/14,"OG_Bad,KNX,homebridge",cover
+button/binary_sensor,Garagentuer,Garagentuer,2/3/14; 2/3/15,"Garage,homebridge",garage door command and state
+light,OG_Arbeiten,OG_Arbeiten,3/0/2; 3/0/0; 3/0/4; 3/0/3,"OG_Flur,KNX,homebridge",dimmable light
+light,OG_Flur,OG_Flur,3/0/8; 3/0/6; 3/0/10; 3/0/9,"OG_Flur,KNX,homebridge",dimmable light
+light,OG_Schlafzimmer,OG_Schlafzimmer,3/0/26; 3/0/24; 3/0/28; 3/0/27,"Schlafzimmer,KNX,homebridge",dimmable light
+light,OG_Bad.Decke,OG_Bad.Decke,3/0/32; 3/0/30; 3/0/34; 3/0/33,"OG_Bad,KNX,homebridge",dimmable light
+light,OG_Treppe,OG_Treppe,2/0/6,"KNX,OG_Flur,homebridge",simple on/off light
+light,OG_Umkleide,OG_Umkleide,2/0/4,"Ankleide,KNX,homebridge",simple on/off light
+light,OG_Waschen,OG_Waschen,2/0/2,"OG_Bad,KNX,homebridge",simple on/off light
+light,OG_WC,OG_WC,2/0/0,"KNX,OG_Bad,homebridge",simple on/off light
+review,Jal_OG_Schlafzimmer_Aussen_Front_All_lang,,4/2/7,"KNX,Schlafzimmer_hidden",unmapped jalousie command group
+light,EG_GaesteWC,EG_GaesteWC,2/0/12,"EG_Flur,KNX,homebridge",simple on/off light
+light,EG_Garderobe,EG_Garderobe,2/0/28,"EG_Flur,KNX,homebridge",simple on/off light
+light,Esszimmer.Decke_Kochen,Esszimmer.Decke_Kochen,3/0/38; 3/0/36; 3/0/40; 3/0/39,"Esszimmer,KNX,homebridge",dimmable light
+light,Buero.Bad,Buero.Bad,2/0/26; 2/0/27,"Buero,KNX,homebridge",simple on/off light
+review,KNX_Esszimmer.Tisch_knx,,6/4/10,,unmapped wireless function
+light,Wohnzimmer.Decke_Mitte,Wohnzimmer.Decke_Mitte,3/0/50; 3/0/48; 3/0/52; 3/0/51,"Wohnzimmer,KNX,homebridge",dimmable light
+light,Wohnzimmer.Decke_Seiten,Wohnzimmer.Decke_Seiten,3/0/56; 3/0/54; 3/0/58; 3/0/57,"Wohnzimmer,KNX,homebridge",dimmable light
+light,EG_UG_Treppe,EG_UG_Treppe,2/0/14,"EG_Flur,KNX,homebridge",simple on/off light
+light,Buero.Flur,Buero.Flur,2/0/24,"Buero,KNX,homebridge",simple on/off light
+light,EG.Galerie,EG.Galerie,2/0/18,"EG_Flur,KNX,homebridge",simple on/off light
+light,EG_Schuhschrank,EG_Schuhschrank,2/0/10,"EG_Flur,KNX,homebridge",simple on/off light
+light,Licht_Vorratsraum,Licht_Vorratsraum,2/0/20; 2/0/21,"EG_Vorratsraum,KNX,homebridge",simple on/off light
+light,EG_Flur.Decke,EG_Flur.Decke,3/0/14; 3/0/12; 3/0/16; 3/0/15,"EG_Flur,KNX,homebridge",dimmable light
+light,Buero.Decke,Buero.Decke,3/0/62; 3/0/60; 3/0/64; 3/0/63,"Buero,KNX,homebridge",dimmable light
+light,Sauna.Decke,Sauna.Decke,3/1/2; 3/1/0; 3/1/4; 3/1/3,"KG_Sauna,KNX,homebridge",dimmable light
+light,KG_Gast.Decke,KG_Gast.Decke,3/1/8; 3/1/6; 3/1/10; 3/1/9,"KG_Gast,KNX,homebridge",dimmable light
+light,KG_Sinja.Decke,KG_Sinja.Decke,3/1/14; 3/1/12; 3/1/16; 3/1/15,"KG_Sinja,KNX,homebridge",dimmable light
+light,KG_Silas.Decke,KG_Silas.Decke,3/1/20; 3/1/18; 3/1/22; 3/1/21,"KG_Silas,KNX,homebridge",dimmable light
+light,KG_Flur.Decke,KG_Flur.Decke,3/1/28; 3/1/26; 3/1/30; 3/1/29,"KG_Flur,KNX,homebridge",dimmable light
+light,KG_Kinderbad.Decke,KG_Kinderbad.Decke,2/1/6,"KNX,KG_Kinderbad,homebridge",simple on/off light
+light,KG_Waschkueche,KG_Waschkueche,2/1/4,"KNX,KG_Keller,homebridge",simple on/off light
+light,KG_Keller_hinten,KG_Keller_hinten,2/1/8,"KNX,KG_Keller,homebridge",simple on/off light
+light,KG_Keller_klein,KG_Keller_klein,2/1/12,"KNX,KG_Keller,homebridge",simple on/off light
+light,KG_Keller_vorn,KG_Keller_vorn,2/1/14,"KNX,KG_Keller,homebridge",simple on/off light
+light,KG_Keller_gesamt,KG_Keller_gesamt,2/2/0,"KNX,KG_Keller,homebridge",simple on/off light
+light,Eingangsbereich,Eingangsbereich,2/3/21,"KNX,Aussen,homebridge",simple on/off light
+sensor,Windwaechter_Messwert,Windwaechter_Messwert,1/1/1,Wetter,wind speed sensor

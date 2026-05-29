@@ -1,0 +1,5 @@
+floor_id,name,aliases,level
+obergeschoss,Obergeschoss,OG,1
+erdgeschoss,Erdgeschoss,EG,0
+kellergeschoss,Kellergeschoss,KG;Keller,-1
+aussenbereich,Außenbereich,Aussen;Außen;Draußen,

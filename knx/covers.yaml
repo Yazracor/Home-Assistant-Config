@@ -15,8 +15,6 @@
   position_state_address: "4/0/78"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_EG_Buero_Fenster_Vorgarten
 # FHEM room: Buero,KNX,homebridge
 # move_long_address: 4/0/80 -> 4A1 EG Gast links LZ | Jalousien > OG/EG/KG Aussen
@@ -30,8 +28,6 @@
   position_state_address: "4/0/82"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_EG_Wohnzimmer_Panorama
 # FHEM room: Wohnzimmer,KNX,homebridge
 # move_long_address: 4/0/56 -> 3A3 EG Wohnz. Panoramaf. LZ | Jalousien > OG/EG/KG Aussen
@@ -45,8 +41,6 @@
   position_state_address: "4/0/58"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_EG_Wohnzimmer_Terrasse
 # FHEM room: Wohnzimmer,KNX,homebridge
 # move_long_address: 4/0/60 -> 3A4 EG Wohnz. Terrasse LZ | Jalousien > OG/EG/KG Aussen
@@ -60,8 +54,6 @@
   position_state_address: "4/0/62"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_EG_Kueche_Terrasse
 # FHEM room: Kueche,KNX,homebridge
 # move_long_address: 4/0/64 -> 3A5 EG Küche Terrasse LZ | Jalousien > OG/EG/KG Aussen
@@ -75,8 +67,6 @@
   position_state_address: "4/0/66"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_EG_Kueche_Seite
 # FHEM room: Kueche,KNX,homebridge
 # move_long_address: 4/0/68 -> 3A6 EG Küche Seite LZ | Jalousien > OG/EG/KG Aussen
@@ -90,8 +80,6 @@
   position_state_address: "4/0/70"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_EG_Kueche_Nebeneingang
 # FHEM room: Kueche,KNX,homebridge
 # move_long_address: 4/0/72 -> 3A7 EG Küche Nebeneingang LZ | Jalousien > OG/EG/KG Aussen
@@ -105,8 +93,6 @@
   position_state_address: "4/0/74"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_EG_Kueche_Sonnensegel
 # FHEM room: Kueche,KNX,homebridge
 # move_long_address: 4/0/94 -> 5A2 Sonnensegel LZ | Jalousien > OG/EG/KG Aussen
@@ -120,8 +106,6 @@
   position_state_address: "4/0/96"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_OG_Schlafzimmer_Innen_Front
 # FHEM room: Schlafzimmer,KNX,homebridge
 # move_long_address: 4/2/0 -> OG Schlafz. 3x Front innen LZ | Jalousien > Gruppen
@@ -135,8 +119,6 @@
   move_short_address: "4/2/1"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_OG_Schlafzimmer_Innen_Panorama
 # FHEM room: Schlafzimmer,KNX,homebridge
 # move_long_address: 4/1/20 -> 5A1 OG Schlafz. Panorama LZ | Jalousien > OG Innen
@@ -150,8 +132,6 @@
   position_state_address: "4/1/22"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_OG_Schlafzimmer_Aussen_Front_1
 # FHEM room: Schlafzimmer_hidden,KNX
 # move_long_address: 4/0/40 -> 2A3 OG Schlafz. mitte LZ | Jalousien > OG/EG/KG Aussen
@@ -165,8 +145,6 @@
   position_state_address: "4/0/42"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_OG_Schlafzimmer_Aussen_Front_2
 # FHEM room: Schlafzimmer_hidden,KNX
 # move_long_address: 4/0/36 -> 2A2 OG Schlafz. rechts LZ | Jalousien > OG/EG/KG Aussen
@@ -180,8 +158,6 @@
   position_state_address: "4/0/38"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_OG_Schlafzimmer_Aussen_Front_3
 # FHEM room: Schlafzimmer_hidden,KNX
 # move_long_address: 4/0/44 -> 2A4 OG Schlafz. links LZ | Jalousien > OG/EG/KG Aussen
@@ -195,8 +171,6 @@
   position_state_address: "4/0/46"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_OG_Schlafzimmer_Aussen_Panorama
 # FHEM room: Schlafzimmer,KNX,homebridge
 # move_long_address: 4/0/48 -> 3A1 OG Schlafz. Panoramaf. LZ | Jalousien > OG/EG/KG Aussen
@@ -210,8 +184,6 @@
   position_state_address: "4/0/50"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_OG_Buero
 # FHEM room: Buero_OG,KNX,homebridge
 # move_long_address: 4/0/4 -> A2 OG Arbeiten LZ | Jalousien > OG/EG/KG Aussen
@@ -225,8 +197,6 @@
   position_state_address: "4/0/6"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_OG_Ankleide
 # FHEM room: Ankleide,KNX,homebridge
 # move_long_address: 4/0/0 -> A1 OG Ankleide LZ | Jalousien > OG/EG/KG Aussen
@@ -240,8 +210,6 @@
   position_state_address: "4/0/2"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_OG_Flur
 # FHEM room: OG_Flur,KNX,homebridge
 # move_long_address: 4/2/14 -> OG Tür Treppe+Flur rechts LZ | Jalousien > Gruppen
@@ -255,8 +223,6 @@
   position_state_address: "4/0/30"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_OG_Treppe
 # FHEM room: OG_Flur,KNX,homebridge
 # move_long_address: 4/0/52 -> 3A2 OG über Treppe LZ | Jalousien > OG/EG/KG Aussen
@@ -270,8 +236,6 @@
   position_state_address: "4/0/54"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_OG_WC
 # FHEM room: OG_Bad,KNX,homebridge
 # move_long_address: 4/0/8 -> A3 OG WC LZ | Jalousien > OG/EG/KG Aussen
@@ -285,8 +249,6 @@
   position_state_address: "4/0/10"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_OG_Bad_Innen
 # FHEM room: OG_Bad,KNX,homebridge
 # move_long_address: 4/2/2 -> OG Bad 3x innen LZ | Jalousien > Gruppen
@@ -300,8 +262,6 @@
   position_state_address: "4/1/2"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_OG_Bad_Aussen_Balkon
 # FHEM room: OG_Bad,KNX,homebridge
 # move_long_address: 4/2/8 -> OG Bad 5x aussen LZ | Jalousien > Gruppen
@@ -315,8 +275,6 @@
   position_state_address: "4/0/14"
   travelling_time_down: 27
   travelling_time_up: 27
-  
-
 # FHEM: Jalousie_OG_Bad_Aussen_Panorama
 # FHEM room: OG_Bad,KNX,homebridge
 # move_long_address: 4/0/12 -> A4 OG Bad Panoramaf. LZ | Jalousien > OG/EG/KG Aussen
@@ -330,4 +288,3 @@
   position_state_address: "4/0/14"
   travelling_time_down: 27
   travelling_time_up: 27
-  

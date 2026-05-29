@@ -1,0 +1,12 @@
+# Optionale Number-Entität für EG_Buero_Soll.
+# NICHT automatisch eingebunden, weil TH_EG_Buero dieselbe Sollwert-Adresse verwendet.
+# Bei Bedarf nach knx/numbers.yaml kopieren und in knx.yaml als `number: !include knx/numbers.yaml` einbinden.
+
+- name: "EG_Buero_Soll"
+  address: "5/0/81"
+  state_address: "5/0/81"
+  type: temperature
+  min: 7.0
+  max: 32.0
+  step: 0.1
+  mode: slider

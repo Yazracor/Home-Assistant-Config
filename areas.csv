@@ -1,0 +1,30 @@
+area_id,name,floor_id,aliases
+arbeitszimmer,Arbeitszimmer,erdgeschoss,Buero;Büro EG;EG Büro;Gastzimmer;EG Gast
+gaestebad,Gästebad,erdgeschoss,Buero.Bad;EG Gästebad
+flur_eg,Flur EG,erdgeschoss,EG_Flur;Diele;Galerie
+treppe_eg_kg,Treppe EG/KG,erdgeschoss,EG_UG_Treppe;EG/KG Treppe
+gaeste_wc,Gäste-WC,erdgeschoss,EG_GaesteWC;EG WC
+garderobe,Garderobe,erdgeschoss,EG_Garderobe;Schuhschrank
+esszimmer,Esszimmer,erdgeschoss,Esszimmer
+kueche,Küche,erdgeschoss,Kueche;Kochen;EG Küche
+wohnzimmer,Wohnzimmer,erdgeschoss,Wohnz;Wohnzimmer
+vorratsraum,Vorratsraum,erdgeschoss,EG_Vorratsraum;Vorrat
+buero_og,Büro OG,obergeschoss,Buero_OG;OG Arbeiten;OG_Arbeiten
+flur_og,Flur OG,obergeschoss,OG_Flur
+treppe_og,Treppe OG,obergeschoss,OG_Treppe
+schlafzimmer,Schlafzimmer,obergeschoss,Schlafzimmer_hidden;OG Schlafzimmer
+ankleide,Ankleide,obergeschoss,Ankleide;Umkleide;OG_Umkleide
+bad_og,Bad OG,obergeschoss,OG_Bad;OG Bad;Waschen
+wc_og,WC OG,obergeschoss,OG_WC;OG WC
+sauna,Sauna,kellergeschoss,KG_Sauna
+gast_hobby,Gast/Hobby,kellergeschoss,KG_Gast;Gast;Hobby
+zimmer_sinja,Zimmer Sinja,kellergeschoss,KG_Sinja;Kind 1
+zimmer_silas,Zimmer Silas,kellergeschoss,KG_Silas;Kind 2
+flur_kg,Flur KG,kellergeschoss,KG_Flur
+kinderbad,Kinderbad,kellergeschoss,KG_Kinderbad;Bad Kinder
+waschkueche,Waschküche,kellergeschoss,KG_Waschkueche;Waschküche
+keller,Keller,kellergeschoss,KG_Keller;UV-Raum;Keller klein;Keller vorn;Keller hinten
+terrasse,Terrasse,aussenbereich,Sonnensegel;Terrasse
+garage,Garage,aussenbereich,Garagentuer;Garagentor
+eingangsbereich,Eingangsbereich,aussenbereich,Eingang;Vorgarten
+wetterstation,Wetterstation,aussenbereich,Wetter;Windwächter;Windwaechter
