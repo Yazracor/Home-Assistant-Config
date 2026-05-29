@@ -5,6 +5,7 @@ repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 log_file="$repo_root/.git/hooks/post-merge.log"
 
 {
+  ha core stop
   echo "$(date -u '+%Y-%m-%dT%H:%M:%SZ') post-merge hook started in $repo_root"
 
   if [ -f "$repo_root/tools/apply_knx_area_assignments.py" ]; then
@@ -16,4 +17,5 @@ log_file="$repo_root/.git/hooks/post-merge.log"
   fi
 
   echo "$(date -u '+%Y-%m-%dT%H:%M:%SZ') post-merge hook finished"
+  ha core start
 } >> "$log_file" 2>&1
