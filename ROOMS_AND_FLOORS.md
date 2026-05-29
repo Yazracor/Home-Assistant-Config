@@ -68,6 +68,20 @@ python3 /config/tools/apply_knx_area_assignments.py --config-dir /config
 ha core start
 ```
 
+Nach einem `git pull`, der bestehende oder neue YAML-Entities ändert, startet
+der Git-Hook den zweiphasigen Ablauf automatisch detached im Hintergrund. Bei
+Bedarf kann er manuell erneut gestartet werden:
+
+```bash
+/config/devscripts/apply-pending-knx-area-assignments.sh
+```
+
+Der Pull-Hook markiert dafür `/config/.pending_knx_area_assignment` und startet
+das Script nach kurzer Verzögerung. Das zweiphasige Script stoppt Home Assistant
+Core, patcht die vorhandene Registry, startet Core zum Einlesen der
+YAML-Änderungen, stoppt Core erneut, patcht die aktualisierte Registry ein
+zweites Mal und startet Core wieder.
+
 Wenn das Skript aus einem anderen Verzeichnis gestartet wird:
 
 ```bash
