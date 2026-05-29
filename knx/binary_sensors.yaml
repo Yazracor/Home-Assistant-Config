@@ -2,6 +2,12 @@
 # Quelle: FHEM-KNX-Konfiguration; Namen entsprechen den FHEM-Device-Namen.
 # Datei: knx/binary_sensors.yaml
 
+# ETS: Niederschlag
+# state_address: 1/1/12 -> Niederschlag | Zentralfunktionen > Wetterstation
+- name: "Wetterstation Niederschlag"
+  state_address: "1/1/12"
+  device_class: "moisture"
+
 # ETS: OG Schlafz. Meldung Heizen
 # HINWEIS: Gira Tastsensor 3 Plus Meldung Heizenergie: 1 = Energie-Anforderung, 0 = keine Energie-Anforderung.
 - name: "Anforderung Heizen"
