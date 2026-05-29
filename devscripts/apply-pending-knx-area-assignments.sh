@@ -7,6 +7,9 @@ export PATH
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 marker_file="$repo_root/.pending_knx_area_assignment"
 lock_dir="$repo_root/.pending_knx_area_assignment.lock"
+supervisor_endpoint="${SUPERVISOR_ENDPOINT:-http://supervisor}"
+supervisor_token="${SUPERVISOR_TOKEN:-${HASSIO_TOKEN:-}}"
+core_control=""
 force=0
 ha_stopped=0
 
@@ -26,18 +29,13 @@ fi
 
 cleanup() {
   if [ "$ha_stopped" -eq 1 ]; then
-    ha core start
+    core_action start
     ha_stopped=0
   fi
   rmdir "$lock_dir" 2>/dev/null || true
 }
 
 trap cleanup EXIT
-
-if ! command -v ha >/dev/null 2>&1; then
-  echo "ha command not found; run this on the Home Assistant host or add ha to PATH." >&2
-  exit 1
-fi
 
 python_bin="$(command -v python3 || command -v python || true)"
 if [ -z "$python_bin" ]; then
@@ -50,13 +48,61 @@ if [ ! -f "$repo_root/tools/apply_knx_area_assignments.py" ]; then
   exit 1
 fi
 
+if command -v ha >/dev/null 2>&1; then
+  core_control="ha"
+elif [ -n "$supervisor_token" ]; then
+  core_control="supervisor_api"
+else
+  echo "Neither ha nor SUPERVISOR_TOKEN/HASSIO_TOKEN is available; cannot control Home Assistant Core." >&2
+  exit 1
+fi
+
+supervisor_api() {
+  action="$1"
+  "$python_bin" - "$supervisor_endpoint/core/$action" "$supervisor_token" <<'PY'
+import sys
+import urllib.error
+import urllib.request
+
+url = sys.argv[1]
+token = sys.argv[2]
+request = urllib.request.Request(
+    url,
+    method="POST",
+    headers={"Authorization": f"Bearer {token}"},
+)
+
+try:
+    with urllib.request.urlopen(request, timeout=600) as response:
+        body = response.read().decode("utf-8", "replace").strip()
+        if body:
+            print(body)
+except urllib.error.HTTPError as err:
+    body = err.read().decode("utf-8", "replace").strip()
+    print(f"Supervisor API error {err.code} for {url}: {body}", file=sys.stderr)
+    raise SystemExit(1)
+except urllib.error.URLError as err:
+    print(f"Supervisor API request failed for {url}: {err}", file=sys.stderr)
+    raise SystemExit(1)
+PY
+}
+
+core_action() {
+  action="$1"
+  if [ "$core_control" = "ha" ]; then
+    ha core "$action"
+  else
+    supervisor_api "$action"
+  fi
+}
+
 stop_ha() {
-  ha core stop
+  core_action stop
   ha_stopped=1
 }
 
 start_ha() {
-  ha core start
+  core_action start
   ha_stopped=0
 }
 

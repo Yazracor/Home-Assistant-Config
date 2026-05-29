@@ -58,7 +58,9 @@ geschriebene Entities passenden Räumen zugeordnet.
 
 Der Hintergrundlauf schreibt nach `/config/.knx-area-assignment.log`. Die
 Startverzögerung nach dem Pull kann mit `KNX_AREA_ASSIGNMENT_DELAY_SECONDS`
-angepasst werden.
+angepasst werden. Zum Stoppen und Starten von Home Assistant Core nutzt das
+Script zuerst `ha`; wenn das Kommando in der Hook-Umgebung nicht verfügbar ist,
+fällt es auf die Supervisor-API mit `SUPERVISOR_TOKEN` zurück.
 
 Der Installer setzt außerdem `git config pull.rebase false`, damit lokale
 HA-Snapshot-Commits und Remote-Änderungen per Merge zusammengeführt werden.
