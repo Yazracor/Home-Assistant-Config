@@ -8,7 +8,9 @@ hook_file="$hooks_dir/post-merge"
 git config pull.rebase false
 cat > "$hook_file" <<EOF
 #!/bin/sh
-exec "$repo_root/devscripts/post-merge" "\$@"
+set -eu
+repo_root="\$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+exec "\$repo_root/devscripts/post-merge" "\$@"
 EOF
 chmod 755 "$hook_file"
 
