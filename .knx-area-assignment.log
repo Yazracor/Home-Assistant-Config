@@ -1,0 +1,39 @@
+Stopping Home Assistant Core for first registry patch...
+Error: Another job is running for job group home_assistant_core
+ha command not found; run this on the Home Assistant host or add ha to PATH.
+2026-05-29T22:40:37Z runner scheduled after 10s: /homeassistant/devscripts/apply-pending-knx-area-assignments.sh
+2026-05-29T22:40:47Z runner starting: /homeassistant/devscripts/apply-pending-knx-area-assignments.sh
+Stopping Home Assistant Core for first registry patch...
+Command completed successfully.
+Waiting 15s for Home Assistant Core to stop...
+Floors: erstellt=0, aktualisiert=0
+Areas: erstellt=0, aktualisiert=0
+Obsolete Areas: entfernt=0, Entity-Zuordnungen geändert=0, Device-Zuordnungen geändert=0
+Entities: Area geändert=0, Entity-ID geändert=0, Sichtbarkeit geändert=0, nicht gefunden=0
+Devices: Area geändert=0
+Starting Home Assistant Core so YAML entity changes are written to the registry...
+Command completed successfully.
+Waiting 120s for Home Assistant to load entities...
+Stopping Home Assistant Core for second registry patch...
+Command completed successfully.
+Waiting 15s for Home Assistant Core to stop...
+Floors: erstellt=0, aktualisiert=0
+Areas: erstellt=0, aktualisiert=0
+Obsolete Areas: entfernt=0, Entity-Zuordnungen geändert=0, Device-Zuordnungen geändert=0
+Entities: Area geändert=0, Entity-ID geändert=0, Sichtbarkeit geändert=0, nicht gefunden=0
+Devices: Area geändert=0
+Starting Home Assistant Core...
+Command completed successfully.
+KNX area assignments applied.
+2026-05-29T22:45:59Z runner scheduled after 10s: /config/devscripts/apply-pending-knx-area-assignments.sh
+2026-05-29T22:46:09Z runner starting: /config/devscripts/apply-pending-knx-area-assignments.sh
+ha command not found; run this on the Home Assistant host or add ha to PATH.
+2026-05-29T22:50:22Z runner scheduled after 10s: /config/devscripts/apply-pending-knx-area-assignments.sh
+2026-05-29T22:50:32Z runner starting: /config/devscripts/apply-pending-knx-area-assignments.sh
+python3/python not found
+2026-05-29T22:52:38Z runner scheduled after 10s: /config/devscripts/apply-pending-knx-area-assignments.sh
+2026-05-29T22:52:48Z runner starting: /config/devscripts/apply-pending-knx-area-assignments.sh
+python not found in PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/bin:/config:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/bin:/config:/usr/libexec/git-core:/usr/libexec/git-core:/command:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+2026-05-29T22:55:47Z runner scheduled after 10s: /config/devscripts/apply-pending-knx-area-assignments.sh
+2026-05-29T22:55:57Z runner starting: /config/devscripts/apply-pending-knx-area-assignments.sh
+python not found; set PYTHON_BIN to a Python executable. PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/bin:/config:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/bin:/config:/usr/libexec/git-core:/usr/libexec/git-core:/command:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
