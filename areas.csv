@@ -24,7 +24,11 @@ flur_kg,Flur KG,kellergeschoss,KG_Flur
 kinderbad,Kinderbad,kellergeschoss,KG_Kinderbad;Bad Kinder
 waschkueche,Waschküche,kellergeschoss,KG_Waschkueche;Waschküche
 keller,Keller,kellergeschoss,KG_Keller;UV-Raum;Keller klein;Keller vorn;Keller hinten
-balkon,Balkon,aussenbereich,Sonnensegel;Terrasse;Balkon
-garage,Garage,aussenbereich,Garagentuer;Garagentor
-eingangsbereich,Eingangsbereich,aussenbereich,Eingang;Vorgarten
+balkon,Balkon,aussenbereich,Sonnensegel;Balkon;Terrasse EG
+balkon_obergeschoss,Balkon Obergeschoss,aussenbereich,Aussenbeleuchtung OG;Balkon Obergeschoss
+terrasse,Terrasse,aussenbereich,Terrasse;Terrasse KG
+garage,Garage,aussenbereich,Garagentuer;Garagentor;Garage Innen
+eingangsbereich,Eingangsbereich,aussenbereich,Eingang;Vorgarten;Eingang Vordach;Treppe und Garage;Hof Bega Baumstrahler
+teich,Teich,aussenbereich,Teich;Licht Teich;Unterwasserstrahler
+garten,Garten,aussenbereich,Garten;Aussenleuchten links;Aussenleuchten rechts;Wegebeleuchtung nach oben;Wegebeleuchtung nach unten
 wetterstation,Wetterstation,aussenbereich,Wetter;Windwächter;Windwaechter

@@ -41,9 +41,13 @@ Wichtig: Die KNX-YAML selbst enthält keine Raum-/Stockwerkzuordnung. Home Assis
 | Kellergeschoss | Kinderbad | `kinderbad` | 1 | KG_Kinderbad;Bad Kinder |
 | Kellergeschoss | Waschküche | `waschkueche` | 1 | KG_Waschkueche;Waschküche |
 | Kellergeschoss | Keller | `keller` | 4 | KG_Keller;UV-Raum;Keller klein;Keller vorn;Keller hinten |
-| Außenbereich | Balkon | `balkon` | 1 | Sonnensegel;Terrasse;Balkon |
-| Außenbereich | Garage | `garage` | 2 | Garagentuer;Garagentor |
-| Außenbereich | Eingangsbereich | `eingangsbereich` | 1 | Eingang;Vorgarten |
+| Außenbereich | Balkon | `balkon` | 1 | Sonnensegel;Balkon;Terrasse EG |
+| Außenbereich | Balkon Obergeschoss | `balkon_obergeschoss` | 1 | Aussenbeleuchtung OG;Balkon Obergeschoss |
+| Außenbereich | Terrasse | `terrasse` | 1 | Terrasse;Terrasse KG |
+| Außenbereich | Garage | `garage` | 2 | Garagentuer;Garagentor;Garage Innen |
+| Außenbereich | Eingangsbereich | `eingangsbereich` | 1 | Eingang;Vorgarten;Eingang Vordach;Treppe und Garage;Hof Bega Baumstrahler |
+| Außenbereich | Teich | `teich` | 2 | Teich;Licht Teich;Unterwasserstrahler |
+| Außenbereich | Garten | `garten` | 3 | Garten;Aussenleuchten links;Aussenleuchten rechts;Wegebeleuchtung nach oben;Wegebeleuchtung nach unten |
 | Außenbereich | Wetterstation | `wetterstation` | 1 | Wetter;Windwächter;Windwaechter |
 
 ## Bewusst getroffene Zuordnungen

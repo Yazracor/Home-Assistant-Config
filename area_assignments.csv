@@ -32,6 +32,19 @@ light,Keller klein,light.kg_keller_klein,2/1/12,keller,Keller,kellergeschoss,Kel
 light,Keller vorn,light.kg_keller_vorn,2/1/14,keller,Keller,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.keller_vorn;light.keller_kg_vorn
 light,Keller alle,light.kg_keller_alle,2/2/0,keller,Keller,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.keller_alle;light.keller_kg_alle
 light,Eingangsbereich,light.aussenbereich_eingangsbereich,2/3/21,eingangsbereich,Eingangsbereich,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.eingangsbereich;light.eingangsbereich_aussenbereich
+light,Eingang Vordach,light.aussenbereich_eingangsbereich_eingang_vordach,2/0/16,eingangsbereich,Eingangsbereich,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.eingang_vordach
+light,Licht,light.aussenbereich_balkon_licht,2/0/22,balkon,Balkon,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.terrasse_eg;light.balkon_eg
+light,Aussenleuchten rechts,light.aussenbereich_garten_aussenleuchten_rechts,2/0/30,garten,Garten,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.aussenleuchten_rechte_seite
+light,Balkon Balken,light.aussenbereich_balkon_balken,2/0/32,balkon,Balkon,aussenbereich,Außenbereich,KNX/ETS group address name,
+light,Licht,light.aussenbereich_balkon_obergeschoss_licht,2/0/34,balkon_obergeschoss,Balkon Obergeschoss,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.aussenbeleuchtung_og;light.aussenbereich_balkon_og_licht
+light,Licht,light.aussenbereich_terrasse_licht,2/1/0,terrasse,Terrasse,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.terrasse_kg;light.aussenbereich_terrasse_kg
+light,Licht,light.aussenbereich_garage_licht,2/3/0,garage,Garage,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.garage_innen
+light,Treppe und Garage,light.aussenbereich_eingangsbereich_treppe_und_garage,2/3/2,eingangsbereich,Eingangsbereich,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.treppe_und_garage
+light,Hof Bega Baumstrahler,light.aussenbereich_eingangsbereich_hof_bega_baumstrahler,2/3/4,eingangsbereich,Eingangsbereich,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.hof_bega_baumstrahler
+light,Licht Teich,light.aussenbereich_teich_licht,2/3/25,teich,Teich,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.strahler_mauer_dusche
+light,Unterwasserstrahler,light.aussenbereich_teich_unterwasserstrahler,2/3/27,teich,Teich,aussenbereich,Außenbereich,KNX/ETS group address name,
+light,Wegebeleuchtung nach oben,light.aussenbereich_garten_wegebeleuchtung_nach_oben,2/3/29,garten,Garten,aussenbereich,Außenbereich,KNX/ETS group address name,
+light,Aussenleuchten links,light.aussenbereich_garten_aussenleuchten_links,2/3/31,garten,Garten,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.wegebeleuchtung_nach_unten
 cover,Arbeitszimmer Garten,cover.eg_arbeitszimmer_garten,4/0/76_4/0/79,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,"Fenster des Arbeitszimmers, nicht Außenbereich. legacy_entity_ids=cover.arbeitszimmer_garten;cover.arbeitszimmer_eg_garten"
 cover,Arbeitszimmer Vorgarten,cover.eg_arbeitszimmer_vorgarten,4/0/80_4/0/83,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,"Fenster des Arbeitszimmers, nicht Außenbereich. legacy_entity_ids=cover.arbeitszimmer_vorgarten;cover.arbeitszimmer_eg_vorgarten"
 cover,Wohnzimmer Panorama,cover.eg_wohnzimmer_panorama,4/0/56_4/0/59,wohnzimmer,Wohnzimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=cover.wohnzimmer_panorama;cover.wohnzimmer_eg_panorama
