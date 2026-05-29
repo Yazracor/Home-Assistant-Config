@@ -1,0 +1,27 @@
+template:
+  - sensor:
+      - name: "Wetterstation"
+        unique_id: knx_wetterstation_summary
+        device_class: temperature
+        state_class: measurement
+        unit_of_measurement: "°C"
+        icon: mdi:weather-partly-cloudy
+
+        availability: >
+          {{ has_value('sensor.aussenbereich_wetterstation_temperatur') }}
+
+        state: >
+          {{ states('sensor.aussenbereich_wetterstation_temperatur') }}
+
+        attributes:
+          helligkeit_sued: >
+            {{ states('sensor.aussenbereich_wetterstation_helligkeit') }}
+          helligkeit_sued_unit: "lx"
+          daemmerung: >
+            {{ states('sensor.aussenbereich_wetterstation_daemmerung') }}
+          daemmerung_unit: "lx"
+          wind: >
+            {{ states('sensor.aussenbereich_wetterstation_wind') }}
+          wind_unit: "m/s"
+          niederschlag: >
+            {{ states('binary_sensor.aussenbereich_wetterstation_niederschlag') }}
