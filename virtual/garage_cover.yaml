@@ -1,45 +1,35 @@
-# garage_cover.yaml
-#
-# Virtuelles Garagentor-Cover für ein KNX-Tor mit:
-# - einem Impuls-Schalter (öffnen / stoppen / schließen)
-# - einer Status-Rückmeldung (offen / geschlossen)
-#
-# Entity-Namen ggf. anpassen:
-#   switch.garagentor
-#   binary_sensor.garagentor_status
-
 script:
-  garagentor_impuls:
-    alias: Garagentor Impuls
+  garagentuer_impuls:
+    alias: Garagentür Impuls
     sequence:
       - action: switch.turn_on
         target:
-          entity_id: switch.garagentor
+          entity_id: switch.garagentuer
       - delay: "00:00:01"
       - action: switch.turn_off
         target:
-          entity_id: switch.garagentor
+          entity_id: switch.garagentuer
 
 template:
   - cover:
-      - name: "Garagentor"
-        unique_id: knx_garagentor_virtual_cover
+      - name: "Garagentür"
+        unique_id: knx_garagentuer_virtual_cover
         device_class: garage
 
         state: >
-          {% if is_state('binary_sensor.garagentor_status', 'on') %}
+          {% if is_state('binary_sensor.garagentuer_currentdoorstate', 'on') %}
             open
-          {% elif is_state('binary_sensor.garagentor_status', 'off') %}
+          {% elif is_state('binary_sensor.garagentuer_currentdoorstate', 'off') %}
             closed
           {% else %}
             unknown
           {% endif %}
 
         open_cover:
-          - action: script.garagentor_impuls
+          - action: script.garagentuer_impuls
 
         close_cover:
-          - action: script.garagentor_impuls
+          - action: script.garagentuer_impuls
 
         stop_cover:
-          - action: script.garagentor_impuls
+          - action: script.garagentuer_impuls
