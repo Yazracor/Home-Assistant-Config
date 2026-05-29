@@ -38,7 +38,7 @@ light,Aussenleuchten rechts,light.aussenbereich_garten_aussenleuchten_rechts,2/0
 light,Balkon Balken,light.aussenbereich_balkon_balken,2/0/32,balkon,Balkon,aussenbereich,Außenbereich,KNX/ETS group address name,
 light,Licht,light.aussenbereich_balkon_obergeschoss_licht,2/0/34,balkon_obergeschoss,Balkon Obergeschoss,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.aussenbeleuchtung_og;light.aussenbereich_balkon_og_licht
 light,Licht,light.aussenbereich_terrasse_licht,2/1/0,terrasse,Terrasse,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.terrasse_kg;light.aussenbereich_terrasse_kg
-light,Licht,light.aussenbereich_garage_licht,2/3/0,garage,Garage,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.garage_innen
+light,Licht,light.aussenbereich_garage_licht,2/3/10,garage,Garage,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.garage_innen
 light,Treppe und Garage,light.aussenbereich_eingangsbereich_treppe_und_garage,2/3/2,eingangsbereich,Eingangsbereich,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.treppe_und_garage
 light,Hof Bega Baumstrahler,light.aussenbereich_eingangsbereich_hof_bega_baumstrahler,2/3/4,eingangsbereich,Eingangsbereich,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.hof_bega_baumstrahler
 light,Licht Teich,light.aussenbereich_teich_licht,2/3/25,teich,Teich,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.strahler_mauer_dusche
