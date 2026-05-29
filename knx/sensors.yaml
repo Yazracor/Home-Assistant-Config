@@ -7,9 +7,3 @@
 - name: "Wetterstation Dämmerung"
   state_address: "1/1/2"
   type: "illuminance"
-
-# ETS: Messwert Temperatur
-# state_address: 1/1/4 -> Messwert Temperatur | Zentralfunktionen > Wetterstation
-- name: "Wetterstation Temperatur"
-  state_address: "1/1/4"
-  type: "temperature"
