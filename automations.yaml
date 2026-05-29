@@ -1,1 +1,7 @@
-[]
+automation:
+  - alias: "Git snapshot after UI changes"
+    trigger:
+      - platform: time_pattern
+        minutes: "/30"
+    action:
+      - service: shell_command.git_snapshot
