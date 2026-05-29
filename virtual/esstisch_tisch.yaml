@@ -17,8 +17,17 @@ template:
   - switch:
       - name: "Tisch"
         unique_id: knx_esstisch_tisch_virtual_switch
-        state: "{{ false }}"
+        state: "{{ is_state('script.esstisch_tisch_impuls', 'on') }}"
         icon: "mdi:table-furniture"
 
         turn_on:
           - action: script.esstisch_tisch_impuls
+
+        turn_off:
+          - action: script.turn_off
+            target:
+              entity_id: script.esstisch_tisch_impuls
+          - action: knx.send
+            data:
+              address: "6/4/10"
+              payload: 0
