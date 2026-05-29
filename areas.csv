@@ -9,6 +9,7 @@ esszimmer,Esszimmer,erdgeschoss,Esszimmer
 kueche,Küche,erdgeschoss,Kueche;Kochen;EG Küche
 wohnzimmer,Wohnzimmer,erdgeschoss,Wohnz;Wohnzimmer
 vorratsraum,Vorratsraum,erdgeschoss,EG_Vorratsraum;Vorrat
+technik,Technik,erdgeschoss,EG Technik;Technik
 buero_og,Büro OG,obergeschoss,Buero_OG;OG Arbeiten;OG_Arbeiten
 flur_og,Flur OG,obergeschoss,OG_Flur
 treppe_og,Treppe OG,obergeschoss,OG_Treppe

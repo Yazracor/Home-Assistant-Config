@@ -2,19 +2,152 @@
 # Quelle: FHEM-KNX-Konfiguration; Namen entsprechen den FHEM-Device-Namen.
 # Datei: knx/binary_sensors.yaml
 
-# FHEM: TH_EG_Buero
-# FHEM room: Buero,KNX,homebridge
-# state_address: 5/0/77 -> EG Gast Meldung Heizen | Heizung > EG / OG
+# ETS: OG Schlafz. Meldung Heizen
 # HINWEIS: Gira Tastsensor 3 Plus Meldung Heizenergie: 1 = Energie-Anforderung, 0 = keine Energie-Anforderung.
+- name: "Anforderung Heizen"
+  state_address: "5/0/2"
+
+# ETS: OG Schlafz. Meldung Kühlen
+- name: "Anforderung Kühlen"
+  state_address: "5/0/5"
+
+# ETS: OG Bad Meldung Heizen
+- name: "Anforderung Heizen"
+  state_address: "5/0/17"
+
+# ETS: OG Bad Meldung Kühlen
+- name: "Anforderung Kühlen"
+  state_address: "5/0/20"
+
+# ETS: OG Arbeiten/Flur Meldung Heizen
+- name: "Anforderung Heizen"
+  state_address: "5/0/32"
+
+# ETS: OG Arbeiten/Flur Meldung Kühlen
+- name: "Anforderung Kühlen"
+  state_address: "5/0/35"
+
+# ETS: OG Ankleide Meldung Heizen
+- name: "Anforderung Heizen"
+  state_address: "5/0/47"
+
+# ETS: OG Ankleide Meldung Kühlen
+- name: "Anforderung Kühlen"
+  state_address: "5/0/50"
+
+# ETS: EG Diele Meldung Heizen
+- name: "Anforderung Heizen"
+  state_address: "5/0/62"
+
+# ETS: EG Diele Meldung Kühlen
+- name: "Anforderung Kühlen"
+  state_address: "5/0/65"
+
+# FHEM: TH_EG_Buero
+# ETS: EG Gast Meldung Heizen
 - name: "Anforderung Heizen"
   state_address: "5/0/77"
 
 # FHEM: TH_EG_Buero
-# FHEM room: Buero,KNX,homebridge
-# state_address: 5/0/80 -> EG Gast Meldung Kühlen | Heizung > EG / OG
-# HINWEIS: Gira Tastsensor 3 Plus Meldung Kühlenergie: 1 = Energie-Anforderung, 0 = keine Energie-Anforderung.
+# ETS: EG Gast Meldung Kühlen
 - name: "Anforderung Kühlen"
   state_address: "5/0/80"
+
+# ETS: EG Flur Gast Meldung Heizen
+- name: "Anforderung Heizen"
+  state_address: "5/0/92"
+
+# ETS: EG Flur Gast Meldung Kühlen
+- name: "Anforderung Kühlen"
+  state_address: "5/0/95"
+
+# ETS: EG Bad Gast Meldung Heizen
+- name: "Anforderung Heizen"
+  state_address: "5/0/107"
+
+# ETS: EG Bad Gast Meldung Kühlen
+- name: "Anforderung Kühlen"
+  state_address: "5/0/110"
+
+# ETS: EG WC Meldung Heizen
+- name: "Anforderung Heizen"
+  state_address: "5/0/122"
+
+# ETS: EG WC Meldung Kühlen
+- name: "Anforderung Kühlen"
+  state_address: "5/0/125"
+
+# ETS: EG Gaderobe Meldung Heizen
+- name: "Anforderung Heizen"
+  state_address: "5/0/137"
+
+# ETS: EG Gaderobe Meldung Kühlen
+- name: "Anforderung Kühlen"
+  state_address: "5/0/140"
+
+# ETS: EG Technik Meldung Heizen
+- name: "Anforderung Heizen"
+  state_address: "5/0/152"
+
+# ETS: EG Technik Meldung Kühlen
+- name: "Anforderung Kühlen"
+  state_address: "5/0/155"
+
+# ETS: EG Küche Meldung Heizen
+- name: "Anforderung Heizen"
+  state_address: "5/0/167"
+
+# ETS: EG Küche Meldung Kühlen
+- name: "Anforderung Kühlen"
+  state_address: "5/0/170"
+
+# ETS: EG Wohnz. Meldung Heizen
+- name: "Anforderung Heizen"
+  state_address: "5/0/182"
+
+# ETS: EG Wohnz. Meldung Kühlen
+- name: "Anforderung Kühlen"
+  state_address: "5/0/185"
+
+# ETS: Flur Meldung Heizen
+- name: "Anforderung Heizen"
+  state_address: "5/1/2"
+
+# ETS: Flur Meldung Kühlen
+- name: "Anforderung Kühlen"
+  state_address: "5/1/5"
+
+# ETS: Gast Meldung Heizen
+- name: "Anforderung Heizen"
+  state_address: "5/1/17"
+
+# ETS: Gast Meldung Kühlen
+- name: "Anforderung Kühlen"
+  state_address: "5/1/20"
+
+# ETS: Bad Meldung Heizen
+- name: "Anforderung Heizen"
+  state_address: "5/1/32"
+
+# ETS: Bad Meldung Kühlen
+- name: "Anforderung Kühlen"
+  state_address: "5/1/35"
+
+# ETS: Kind 1 links Meldung Heizen
+- name: "Anforderung Heizen"
+  state_address: "5/1/47"
+
+# ETS: Kind 1 links Meldung Kühlen
+- name: "Anforderung Kühlen"
+  state_address: "5/1/50"
+
+# ETS: Kind 2 rechts Meldung Heizen
+- name: "Anforderung Heizen"
+  state_address: "5/1/62"
+
+# ETS: Kind 2 rechts Meldung Kühlen
+- name: "Anforderung Kühlen"
+  state_address: "5/1/65"
 
 # FHEM: Garagentuer
 # FHEM room: Garage,homebridge
