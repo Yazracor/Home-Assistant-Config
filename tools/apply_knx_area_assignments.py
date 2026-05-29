@@ -152,6 +152,59 @@ def upsert_areas(storage: Path, areas_csv: Path, dry_run: bool) -> tuple[int, in
     return created, updated
 
 
+def remove_obsolete_areas(storage: Path, obsolete_areas_csv: Path, dry_run: bool) -> tuple[int, int, int]:
+    if not obsolete_areas_csv.exists():
+        return 0, 0, 0
+    rows = load_csv(obsolete_areas_csv)
+    obsolete = {r['area_id']: r.get('replacement_area_id') or None for r in rows if r.get('area_id')}
+    if not obsolete:
+        return 0, 0, 0
+
+    area_path = storage / 'core.area_registry'
+    if not area_path.exists():
+        return 0, 0, 0
+    with area_path.open(encoding='utf-8') as f:
+        area_store = json.load(f)
+    areas = area_store.get('data', {}).get('areas', [])
+    before_count = len(areas)
+    area_store['data']['areas'] = [a for a in areas if a.get('id') not in obsolete]
+    removed = before_count - len(area_store['data']['areas'])
+
+    entity_changed = 0
+    entity_path = storage / 'core.entity_registry'
+    if entity_path.exists():
+        with entity_path.open(encoding='utf-8') as f:
+            entity_store = json.load(f)
+        t = now_iso()
+        for e in entity_store.get('data', {}).get('entities', []):
+            area_id = e.get('area_id')
+            if area_id in obsolete:
+                e['area_id'] = obsolete[area_id]
+                e['modified_at'] = t
+                entity_changed += 1
+        if entity_changed and not dry_run:
+            write_store(entity_path, entity_store, dry_run=False)
+
+    device_changed = 0
+    device_path = storage / 'core.device_registry'
+    if device_path.exists():
+        with device_path.open(encoding='utf-8') as f:
+            device_store = json.load(f)
+        t = now_iso()
+        for d in device_store.get('data', {}).get('devices', []):
+            area_id = d.get('area_id')
+            if area_id in obsolete:
+                d['area_id'] = obsolete[area_id]
+                d['modified_at'] = t
+                device_changed += 1
+        if device_changed and not dry_run:
+            write_store(device_path, device_store, dry_run=False)
+
+    if removed and not dry_run:
+        write_store(area_path, area_store, dry_run=False)
+    return removed, entity_changed, device_changed
+
+
 def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> tuple[int, int, int, int, list[str], dict[str,str]]:
     assignments = [r for r in load_csv(assignments_csv) if r.get('area_id')]
     path = storage / 'core.entity_registry'
@@ -253,6 +306,7 @@ def main() -> int:
     floors_csv = data_dir / 'floors.csv'
     areas_csv = data_dir / 'areas.csv'
     assignments_csv = data_dir / 'area_assignments.csv'
+    obsolete_areas_csv = data_dir / 'obsolete_areas.csv'
 
     for p in (floors_csv, areas_csv, assignments_csv):
         if not p.exists():
@@ -261,11 +315,13 @@ def main() -> int:
 
     fc, fu = upsert_floors(storage, floors_csv, args.dry_run)
     ac, au = upsert_areas(storage, areas_csv, args.dry_run)
+    ar, ae, ad = remove_obsolete_areas(storage, obsolete_areas_csv, args.dry_run)
     ec, er, eh, missing, unmatched, device_area = apply_entity_areas(storage, assignments_csv, args.dry_run)
     dc = apply_device_areas(storage, device_area, args.dry_run)
 
     print(f'Floors: erstellt={fc}, aktualisiert={fu}')
     print(f'Areas: erstellt={ac}, aktualisiert={au}')
+    print(f'Obsolete Areas: entfernt={ar}, Entity-Zuordnungen geändert={ae}, Device-Zuordnungen geändert={ad}')
     print(f'Entities: Area geändert={ec}, Entity-ID geändert={er}, Sichtbarkeit geändert={eh}, nicht gefunden={missing}')
     print(f'Devices: Area geändert={dc}')
     if unmatched:

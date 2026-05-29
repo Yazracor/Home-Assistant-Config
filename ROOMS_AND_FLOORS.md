@@ -23,8 +23,7 @@ Wichtig: Die KNX-YAML selbst enthält keine Raum-/Stockwerkzuordnung. Home Assis
 | Erdgeschoss | Treppe EG/KG | `treppe_eg_kg` | 1 | EG_UG_Treppe;EG/KG Treppe |
 | Erdgeschoss | Gäste-WC | `gaeste_wc` | 1 | EG_GaesteWC;EG WC |
 | Erdgeschoss | Garderobe | `garderobe` | 2 | EG_Garderobe;Schuhschrank |
-| Erdgeschoss | Esszimmer | `esszimmer` | 0 | Esszimmer |
-| Erdgeschoss | Küche | `kueche` | 4 | Kueche;Kochen;EG Küche |
+| Erdgeschoss | Küche | `kueche` | 4 | Kueche;Kochen;EG Küche;Esszimmer |
 | Erdgeschoss | Wohnzimmer | `wohnzimmer` | 4 | Wohnz;Wohnzimmer |
 | Erdgeschoss | Vorratsraum | `vorratsraum` | 1 | EG_Vorratsraum;Vorrat |
 | Obergeschoss | Büro OG | `buero_og` | 2 | Buero_OG;OG Arbeiten;OG_Arbeiten |
@@ -51,7 +50,7 @@ Wichtig: Die KNX-YAML selbst enthält keine Raum-/Stockwerkzuordnung. Home Assis
 
 - `Buero.Decke`, `TH_EG_Buero`, `Buero.Flur` und die beiden Büro-Fensterjalousien liegen in `Arbeitszimmer`, weil die bereits vorhandene KNX-Panel-Entität `light.arbeitszimmer_decke` diese Semantik vorgibt.
 - `Buero.Bad` liegt in `Gästebad`, weil die ETS-Gruppenadresse `EG Gästebad` nennt.
-- `Esszimmer.Decke_Kochen` liegt in `Küche`, weil die ETS-Gruppenadressen `EG Küche Decke` nennen. Wenn Du die offene Wohn-/Ess-/Kochzone lieber anders gruppierst, ist das eine der wenigen sinnvollen manuellen Änderungen.
+- `Esszimmer.Decke_Kochen` liegt in `Küche`, weil Esszimmer und Küche ein gemeinsamer Raum sind und die ETS-Gruppenadressen `EG Küche Decke` nennen.
 - `Jalousie_EG_Kueche_Sonnensegel` liegt in `Terrasse`, weil das physisch Außenbereich ist, obwohl FHEM den Raum `Kueche` verwendet.
 - Die Treppe ist in `Treppe OG` und `Treppe EG/KG` getrennt, weil Home Assistant Areas jeweils nur einem Stockwerk zugeordnet werden können.
 
