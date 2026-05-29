@@ -1,0 +1,11 @@
+# KNX-Wetterstationsobjekte.
+# Datei: knx/weather.yaml
+
+# ETS: Wetterstation
+# Hinweis: "Messwert Dämmerung" (1/1/2) ist ein analoger DPT9.004-Wert und
+# passt daher nicht auf das binäre KNX-Weather-Feld address_day_night.
+- name: "Wetterstation"
+  address_temperature: "1/1/4"
+  address_brightness_south: "1/1/3"
+  address_wind_speed: "1/1/1"
+  address_rain_alarm: "1/1/12"

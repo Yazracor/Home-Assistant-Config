@@ -48,7 +48,7 @@ Wichtig: Die KNX-YAML selbst enthält keine Raum-/Stockwerkzuordnung. Home Assis
 | Außenbereich | Eingangsbereich | `eingangsbereich` | 1 | Eingang;Vorgarten;Eingang Vordach;Treppe und Garage;Hof Bega Baumstrahler |
 | Außenbereich | Teich | `teich` | 2 | Teich;Licht Teich;Unterwasserstrahler |
 | Außenbereich | Garten | `garten` | 3 | Garten;Aussenleuchten links;Aussenleuchten rechts;Wegebeleuchtung nach oben;Wegebeleuchtung nach unten |
-| Außenbereich | Wetterstation | `wetterstation` | 1 | Wetter;Windwächter;Windwaechter |
+| Außenbereich | Wetterstation | `wetterstation` | 6 | Wetter;Windwächter;Windwaechter |
 
 ## Bewusst getroffene Zuordnungen
 

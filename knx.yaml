@@ -5,4 +5,5 @@ cover: !include knx/covers.yaml
 climate: !include knx/climate.yaml
 binary_sensor: !include knx/binary_sensors.yaml
 sensor: !include knx/sensors.yaml
+weather: !include knx/weather.yaml
 button: !include knx/buttons.yaml

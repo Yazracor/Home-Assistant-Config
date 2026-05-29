@@ -38,7 +38,7 @@ light,Aussenleuchten rechts,light.aussenbereich_garten_aussenleuchten_rechts,2/0
 light,Balkon Balken,light.aussenbereich_balkon_balken,2/0/32,balkon,Balkon,aussenbereich,Außenbereich,KNX/ETS group address name,
 light,Licht,light.aussenbereich_balkon_obergeschoss_licht,2/0/34,balkon_obergeschoss,Balkon Obergeschoss,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.aussenbeleuchtung_og;light.aussenbereich_balkon_og_licht
 light,Licht,light.aussenbereich_terrasse_licht,2/1/0,terrasse,Terrasse,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.terrasse_kg;light.aussenbereich_terrasse_kg
-light,Licht,light.aussenbereich_garage_licht,2/3/10,garage,Garage,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.garage_innen
+light,Licht,light.aussenbereich_garage_licht,2/3/10,garage,Garage,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.garage_innen;light.licht
 light,Treppe und Garage,light.aussenbereich_eingangsbereich_treppe_und_garage,2/3/2,eingangsbereich,Eingangsbereich,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.treppe_und_garage
 light,Hof Bega Baumstrahler,light.aussenbereich_eingangsbereich_hof_bega_baumstrahler,2/3/4,eingangsbereich,Eingangsbereich,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.hof_bega_baumstrahler
 light,Licht Teich,light.aussenbereich_teich_licht,2/3/25,teich,Teich,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.strahler_mauer_dusche
@@ -141,5 +141,10 @@ sensor,Energieanforderung,sensor.kg_zimmer_sinja_energieanforderung,kg_zimmer_si
 sensor,Energieanforderung,sensor.kg_zimmer_silas_energieanforderung,kg_zimmer_silas_energieanforderung,zimmer_silas,Zimmer Silas,kellergeschoss,Kellergeschoss,virtual template,Virtueller Status aus Meldung Heizen/Kühlen. hidden_by=integration
 binary_sensor,Garagentor Status,binary_sensor.aussenbereich_garage_garagentor_status,2/3/15,garage,Garage,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,legacy_entity_ids=binary_sensor.garagentor_status;binary_sensor.garage_aussenbereich_garagentor_status
 sensor,Wetterstation Wind,sensor.aussenbereich_wetterstation_wind,1/1/1,wetterstation,Wetterstation,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,legacy_entity_ids=sensor.wetterstation_wind;sensor.wetterstation_aussenbereich_wind
+sensor,Wetterstation Dämmerung,sensor.aussenbereich_wetterstation_daemmerung,1/1/2,wetterstation,Wetterstation,aussenbereich,Außenbereich,KNX/ETS group address name,
+sensor,Wetterstation Helligkeit,sensor.aussenbereich_wetterstation_helligkeit,1/1/3,wetterstation,Wetterstation,aussenbereich,Außenbereich,KNX/ETS group address name,
+sensor,Wetterstation Temperatur,sensor.aussenbereich_wetterstation_temperatur,1/1/4,wetterstation,Wetterstation,aussenbereich,Außenbereich,KNX/ETS group address name,
+binary_sensor,Wetterstation Niederschlag,binary_sensor.aussenbereich_wetterstation_niederschlag,1/1/12,wetterstation,Wetterstation,aussenbereich,Außenbereich,KNX/ETS group address name,
+weather,Wetterstation,weather.aussenbereich_wetterstation,knx_wetterstation_weather,wetterstation,Wetterstation,aussenbereich,Außenbereich,KNX weather station,
 button,Garagentor Impuls,button.aussenbereich_garage_garagentor_impuls,2/3/14_1,garage,Garage,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,legacy_entity_ids=button.garagentor_impuls;button.garage_aussenbereich_garagentor_impuls
 cover,Garagentor,cover.aussenbereich_garage_garagentor,knx_garagentor_virtual_cover,garage,Garage,aussenbereich,Außenbereich,virtual template,Virtuelles Cover aus Garagentor-Impuls und KNX-Status. legacy_entity_ids=cover.garagentor;cover.garage_aussenbereich_garagentor
