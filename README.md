@@ -47,3 +47,6 @@ Das installiert `.git/hooks/post-merge`. Der Hook ruft nach jedem Merge/Pull
 auf und weist damit auch virtuelle Template-Entities wie `cover.aussenbereich_garage_garagentor`
 dem passenden Raum zu. Home Assistant sollte danach neu gestartet werden, wenn
 neue YAML-Entities gerade erst angelegt wurden.
+
+Der Installer setzt außerdem `git config pull.rebase false`, damit lokale
+HA-Snapshot-Commits und Remote-Änderungen per Merge zusammengeführt werden.
