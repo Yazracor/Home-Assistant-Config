@@ -5,8 +5,15 @@ PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/bin:/config:${PATH:-}"
 export PATH
 
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+env_file="$repo_root/.knx-area-assignment.env"
 marker_file="$repo_root/.pending_knx_area_assignment"
 lock_dir="$repo_root/.pending_knx_area_assignment.lock"
+
+if [ -f "$env_file" ]; then
+  # shellcheck disable=SC1090
+  . "$env_file"
+fi
+
 supervisor_endpoint="${SUPERVISOR_ENDPOINT:-http://supervisor}"
 supervisor_token="${SUPERVISOR_TOKEN:-${HASSIO_TOKEN:-}}"
 core_control=""
@@ -79,9 +86,39 @@ find_python() {
   return 1
 }
 
+print_python_diagnostics() {
+  echo "Python diagnostics:"
+  echo "  PATH=$PATH"
+  echo "  repo_root=$repo_root"
+  echo "  env_file=$env_file"
+  echo "  PWD=$(pwd)"
+  echo "  user=$(id 2>/dev/null || true)"
+  echo "  OS:"
+  if [ -r /etc/os-release ]; then
+    sed 's/^/    /' /etc/os-release
+  else
+    echo "    /etc/os-release not readable"
+  fi
+  echo "  Available control/download tools:"
+  for cmd in ha curl wget git find ls which command apk apt apt-get bash sh; do
+    if command -v "$cmd" >/dev/null 2>&1; then
+      printf '    %-8s %s\n' "$cmd" "$(command -v "$cmd")"
+    fi
+  done
+  echo "  Complete file tree from /:"
+  if command -v find >/dev/null 2>&1; then
+    find / -print 2>/dev/null | sort | sed 's/^/    /'
+  else
+    echo "    find not available"
+  fi
+  echo "  If no Python path is listed above, this Git hook environment does not contain Python."
+  echo "  In that case, run the assignment from an environment with Python or install Python in this add-on/container."
+}
+
 python_bin="$(find_python || true)"
 if [ -z "$python_bin" ]; then
-  echo "python not found; set PYTHON_BIN to a Python executable. PATH=$PATH" >&2
+  print_python_diagnostics
+  echo "python not found; set PYTHON_BIN in $env_file or in the hook environment. PATH=$PATH" >&2
   exit 1
 fi
 echo "Using Python: $python_bin"
