@@ -296,12 +296,6 @@
   state_address: "2/3/22"
 
 # Quelle: KNX.xml
-# address: 2/3/20 -> Zeitschaltung Eingangsb. | Schalten > Aussen/Garage
-# HINWEIS: Separater Zeit-/Bewegungsmelder-Impuls fuer den Eingangsbereich.
-- name: "Eingangsbereich Zeit"
-  address: "2/3/20"
-
-# Quelle: KNX.xml
 # address: 2/0/16 -> EG Eingang Vordach 1.A9 | Schalten > EG/OG Beleuchtung
 # state_address: 2/0/17 -> EG Eingang Vordach 1.A9 RM | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
@@ -372,14 +366,6 @@
 - name: "Hof Bega Baumstrahler"
   address: "2/3/4"
   state_address: "2/3/5"
-
-# Quelle: KNX.xml
-# address: 2/3/6 -> Haus-Nr. | Schalten > Aussen/Garage
-# state_address: 2/3/7 -> Haus-Nr.  RM | Schalten > Aussen/Garage
-# HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "Hausnummer"
-  address: "2/3/6"
-  state_address: "2/3/7"
 
 # Quelle: KNX.xml
 # address: 2/3/25 -> Strahler Mauer (Dusche) | Schalten > Aussen/Garage
