@@ -6,42 +6,25 @@ export PATH
 
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 log_file="$repo_root/.git/hooks/post-merge.log"
-ha_was_stopped=0
-
-start_ha_if_needed() {
-  if [ "$ha_was_stopped" -eq 1 ] && command -v ha >/dev/null 2>&1; then
-    ha core start
-  fi
-}
-
-trap start_ha_if_needed EXIT
+marker_file="$repo_root/.pending_knx_area_assignment"
+runner="$repo_root/devscripts/apply-pending-knx-area-assignments.sh"
+runner_log="$repo_root/.knx-area-assignment.log"
+delay_seconds="${KNX_AREA_ASSIGNMENT_DELAY_SECONDS:-10}"
 
 {
   echo "$(date -u '+%Y-%m-%dT%H:%M:%SZ') post-merge hook started in $repo_root"
   echo "PATH=$PATH"
-
-  if command -v ha >/dev/null 2>&1; then
-    ha core stop
-    ha_was_stopped=1
+  date -u '+%Y-%m-%dT%H:%M:%SZ' > "$marker_file"
+  echo "Marked pending KNX area assignment: $marker_file"
+  if [ -x "$runner" ]; then
+    (
+      sleep "$delay_seconds"
+      exec "$runner"
+    ) >> "$runner_log" 2>&1 &
+    echo "Started detached KNX area assignment runner after ${delay_seconds}s: $runner"
+    echo "Runner log: $runner_log"
   else
-    echo "ha command not found; continuing without stopping Home Assistant"
+    echo "Runner not executable: $runner"
   fi
-
-  if [ -f "$repo_root/tools/apply_knx_area_assignments.py" ]; then
-    python_bin="$(command -v python3 || command -v python || true)"
-    if [ -z "$python_bin" ]; then
-      echo "python3/python not found"
-      exit 1
-    fi
-    echo "Using Python: $python_bin"
-    "$python_bin" "$repo_root/tools/apply_knx_area_assignments.py" \
-      --config-dir "$repo_root" \
-      --data-dir "$repo_root"
-  else
-    echo "tools/apply_knx_area_assignments.py not found"
-  fi
-
   echo "$(date -u '+%Y-%m-%dT%H:%M:%SZ') post-merge hook finished"
-  start_ha_if_needed
-  ha_was_stopped=0
 } >> "$log_file" 2>&1

@@ -35,18 +35,31 @@ ha core start
 ## Git-Hook nach `git pull`
 
 Auf der Home-Assistant-Instanz kann die Area-Zuordnung automatisch nach einem
-erfolgreichen `git pull` ausgeführt werden:
+erfolgreichen `git pull` vorgemerkt werden:
 
 ```bash
 cd /config
 ./devscripts/install-git-hooks.sh
 ```
 
-Das installiert `.git/hooks/post-merge`. Der Hook ruft nach jedem Merge/Pull
-`tools/apply_knx_area_assignments.py --config-dir /config --data-dir /config`
-auf und weist damit auch virtuelle Template-Entities wie `cover.aussenbereich_garage_garagentor`
-dem passenden Raum zu. Home Assistant sollte danach neu gestartet werden, wenn
-neue YAML-Entities gerade erst angelegt wurden.
+Das installiert `.git/hooks/post-merge` als kleinen Wrapper, der das
+versionierte Script `/config/devscripts/post-merge` aufruft. Änderungen am
+versionierten Script greifen dadurch ohne erneute Hook-Installation. Der Hook
+stoppt Home Assistant nicht direkt im Git-Prozess, sondern schreibt
+`/config/.pending_knx_area_assignment` und startet den Registry-Patch detached
+im Hintergrund. Dadurch kann der Pull, auch wenn er durch Home Assistant selbst
+ausgelöst wurde, sauber zurückkehren, bevor Home Assistant Core gestoppt wird.
+
+Das Script führt den Ablauf zweiphasig aus: Home Assistant Core stoppen,
+bestehende Entities patchen, Home Assistant Core starten, auf die aktualisierte
+Entity-Registry warten, nochmal stoppen, erneut patchen und wieder starten.
+Damit werden sowohl bereits vorhandene als auch nach dem YAML-Update neu
+geschriebene Entities passenden Räumen zugeordnet.
+
+Der Hintergrundlauf schreibt nach `/config/.knx-area-assignment.log`. Die
+Wartezeiten können mit `KNX_AREA_ASSIGNMENT_DELAY_SECONDS`,
+`HA_CORE_STOP_WAIT_SECONDS` und `HA_ENTITY_REGISTRY_WAIT_SECONDS` angepasst
+werden.
 
 Der Installer setzt außerdem `git config pull.rebase false`, damit lokale
 HA-Snapshot-Commits und Remote-Änderungen per Merge zusammengeführt werden.

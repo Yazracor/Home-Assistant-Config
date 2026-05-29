@@ -7,7 +7,6 @@ script:
         data:
           address: "6/4/10"
           payload: 1
-          type: "binary"
 
 template:
   - switch:
