@@ -313,7 +313,7 @@
 # address: 2/0/22 -> EG Terrasse 1.A12 | Schalten > EG/OG Beleuchtung
 # state_address: 2/0/23 -> EG Terrasse 1.A12 RM | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "Balkon EG"
+- name: "Licht"
   address: "2/0/22"
   state_address: "2/0/23"
 
@@ -321,7 +321,7 @@
 # address: 2/0/30 -> Aussenleuchten rechte Seite 1.A16 | Schalten > EG/OG Beleuchtung
 # state_address: 2/0/31 -> Aussenleuchten rechte Seite 1.A16 RM | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "Aussenleuchten rechte Seite"
+- name: "Aussenleuchten rechts"
   address: "2/0/30"
   state_address: "2/0/31"
 
@@ -337,7 +337,7 @@
 # address: 2/0/34 -> OG Aussenbeleuchtung 2.A2 | Schalten > EG/OG Beleuchtung
 # state_address: 2/0/35 -> OG Aussenbeleuchtung 2.A2 RM | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "Aussenbeleuchtung OG"
+- name: "Licht"
   address: "2/0/34"
   state_address: "2/0/35"
 
@@ -345,7 +345,7 @@
 # address: 2/1/0 -> Terrasse KG A1 | DPST-1-1 | Schalten > KG Beleuchtung
 # state_address: 2/1/1 -> Terrasse KG A1 RM | DPST-1-1 | Schalten > KG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "Terrasse KG"
+- name: "Licht"
   address: "2/1/0"
   state_address: "2/1/1"
 
@@ -353,7 +353,7 @@
 # address: 2/3/0 -> Garage 4x Innen | Schalten > Aussen/Garage
 # state_address: 2/3/1 -> Garage 4x Innen  RM | Schalten > Aussen/Garage
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "Garage Innen"
+- name: "Licht"
   address: "2/3/0"
   state_address: "2/3/1"
 
@@ -385,7 +385,7 @@
 # address: 2/3/25 -> Strahler Mauer (Dusche) | Schalten > Aussen/Garage
 # state_address: 2/3/26 -> Strahler Mauer (Dusche)  RM | Schalten > Aussen/Garage
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "Strahler Mauer Dusche"
+- name: "Licht Teich"
   address: "2/3/25"
   state_address: "2/3/26"
 
@@ -409,6 +409,6 @@
 # address: 2/3/31 -> Wegebeleuchtung nach unten | Schalten > Aussen/Garage
 # state_address: 2/3/32 -> Wegebeleuchtung nach unten  RM | Schalten > Aussen/Garage
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "Wegebeleuchtung nach unten"
+- name: "Aussenleuchten links"
   address: "2/3/31"
   state_address: "2/3/32"
