@@ -50,6 +50,17 @@ def desired_hidden_by(row: dict[str, str]) -> str | None:
     return value
 
 
+def desired_device_area(row: dict[str, str]) -> str | None:
+    notes = row.get('notes') or ''
+    marker = 'device_area='
+    if marker in notes:
+        value = notes.split(marker, 1)[1].split()[0]
+        if value == 'none':
+            return None
+        return value
+    return row['area_id']
+
+
 def backup(path: Path) -> None:
     if path.exists():
         stamp = datetime.now().strftime('%Y%m%d-%H%M%S')
@@ -205,7 +216,7 @@ def remove_obsolete_areas(storage: Path, obsolete_areas_csv: Path, dry_run: bool
     return removed, entity_changed, device_changed
 
 
-def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> tuple[int, int, int, int, list[str], dict[str,str]]:
+def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> tuple[int, int, int, int, list[str], dict[str, str | None]]:
     assignments = [r for r in load_csv(assignments_csv) if r.get('area_id')]
     path = storage / 'core.entity_registry'
     if not path.exists():
@@ -226,7 +237,7 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
     renamed = 0
     hidden_changed = 0
     unmatched: list[str] = []
-    device_area: dict[str, str] = {}
+    device_area: dict[str, str | None] = {}
     t = now_iso()
     for a in assignments:
         candidates = by_uid.get(a['unique_id'], []) if a.get('unique_id') else []
@@ -263,7 +274,7 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
                 e['modified_at'] = t
                 hidden_changed += 1
         if e.get('device_id'):
-            device_area[e['device_id']] = a['area_id']
+            device_area[e['device_id']] = desired_device_area(a)
     if (changed or renamed or hidden_changed) and not dry_run:
         write_store(path, store, dry_run=False)
     elif dry_run:
@@ -272,7 +283,7 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
     return changed, renamed, hidden_changed, len(unmatched), unmatched, device_area
 
 
-def apply_device_areas(storage: Path, device_area: dict[str,str], dry_run: bool) -> int:
+def apply_device_areas(storage: Path, device_area: dict[str, str | None], dry_run: bool) -> int:
     if not device_area:
         return 0
     path = storage / 'core.device_registry'
@@ -283,8 +294,11 @@ def apply_device_areas(storage: Path, device_area: dict[str,str], dry_run: bool)
     changed = 0
     t = now_iso()
     for d in store.get('data', {}).get('devices', []):
-        area = device_area.get(d.get('id'))
-        if area and d.get('area_id') != area:
+        device_id = d.get('id')
+        if device_id not in device_area:
+            continue
+        area = device_area[device_id]
+        if d.get('area_id') != area:
             d['area_id'] = area
             d['modified_at'] = t
             changed += 1
