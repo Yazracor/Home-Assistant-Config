@@ -1,28 +1,135 @@
 template:
   - sensor:
       - name: "Energieanforderung"
-        unique_id: arbeitszimmer_energieanforderung
+        unique_id: og_schlafzimmer_energieanforderung
+        state: >
+          {% set heat = states('binary_sensor.og_schlafzimmer_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.og_schlafzimmer_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            heizen
+          {% elif cool == 'on' %}
+            kuehlen
+          {% elif heat == 'off' and cool == 'off' %}
+            keine
+          {% else %}
+            unbekannt
+          {% endif %}
+        icon: >
+          {% set heat = states('binary_sensor.og_schlafzimmer_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.og_schlafzimmer_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            mdi:fire
+          {% elif cool == 'on' %}
+            mdi:snowflake
+          {% else %}
+            mdi:thermostat
+          {% endif %}
+
+      - name: "Energieanforderung"
+        unique_id: og_bad_energieanforderung
+        state: >
+          {% set heat = states('binary_sensor.og_bad_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.og_bad_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            heizen
+          {% elif cool == 'on' %}
+            kuehlen
+          {% elif heat == 'off' and cool == 'off' %}
+            keine
+          {% else %}
+            unbekannt
+          {% endif %}
+        icon: >
+          {% set heat = states('binary_sensor.og_bad_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.og_bad_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            mdi:fire
+          {% elif cool == 'on' %}
+            mdi:snowflake
+          {% else %}
+            mdi:thermostat
+          {% endif %}
+
+      - name: "Energieanforderung"
+        unique_id: og_buro_energieanforderung
+        state: >
+          {% set heat = states('binary_sensor.og_buro_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.og_buro_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            heizen
+          {% elif cool == 'on' %}
+            kuehlen
+          {% elif heat == 'off' and cool == 'off' %}
+            keine
+          {% else %}
+            unbekannt
+          {% endif %}
+        icon: >
+          {% set heat = states('binary_sensor.og_buro_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.og_buro_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            mdi:fire
+          {% elif cool == 'on' %}
+            mdi:snowflake
+          {% else %}
+            mdi:thermostat
+          {% endif %}
+
+      - name: "Energieanforderung"
+        unique_id: og_ankleide_energieanforderung
+        state: >
+          {% set heat = states('binary_sensor.og_ankleide_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.og_ankleide_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            heizen
+          {% elif cool == 'on' %}
+            kuehlen
+          {% elif heat == 'off' and cool == 'off' %}
+            keine
+          {% else %}
+            unbekannt
+          {% endif %}
+        icon: >
+          {% set heat = states('binary_sensor.og_ankleide_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.og_ankleide_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            mdi:fire
+          {% elif cool == 'on' %}
+            mdi:snowflake
+          {% else %}
+            mdi:thermostat
+          {% endif %}
+
+      - name: "Energieanforderung"
+        unique_id: eg_flur_energieanforderung
+        state: >
+          {% set heat = states('binary_sensor.eg_flur_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.eg_flur_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            heizen
+          {% elif cool == 'on' %}
+            kuehlen
+          {% elif heat == 'off' and cool == 'off' %}
+            keine
+          {% else %}
+            unbekannt
+          {% endif %}
+        icon: >
+          {% set heat = states('binary_sensor.eg_flur_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.eg_flur_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            mdi:fire
+          {% elif cool == 'on' %}
+            mdi:snowflake
+          {% else %}
+            mdi:thermostat
+          {% endif %}
+
+      - name: "Energieanforderung"
+        unique_id: eg_arbeitszimmer_energieanforderung
         state: >
           {% set heat = states('binary_sensor.eg_arbeitszimmer_anforderung_heizen') %}
-          {% if heat not in ['on', 'off'] %}
-            {% set heat = states('binary_sensor.arbeitszimmer_eg_anforderung_heizen') %}
-          {% endif %}
-          {% if heat not in ['on', 'off'] %}
-            {% set heat = states('binary_sensor.arbeitszimmer_anforderung_heizen') %}
-          {% endif %}
-          {% if heat not in ['on', 'off'] %}
-            {% set heat = states('binary_sensor.anforderung_heizen') %}
-          {% endif %}
           {% set cool = states('binary_sensor.eg_arbeitszimmer_anforderung_kuhlen') %}
-          {% if cool not in ['on', 'off'] %}
-            {% set cool = states('binary_sensor.arbeitszimmer_eg_anforderung_kuhlen') %}
-          {% endif %}
-          {% if cool not in ['on', 'off'] %}
-            {% set cool = states('binary_sensor.arbeitszimmer_anforderung_kuhlen') %}
-          {% endif %}
-          {% if cool not in ['on', 'off'] %}
-            {% set cool = states('binary_sensor.anforderung_kuhlen') %}
-          {% endif %}
           {% if heat == 'on' %}
             heizen
           {% elif cool == 'on' %}
@@ -34,25 +141,307 @@ template:
           {% endif %}
         icon: >
           {% set heat = states('binary_sensor.eg_arbeitszimmer_anforderung_heizen') %}
-          {% if heat not in ['on', 'off'] %}
-            {% set heat = states('binary_sensor.arbeitszimmer_eg_anforderung_heizen') %}
-          {% endif %}
-          {% if heat not in ['on', 'off'] %}
-            {% set heat = states('binary_sensor.arbeitszimmer_anforderung_heizen') %}
-          {% endif %}
-          {% if heat not in ['on', 'off'] %}
-            {% set heat = states('binary_sensor.anforderung_heizen') %}
-          {% endif %}
           {% set cool = states('binary_sensor.eg_arbeitszimmer_anforderung_kuhlen') %}
-          {% if cool not in ['on', 'off'] %}
-            {% set cool = states('binary_sensor.arbeitszimmer_eg_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            mdi:fire
+          {% elif cool == 'on' %}
+            mdi:snowflake
+          {% else %}
+            mdi:thermostat
           {% endif %}
-          {% if cool not in ['on', 'off'] %}
-            {% set cool = states('binary_sensor.arbeitszimmer_anforderung_kuhlen') %}
+
+      - name: "Energieanforderung"
+        unique_id: eg_arbeitszimmer_flur_energieanforderung
+        state: >
+          {% set heat = states('binary_sensor.eg_arbeitszimmer_flur_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.eg_arbeitszimmer_flur_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            heizen
+          {% elif cool == 'on' %}
+            kuehlen
+          {% elif heat == 'off' and cool == 'off' %}
+            keine
+          {% else %}
+            unbekannt
           {% endif %}
-          {% if cool not in ['on', 'off'] %}
-            {% set cool = states('binary_sensor.anforderung_kuhlen') %}
+        icon: >
+          {% set heat = states('binary_sensor.eg_arbeitszimmer_flur_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.eg_arbeitszimmer_flur_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            mdi:fire
+          {% elif cool == 'on' %}
+            mdi:snowflake
+          {% else %}
+            mdi:thermostat
           {% endif %}
+
+      - name: "Energieanforderung"
+        unique_id: eg_gaestebad_energieanforderung
+        state: >
+          {% set heat = states('binary_sensor.eg_gaestebad_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.eg_gaestebad_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            heizen
+          {% elif cool == 'on' %}
+            kuehlen
+          {% elif heat == 'off' and cool == 'off' %}
+            keine
+          {% else %}
+            unbekannt
+          {% endif %}
+        icon: >
+          {% set heat = states('binary_sensor.eg_gaestebad_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.eg_gaestebad_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            mdi:fire
+          {% elif cool == 'on' %}
+            mdi:snowflake
+          {% else %}
+            mdi:thermostat
+          {% endif %}
+
+      - name: "Energieanforderung"
+        unique_id: eg_gaeste_wc_energieanforderung
+        state: >
+          {% set heat = states('binary_sensor.eg_gaeste_wc_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.eg_gaeste_wc_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            heizen
+          {% elif cool == 'on' %}
+            kuehlen
+          {% elif heat == 'off' and cool == 'off' %}
+            keine
+          {% else %}
+            unbekannt
+          {% endif %}
+        icon: >
+          {% set heat = states('binary_sensor.eg_gaeste_wc_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.eg_gaeste_wc_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            mdi:fire
+          {% elif cool == 'on' %}
+            mdi:snowflake
+          {% else %}
+            mdi:thermostat
+          {% endif %}
+
+      - name: "Energieanforderung"
+        unique_id: eg_garderobe_energieanforderung
+        state: >
+          {% set heat = states('binary_sensor.eg_garderobe_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.eg_garderobe_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            heizen
+          {% elif cool == 'on' %}
+            kuehlen
+          {% elif heat == 'off' and cool == 'off' %}
+            keine
+          {% else %}
+            unbekannt
+          {% endif %}
+        icon: >
+          {% set heat = states('binary_sensor.eg_garderobe_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.eg_garderobe_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            mdi:fire
+          {% elif cool == 'on' %}
+            mdi:snowflake
+          {% else %}
+            mdi:thermostat
+          {% endif %}
+
+      - name: "Energieanforderung"
+        unique_id: eg_technik_energieanforderung
+        state: >
+          {% set heat = states('binary_sensor.eg_technik_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.eg_technik_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            heizen
+          {% elif cool == 'on' %}
+            kuehlen
+          {% elif heat == 'off' and cool == 'off' %}
+            keine
+          {% else %}
+            unbekannt
+          {% endif %}
+        icon: >
+          {% set heat = states('binary_sensor.eg_technik_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.eg_technik_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            mdi:fire
+          {% elif cool == 'on' %}
+            mdi:snowflake
+          {% else %}
+            mdi:thermostat
+          {% endif %}
+
+      - name: "Energieanforderung"
+        unique_id: eg_kueche_energieanforderung
+        state: >
+          {% set heat = states('binary_sensor.eg_kueche_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.eg_kueche_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            heizen
+          {% elif cool == 'on' %}
+            kuehlen
+          {% elif heat == 'off' and cool == 'off' %}
+            keine
+          {% else %}
+            unbekannt
+          {% endif %}
+        icon: >
+          {% set heat = states('binary_sensor.eg_kueche_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.eg_kueche_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            mdi:fire
+          {% elif cool == 'on' %}
+            mdi:snowflake
+          {% else %}
+            mdi:thermostat
+          {% endif %}
+
+      - name: "Energieanforderung"
+        unique_id: eg_wohnzimmer_energieanforderung
+        state: >
+          {% set heat = states('binary_sensor.eg_wohnzimmer_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.eg_wohnzimmer_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            heizen
+          {% elif cool == 'on' %}
+            kuehlen
+          {% elif heat == 'off' and cool == 'off' %}
+            keine
+          {% else %}
+            unbekannt
+          {% endif %}
+        icon: >
+          {% set heat = states('binary_sensor.eg_wohnzimmer_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.eg_wohnzimmer_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            mdi:fire
+          {% elif cool == 'on' %}
+            mdi:snowflake
+          {% else %}
+            mdi:thermostat
+          {% endif %}
+
+      - name: "Energieanforderung"
+        unique_id: kg_flur_energieanforderung
+        state: >
+          {% set heat = states('binary_sensor.kg_flur_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.kg_flur_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            heizen
+          {% elif cool == 'on' %}
+            kuehlen
+          {% elif heat == 'off' and cool == 'off' %}
+            keine
+          {% else %}
+            unbekannt
+          {% endif %}
+        icon: >
+          {% set heat = states('binary_sensor.kg_flur_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.kg_flur_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            mdi:fire
+          {% elif cool == 'on' %}
+            mdi:snowflake
+          {% else %}
+            mdi:thermostat
+          {% endif %}
+
+      - name: "Energieanforderung"
+        unique_id: kg_gast_hobby_energieanforderung
+        state: >
+          {% set heat = states('binary_sensor.kg_gast_hobby_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.kg_gast_hobby_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            heizen
+          {% elif cool == 'on' %}
+            kuehlen
+          {% elif heat == 'off' and cool == 'off' %}
+            keine
+          {% else %}
+            unbekannt
+          {% endif %}
+        icon: >
+          {% set heat = states('binary_sensor.kg_gast_hobby_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.kg_gast_hobby_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            mdi:fire
+          {% elif cool == 'on' %}
+            mdi:snowflake
+          {% else %}
+            mdi:thermostat
+          {% endif %}
+
+      - name: "Energieanforderung"
+        unique_id: kg_kinderbad_energieanforderung
+        state: >
+          {% set heat = states('binary_sensor.kg_kinderbad_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.kg_kinderbad_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            heizen
+          {% elif cool == 'on' %}
+            kuehlen
+          {% elif heat == 'off' and cool == 'off' %}
+            keine
+          {% else %}
+            unbekannt
+          {% endif %}
+        icon: >
+          {% set heat = states('binary_sensor.kg_kinderbad_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.kg_kinderbad_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            mdi:fire
+          {% elif cool == 'on' %}
+            mdi:snowflake
+          {% else %}
+            mdi:thermostat
+          {% endif %}
+
+      - name: "Energieanforderung"
+        unique_id: kg_zimmer_sinja_energieanforderung
+        state: >
+          {% set heat = states('binary_sensor.kg_zimmer_sinja_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.kg_zimmer_sinja_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            heizen
+          {% elif cool == 'on' %}
+            kuehlen
+          {% elif heat == 'off' and cool == 'off' %}
+            keine
+          {% else %}
+            unbekannt
+          {% endif %}
+        icon: >
+          {% set heat = states('binary_sensor.kg_zimmer_sinja_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.kg_zimmer_sinja_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            mdi:fire
+          {% elif cool == 'on' %}
+            mdi:snowflake
+          {% else %}
+            mdi:thermostat
+          {% endif %}
+
+      - name: "Energieanforderung"
+        unique_id: kg_zimmer_silas_energieanforderung
+        state: >
+          {% set heat = states('binary_sensor.kg_zimmer_silas_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.kg_zimmer_silas_anforderung_kuhlen') %}
+          {% if heat == 'on' %}
+            heizen
+          {% elif cool == 'on' %}
+            kuehlen
+          {% elif heat == 'off' and cool == 'off' %}
+            keine
+          {% else %}
+            unbekannt
+          {% endif %}
+        icon: >
+          {% set heat = states('binary_sensor.kg_zimmer_silas_anforderung_heizen') %}
+          {% set cool = states('binary_sensor.kg_zimmer_silas_anforderung_kuhlen') %}
           {% if heat == 'on' %}
             mdi:fire
           {% elif cool == 'on' %}

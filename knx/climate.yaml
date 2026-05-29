@@ -1,16 +1,87 @@
 # Automatisch aus fhem.cfg und KNX.xml erzeugt.
-# Quelle: FHEM-KNX-Konfiguration; Namen entsprechen den FHEM-Device-Namen.
+# Quelle: FHEM-KNX-Konfiguration und ETS-Gruppenadressen.
 # Datei: knx/climate.yaml
 
-# FHEM: TH_EG_Buero
-# FHEM room: Buero,KNX,homebridge
-# target_temperature_address: 5/0/75 -> --1A6 EG Gast Basis Sollwert | Heizung > EG / OG
-# temperature_address: 5/0/79 -> EG Gast Ist-Temp | Heizung > EG / OG
-# target_temperature_state_address: 5/0/81 -> EG Gast Soll-Temp | Heizung > EG / OG
-# active_state_address: 5/0/77, 5/0/80 -> EG Gast Meldung Heizen/Kühlen | Heizung > EG / OG
-# command_value_state_address: 5/0/82 -> EG Gast Stellgröße Heizen/Kühlen | Heizung > EG / OG
-# HINWEIS: Heizen/Kühlen-Umschaltung (5/0/76) erfolgt zentral und wird hier nicht bedient.
+# HINWEIS: Heizen/Kühlen-Umschaltung erfolgt zentral und wird hier nicht bedient.
 # HINWEIS: Gira Tastsensor 3 Plus: Meldung Heizen/Kühlen sind 1-Bit-Energieanforderungen (1 = Anforderung, 0 = keine).
+
+# ETS: --1A1 OG Schlafz. Basis Sollwert
+- name: "Thermostat"
+  temperature_address: "5/0/4"
+  target_temperature_address: "5/0/0"
+  target_temperature_state_address: "5/0/6"
+  active_state_address:
+    - "5/0/2"
+    - "5/0/5"
+  command_value_state_address: "5/0/7"
+  controller_modes:
+    - "auto"
+  default_controller_mode: "auto"
+  min_temp: 7.0
+  max_temp: 32.0
+
+# ETS: --1A2 OG Bad Basis Sollwert
+- name: "Thermostat"
+  temperature_address: "5/0/19"
+  target_temperature_address: "5/0/15"
+  target_temperature_state_address: "5/0/21"
+  active_state_address:
+    - "5/0/17"
+    - "5/0/20"
+  command_value_state_address: "5/0/22"
+  controller_modes:
+    - "auto"
+  default_controller_mode: "auto"
+  min_temp: 7.0
+  max_temp: 32.0
+
+# ETS: --1A3 OG Arbeiten/Flur Basis Sollwert
+- name: "Thermostat"
+  temperature_address: "5/0/34"
+  target_temperature_address: "5/0/30"
+  target_temperature_state_address: "5/0/36"
+  active_state_address:
+    - "5/0/32"
+    - "5/0/35"
+  command_value_state_address: "5/0/37"
+  controller_modes:
+    - "auto"
+  default_controller_mode: "auto"
+  min_temp: 7.0
+  max_temp: 32.0
+
+# ETS: --1A4 OG Ankleide Basis Sollwert
+- name: "Thermostat"
+  temperature_address: "5/0/49"
+  target_temperature_address: "5/0/45"
+  target_temperature_state_address: "5/0/51"
+  active_state_address:
+    - "5/0/47"
+    - "5/0/50"
+  command_value_state_address: "5/0/52"
+  controller_modes:
+    - "auto"
+  default_controller_mode: "auto"
+  min_temp: 7.0
+  max_temp: 32.0
+
+# ETS: --1A5 EG Diele Basis Sollwert
+- name: "Thermostat"
+  temperature_address: "5/0/64"
+  target_temperature_address: "5/0/60"
+  target_temperature_state_address: "5/0/66"
+  active_state_address:
+    - "5/0/62"
+    - "5/0/65"
+  command_value_state_address: "5/0/67"
+  controller_modes:
+    - "auto"
+  default_controller_mode: "auto"
+  min_temp: 7.0
+  max_temp: 32.0
+
+# FHEM: TH_EG_Buero
+# ETS: --1A6 EG Gast Basis Sollwert
 - name: "Thermostat"
   temperature_address: "5/0/79"
   target_temperature_address: "5/0/75"
@@ -19,6 +90,186 @@
     - "5/0/77"
     - "5/0/80"
   command_value_state_address: "5/0/82"
+  controller_modes:
+    - "auto"
+  default_controller_mode: "auto"
+  min_temp: 7.0
+  max_temp: 32.0
+
+# ETS: --2A1 EG Flur Gast Basis Sollwert
+- name: "Thermostat Flur"
+  temperature_address: "5/0/94"
+  target_temperature_address: "5/0/90"
+  target_temperature_state_address: "5/0/96"
+  active_state_address:
+    - "5/0/92"
+    - "5/0/95"
+  command_value_state_address: "5/0/97"
+  controller_modes:
+    - "auto"
+  default_controller_mode: "auto"
+  min_temp: 7.0
+  max_temp: 32.0
+
+# ETS: --2A2 EG Bad Gast Basis Sollwert
+- name: "Thermostat"
+  temperature_address: "5/0/109"
+  target_temperature_address: "5/0/105"
+  target_temperature_state_address: "5/0/111"
+  active_state_address:
+    - "5/0/107"
+    - "5/0/110"
+  command_value_state_address: "5/0/112"
+  controller_modes:
+    - "auto"
+  default_controller_mode: "auto"
+  min_temp: 7.0
+  max_temp: 32.0
+
+# ETS: --2A3 EG WC Basis Sollwert
+- name: "Thermostat"
+  temperature_address: "5/0/124"
+  target_temperature_address: "5/0/120"
+  target_temperature_state_address: "5/0/126"
+  active_state_address:
+    - "5/0/122"
+    - "5/0/125"
+  command_value_state_address: "5/0/127"
+  controller_modes:
+    - "auto"
+  default_controller_mode: "auto"
+  min_temp: 7.0
+  max_temp: 32.0
+
+# ETS: --2A4 EG Gaderobe Basis Sollwert
+- name: "Thermostat"
+  temperature_address: "5/0/139"
+  target_temperature_address: "5/0/135"
+  target_temperature_state_address: "5/0/141"
+  active_state_address:
+    - "5/0/137"
+    - "5/0/140"
+  command_value_state_address: "5/0/142"
+  controller_modes:
+    - "auto"
+  default_controller_mode: "auto"
+  min_temp: 7.0
+  max_temp: 32.0
+
+# ETS: --2A5 EG Technik Basis Sollwert
+- name: "Thermostat"
+  temperature_address: "5/0/154"
+  target_temperature_address: "5/0/150"
+  target_temperature_state_address: "5/0/156"
+  active_state_address:
+    - "5/0/152"
+    - "5/0/155"
+  command_value_state_address: "5/0/157"
+  controller_modes:
+    - "auto"
+  default_controller_mode: "auto"
+  min_temp: 7.0
+  max_temp: 32.0
+
+# ETS: --2A6 EG Küche Basis Sollwert
+- name: "Thermostat"
+  temperature_address: "5/0/169"
+  target_temperature_address: "5/0/165"
+  target_temperature_state_address: "5/0/171"
+  active_state_address:
+    - "5/0/167"
+    - "5/0/170"
+  command_value_state_address: "5/0/172"
+  controller_modes:
+    - "auto"
+  default_controller_mode: "auto"
+  min_temp: 7.0
+  max_temp: 32.0
+
+# ETS: --3A1 EG Wohnz. Basis Sollwert
+- name: "Thermostat"
+  temperature_address: "5/0/184"
+  target_temperature_address: "5/0/180"
+  target_temperature_state_address: "5/0/186"
+  active_state_address:
+    - "5/0/182"
+    - "5/0/185"
+  command_value_state_address: "5/0/187"
+  controller_modes:
+    - "auto"
+  default_controller_mode: "auto"
+  min_temp: 7.0
+  max_temp: 32.0
+
+# ETS: --4A1 Flur Basissollwert
+- name: "Thermostat"
+  temperature_address: "5/1/4"
+  target_temperature_address: "5/1/0"
+  target_temperature_state_address: "5/1/6"
+  active_state_address:
+    - "5/1/2"
+    - "5/1/5"
+  command_value_state_address: "5/1/7"
+  controller_modes:
+    - "auto"
+  default_controller_mode: "auto"
+  min_temp: 7.0
+  max_temp: 32.0
+
+# ETS: --4A2 Gast Basissollwert
+- name: "Thermostat"
+  temperature_address: "5/1/19"
+  target_temperature_address: "5/1/15"
+  target_temperature_state_address: "5/1/21"
+  active_state_address:
+    - "5/1/17"
+    - "5/1/20"
+  command_value_state_address: "5/1/22"
+  controller_modes:
+    - "auto"
+  default_controller_mode: "auto"
+  min_temp: 7.0
+  max_temp: 32.0
+
+# ETS: --4A3 Bad Basissollwert
+- name: "Thermostat"
+  temperature_address: "5/1/34"
+  target_temperature_address: "5/1/30"
+  target_temperature_state_address: "5/1/36"
+  active_state_address:
+    - "5/1/32"
+    - "5/1/35"
+  command_value_state_address: "5/1/37"
+  controller_modes:
+    - "auto"
+  default_controller_mode: "auto"
+  min_temp: 7.0
+  max_temp: 32.0
+
+# ETS: --4A4 Kind 1 links Basissollwert
+- name: "Thermostat"
+  temperature_address: "5/1/49"
+  target_temperature_address: "5/1/45"
+  target_temperature_state_address: "5/1/51"
+  active_state_address:
+    - "5/1/47"
+    - "5/1/50"
+  command_value_state_address: "5/1/52"
+  controller_modes:
+    - "auto"
+  default_controller_mode: "auto"
+  min_temp: 7.0
+  max_temp: 32.0
+
+# ETS: --4A5 Kind 2 rechts Basissollwert
+- name: "Thermostat"
+  temperature_address: "5/1/64"
+  target_temperature_address: "5/1/60"
+  target_temperature_state_address: "5/1/66"
+  active_state_address:
+    - "5/1/62"
+    - "5/1/65"
+  command_value_state_address: "5/1/67"
   controller_modes:
     - "auto"
   default_controller_mode: "auto"
