@@ -45,3 +45,26 @@
       entity_id: switch.entfeuchter
     data: {}
   mode: single
+- id: '1780073742923'
+  alias: Garagenwarnung
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - cover.aussenbereich_garage_garagentor
+    attribute: current_position
+    from:
+    - Closed
+    to:
+    - Open
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  conditions: []
+  actions:
+  - action: notify.notify
+    metadata: {}
+    data:
+      message: Garage offen
+  mode: single
