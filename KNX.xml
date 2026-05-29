@@ -1,0 +1,605 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<GroupAddress-Export xmlns="http://knx.org/xml/ga-export/01">
+  <GroupRange Name="Zentralfunktionen" RangeStart="2048" RangeEnd="4095">
+    <GroupRange Name="Beleuchtung" RangeStart="2048" RangeEnd="2303">
+      <GroupAddress Name="Licht Zentral Haus" Address="1/0/0" Central="true" DPTs="DPST-1-1" />
+      <GroupAddress Name="Licht Zentral KG" Address="1/0/1" Central="true" DPTs="DPST-1-1" />
+      <GroupAddress Name="Licht Zentral EG" Address="1/0/2" Central="true" />
+      <GroupAddress Name="Licht Zentral OG" Address="1/0/3" Central="true" DPTs="DPST-1-1" />
+      <GroupAddress Name="Licht Zentral Aussen" Address="1/0/4" Central="true" DPTs="DPST-1-1" />
+      <GroupAddress Name="Licht Zentral ohne Gäste EG/KG" Address="1/0/5" DPTs="DPST-1-1" />
+    </GroupRange>
+    <GroupRange Name="Wetterstation" RangeStart="2304" RangeEnd="2559">
+      <GroupAddress Name="Grenzwert Wind 1 Alarm" Address="1/1/0" Central="true" />
+      <GroupAddress Name="Messwert Wind" Address="1/1/1" Central="true" />
+      <GroupAddress Name="Messwert Dämmerung" Address="1/1/2" Central="true" />
+      <GroupAddress Name="Messwert Helligkeit 1" Address="1/1/3" Central="true" />
+      <GroupAddress Name="Messwert Temperatur" Address="1/1/4" Central="true" />
+      <GroupAddress Name="Grenzwert 1 Dämmerung" Address="1/1/5" Central="true" />
+      <GroupAddress Name="Grenzwert 1 Helligkeit 1" Address="1/1/6" Central="true" />
+      <GroupAddress Name="Datum" Address="1/1/7" Central="true" />
+      <GroupAddress Name="Uhrzeit" Address="1/1/8" Central="true" />
+      <GroupAddress Name="Windsensor unverändert" Address="1/1/9" Central="true" />
+      <GroupAddress Name="Kein Windsignal" Address="1/1/10" Central="true" />
+      <GroupAddress Name="Heizspannung OK" Address="1/1/11" Central="true" />
+      <GroupAddress Name="Niederschlag" Address="1/1/12" Central="true" />
+      <GroupAddress Name="Grenzwert Wind 2 Alarm" Address="1/1/13" />
+    </GroupRange>
+    <GroupRange Name="Jalousien" RangeStart="2560" RangeEnd="2815">
+      <GroupAddress Name="Jalousie Zentral Aussen LZ" Address="1/2/0" Central="true" />
+      <GroupAddress Name="Jalousie Zentral Aussen KZ" Address="1/2/1" Central="true" />
+      <GroupAddress Name="( Jalousie Zentral KG LZ )" Address="1/2/2" Central="true" />
+      <GroupAddress Name="( Jalousie Zentral KG KZ )" Address="1/2/3" Central="true" />
+      <GroupAddress Name="Jalousie Zentral EG LZ" Address="1/2/4" Central="true" />
+      <GroupAddress Name="Jalousie Zentral EG KZ" Address="1/2/5" Central="true" />
+      <GroupAddress Name="Jalousie Zentral OG LZ" Address="1/2/6" Central="true" />
+      <GroupAddress Name="Jalousie Zentral OG KZ" Address="1/2/7" Central="true" />
+      <GroupAddress Name="Innenjalousien Zentral OG LZ" Address="1/2/8" Central="true" />
+      <GroupAddress Name="Innenjalousien Zentral OG KZ" Address="1/2/9" Central="true" />
+    </GroupRange>
+    <GroupRange Name="Uhr" RangeStart="2816" RangeEnd="3071">
+      <GroupAddress Name="Uhrzeit" Address="1/3/0" Central="true" />
+      <GroupAddress Name="Datum" Address="1/3/1" Central="true" />
+    </GroupRange>
+    <GroupRange Name="Heizung" RangeStart="3072" RangeEnd="3327">
+      <GroupAddress Name="Betriebsartumschaltung ( Heizen = 1 / Kühlen = 0 )" Address="1/4/0" Central="true" DPTs="DPST-1-1" />
+      <GroupAddress Name="Heizen / Kühlen RM" Address="1/4/1" Central="true" DPTs="DPST-1-1" />
+    </GroupRange>
+  </GroupRange>
+  <GroupRange Name="Schalten" RangeStart="4096" RangeEnd="6143">
+    <GroupRange Name="EG/OG Beleuchtung" RangeStart="4096" RangeEnd="4351">
+      <GroupAddress Name="OG WC+LED 1.A1" Address="2/0/0" />
+      <GroupAddress Name="OG WC+LED 1.A1 RM" Address="2/0/1" />
+      <GroupAddress Name="OG Bad Waschtisch 1.A2" Address="2/0/2" />
+      <GroupAddress Name="OG Bad Waschtisch 1.A2 RM" Address="2/0/3" />
+      <GroupAddress Name="OG Ankleide 1.A3" Address="2/0/4" />
+      <GroupAddress Name="OG Ankleide 1.A3 RM" Address="2/0/5" />
+      <GroupAddress Name="EG/OG Treppe 1.A4" Address="2/0/6" />
+      <GroupAddress Name="EG/OG Treppe 1.A4 RM" Address="2/0/7" />
+      <GroupAddress Name="EG Gast 1.A5" Address="2/0/8" />
+      <GroupAddress Name="EG Gast 1.A5 RM" Address="2/0/9" />
+      <GroupAddress Name="EG UV 1.A6" Address="2/0/10" />
+      <GroupAddress Name="EG UV 1.A6 RM" Address="2/0/11" />
+      <GroupAddress Name="EG WC 1.A7" Address="2/0/12" />
+      <GroupAddress Name="EG WC 1.A7 RM" Address="2/0/13" />
+      <GroupAddress Name="EG/KG Treppe 1.A8" Address="2/0/14" />
+      <GroupAddress Name="EG/KG Treppe 1.A8 RM" Address="2/0/15" />
+      <GroupAddress Name="EG Eingang Vordach 1.A9" Address="2/0/16" />
+      <GroupAddress Name="EG Eingang Vordach 1.A9 RM" Address="2/0/17" />
+      <GroupAddress Name="EG Diele Lichtschiene 1.A10" Address="2/0/18" />
+      <GroupAddress Name="EG Diele Lichtschiene 1.A10 RM" Address="2/0/19" />
+      <GroupAddress Name="EG Vorratsraum 1.A11" Address="2/0/20" />
+      <GroupAddress Name="EG Vorratsraum 1.A11 RM" Address="2/0/21" />
+      <GroupAddress Name="EG Terrasse 1.A12" Address="2/0/22" />
+      <GroupAddress Name="EG Terrasse 1.A12 RM" Address="2/0/23" />
+      <GroupAddress Name="EG Flur Gast 1.A13" Address="2/0/24" />
+      <GroupAddress Name="EG Flur Gast 1.A13 RM" Address="2/0/25" />
+      <GroupAddress Name="EG Gästebad 1.A14" Address="2/0/26" />
+      <GroupAddress Name="EG Gästebad 1.A14 RM" Address="2/0/27" />
+      <GroupAddress Name="EG Gaderobe 1.A15" Address="2/0/28" />
+      <GroupAddress Name="EG Gaderobe 1.A15 RM" Address="2/0/29" />
+      <GroupAddress Name="Aussenleuchten rechte Seite 1.A16" Address="2/0/30" />
+      <GroupAddress Name="Aussenleuchten rechte Seite 1.A16 RM" Address="2/0/31" />
+      <GroupAddress Name="EG Terrassenbalken 2.A1" Address="2/0/32" />
+      <GroupAddress Name="EG Terrassenbalken 2.A1 RM" Address="2/0/33" />
+      <GroupAddress Name="OG Aussenbeleuchtung 2.A2" Address="2/0/34" />
+      <GroupAddress Name="OG Aussenbeleuchtung 2.A2 RM" Address="2/0/35" />
+      <GroupAddress Name="Esstisch Taster Dim (auf 1.1.28 Küche)" Address="2/0/36" />
+    </GroupRange>
+    <GroupRange Name="KG Beleuchtung" RangeStart="4352" RangeEnd="4607">
+      <GroupAddress Name="Terrasse KG A1" Address="2/1/0" DPTs="DPST-1-1" />
+      <GroupAddress Name="Terrasse KG A1 RM" Address="2/1/1" DPTs="DPST-1-1" />
+      <GroupAddress Name="Flur A2" Address="2/1/2" />
+      <GroupAddress Name="Flur A2 RM" Address="2/1/3" />
+      <GroupAddress Name="Waschküche A3" Address="2/1/4" DPTs="DPST-1-1" />
+      <GroupAddress Name="Waschküche A3 RM" Address="2/1/5" DPTs="DPST-1-1" />
+      <GroupAddress Name="Bad Kinder A4" Address="2/1/6" DPTs="DPST-1-1" />
+      <GroupAddress Name="Bad Kinder A4 RM" Address="2/1/7" DPTs="DPST-1-1" />
+      <GroupAddress Name="Keller hinten 1 A5" Address="2/1/8" DPTs="DPST-1-1" />
+      <GroupAddress Name="Keller hinten 1 A5 RM" Address="2/1/9" DPTs="DPST-1-1" />
+      <GroupAddress Name="Sauna Spiegel+Lüfter A6" Address="2/1/10" DPTs="DPST-1-1" />
+      <GroupAddress Name="Sauna Spiegel+Lüfter A6 RM" Address="2/1/11" DPTs="DPST-1-1" />
+      <GroupAddress Name="Keller hinten 2 A7" Address="2/1/12" DPTs="DPST-1-1" />
+      <GroupAddress Name="Keller hinten 2 A7 RM" Address="2/1/13" DPTs="DPST-1-1" />
+      <GroupAddress Name="UV-Raum A8" Address="2/1/14" DPTs="DPST-1-1" />
+      <GroupAddress Name="UV-Raum A8 RM" Address="2/1/15" DPTs="DPST-1-1" />
+    </GroupRange>
+    <GroupRange Name="Gruppen" RangeStart="4608" RangeEnd="4863">
+      <GroupAddress Name="Keller 3 x " Address="2/2/0" />
+      <GroupAddress Name="Keller 3 x  RM" Address="2/2/1" />
+    </GroupRange>
+    <GroupRange Name="Aussen/Garage" RangeStart="4864" RangeEnd="5119">
+      <GroupAddress Name="Garage 4x Innen" Address="2/3/0" />
+      <GroupAddress Name="Garage 4x Innen  RM" Address="2/3/1" />
+      <GroupAddress Name="Treppe+3x an Garage" Address="2/3/2" />
+      <GroupAddress Name="Treppe+3x an Garage  RM" Address="2/3/3" />
+      <GroupAddress Name="Hof 2xBega, Baumstrahler" Address="2/3/4" />
+      <GroupAddress Name="Hof 2xBega, Baumstrahler  RM" Address="2/3/5" />
+      <GroupAddress Name="Haus-Nr." Address="2/3/6" />
+      <GroupAddress Name="Haus-Nr.  RM" Address="2/3/7" />
+      <GroupAddress Name="Steckdosensäulen 2x Vorgarten" Address="2/3/8" />
+      <GroupAddress Name="Steckdosensäulen 2x Vorgarten  RM" Address="2/3/9" />
+      <GroupAddress Name="" Address="2/3/10" />
+      <GroupAddress Name="" Address="2/3/11" />
+      <GroupAddress Name="" Address="2/3/12" />
+      <GroupAddress Name="" Address="2/3/13" />
+      <GroupAddress Name="Garagentor Öffner/Schließer" Address="2/3/14" />
+      <GroupAddress Name="Torzustand RM (Zu=230V)" Address="2/3/15" />
+      <GroupAddress Name="" Address="2/3/16" />
+      <GroupAddress Name="" Address="2/3/17" />
+      <GroupAddress Name="2xBWM" Address="2/3/18" />
+      <GroupAddress Name="" Address="2/3/19" />
+      <GroupAddress Name="Zeitschaltung Eingangsb." Address="2/3/20" />
+      <GroupAddress Name="Dauerschaltung Eingangsb." Address="2/3/21" />
+      <GroupAddress Name="Dauerschaltung Eingangsb.  RM" Address="2/3/22" />
+      <GroupAddress Name="Steckdosensäulen 2x unten" Address="2/3/23" />
+      <GroupAddress Name="Steckdosensäulen 2x unten  RM" Address="2/3/24" />
+      <GroupAddress Name="Strahler Mauer (Dusche)" Address="2/3/25" />
+      <GroupAddress Name="Strahler Mauer (Dusche)  RM" Address="2/3/26" />
+      <GroupAddress Name="Unterwasserstrahler" Address="2/3/27" />
+      <GroupAddress Name="Unterwasserstrahler  RM" Address="2/3/28" />
+      <GroupAddress Name="Wegebeleuchtung nach oben" Address="2/3/29" />
+      <GroupAddress Name="Wegebeleuchtung nach oben  RM" Address="2/3/30" />
+      <GroupAddress Name="Wegebeleuchtung nach unten" Address="2/3/31" />
+      <GroupAddress Name="Wegebeleuchtung nach unten  RM" Address="2/3/32" />
+      <GroupAddress Name="Teichpumpe (Dauerschaltung)" Address="2/3/33" />
+      <GroupAddress Name="Teichpumpe  RM" Address="2/3/34" />
+      <GroupAddress Name="Zentral Wegebeleuchtung" Address="2/3/35" />
+      <GroupAddress Name="Zentral Aussen Unten" Address="2/3/36" />
+      <GroupAddress Name="Steckdosen hinter Teich" Address="2/3/37" />
+      <GroupAddress Name="Steckdosen hinter Teich RM" Address="2/3/38" />
+    </GroupRange>
+  </GroupRange>
+  <GroupRange Name="Dimmen" RangeStart="6144" RangeEnd="8191">
+    <GroupRange Name="EG / OG" RangeStart="6144" RangeEnd="6399">
+      <GroupAddress Name="1.A1 OG Arbeiten S" Address="3/0/0" DPTs="DPST-1-1" />
+      <GroupAddress Name="1.A1 OG Arbeiten D" Address="3/0/1" DPTs="DPST-3-7" />
+      <GroupAddress Name="1.A1 OG Arbeiten HW" Address="3/0/2" DPTs="DPST-5-1" />
+      <GroupAddress Name="1.A1 OG Arbeiten S RM" Address="3/0/3" DPTs="DPST-1-11" />
+      <GroupAddress Name="1.A1 OG Arbeiten HW RM" Address="3/0/4" DPTs="DPST-5-1" />
+      <GroupAddress Name="1.A1 OG Arbeiten K/Ü" Address="3/0/5" />
+      <GroupAddress Name="1.A2 OG Flur S" Address="3/0/6" DPTs="DPST-1-1" />
+      <GroupAddress Name="1.A2 OG Flur D" Address="3/0/7" DPTs="DPST-3-7" />
+      <GroupAddress Name="1.A2 OG Flur HW" Address="3/0/8" DPTs="DPST-5-1" />
+      <GroupAddress Name="1.A2 OG Flur S RM" Address="3/0/9" DPTs="DPST-1-11" />
+      <GroupAddress Name="1.A2 OG Flur HW RM" Address="3/0/10" DPTs="DPST-5-1" />
+      <GroupAddress Name="1.A2 OG Flur K/Ü" Address="3/0/11" />
+      <GroupAddress Name="1.A3 EG Diele S" Address="3/0/12" />
+      <GroupAddress Name="1.A3 EG Diele D" Address="3/0/13" />
+      <GroupAddress Name="1.A3 EG Diele HW" Address="3/0/14" />
+      <GroupAddress Name="1.A3 EG Diele S RM" Address="3/0/15" />
+      <GroupAddress Name="1.A3 EG Diele HW RM" Address="3/0/16" />
+      <GroupAddress Name="1.A3 EG Diele K/Ü" Address="3/0/17" />
+      <GroupAddress Name="1.A4 EG Esstisch S" Address="3/0/18" />
+      <GroupAddress Name="1.A4 EG Esstisch D" Address="3/0/19" />
+      <GroupAddress Name="1.A4 EG Esstisch HW" Address="3/0/20" />
+      <GroupAddress Name="1.A4 EG Esstisch S RM" Address="3/0/21" />
+      <GroupAddress Name="1.A4 EG Esstisch HW RM" Address="3/0/22" />
+      <GroupAddress Name="1.A4 EG Esstisch K/Ü" Address="3/0/23" />
+      <GroupAddress Name="2.A1 OG Schlafzimmer S" Address="3/0/24" />
+      <GroupAddress Name="2.A1 OG Schlafzimmer D" Address="3/0/25" />
+      <GroupAddress Name="2.A1 OG Schlafzimmer HW" Address="3/0/26" />
+      <GroupAddress Name="2.A1 OG Schlafzimmer S RM" Address="3/0/27" />
+      <GroupAddress Name="2.A1 OG Schlafzimmer HW RM" Address="3/0/28" />
+      <GroupAddress Name="2.A1 OG Schlafzimmer K/Ü" Address="3/0/29" />
+      <GroupAddress Name="2.A2 OG Bad Decke S" Address="3/0/30" />
+      <GroupAddress Name="2.A2 OG Bad Decke D" Address="3/0/31" />
+      <GroupAddress Name="2.A2 OG Bad Decke HW" Address="3/0/32" />
+      <GroupAddress Name="2.A2 OG Bad Decke S RM" Address="3/0/33" />
+      <GroupAddress Name="2.A2 OG Bad Decke  HW RM" Address="3/0/34" />
+      <GroupAddress Name="2.A2 OG Bad Decke K/Ü" Address="3/0/35" />
+      <GroupAddress Name="3.A1 EG Küche Decke S" Address="3/0/36" />
+      <GroupAddress Name="3.A1 EG Küche Decke D" Address="3/0/37" />
+      <GroupAddress Name="3.A1 EG Küche Decke HW" Address="3/0/38" />
+      <GroupAddress Name="3.A1 EG Küche Decke S RM" Address="3/0/39" />
+      <GroupAddress Name="3.A1 EG Küche Decke HW RM" Address="3/0/40" />
+      <GroupAddress Name="3.A1 EG Küche Decke K/Ü" Address="3/0/41" />
+      <GroupAddress Name="Res" Address="3/0/42" />
+      <GroupAddress Name="Res" Address="3/0/43" />
+      <GroupAddress Name="Res" Address="3/0/44" />
+      <GroupAddress Name="Res" Address="3/0/45" />
+      <GroupAddress Name="4.A1/A2 Wohnz. zentral S" Address="3/0/46" />
+      <GroupAddress Name="4.A1/A2 Wohnz. zentral D" Address="3/0/47" />
+      <GroupAddress Name="4.A1 EG Wohnz. Mitte S" Address="3/0/48" />
+      <GroupAddress Name="4.A1 EG Wohnz. Mitte D" Address="3/0/49" />
+      <GroupAddress Name="4.A1 EG Wohnz. Mitte HW" Address="3/0/50" />
+      <GroupAddress Name="4.A1 EG Wohnz. Mitte S RM" Address="3/0/51" />
+      <GroupAddress Name="4.A1 EG Wohnz. Mitte HW RM" Address="3/0/52" />
+      <GroupAddress Name="4.A1 EG Wohnz. Mitte K/Ü" Address="3/0/53" />
+      <GroupAddress Name="4.A2 EG Wohnz. links/rechts S" Address="3/0/54" />
+      <GroupAddress Name="4.A2 EG Wohnz. links/rechts D" Address="3/0/55" />
+      <GroupAddress Name="4.A2 EG Wohnz. links/rechts HW" Address="3/0/56" />
+      <GroupAddress Name="4.A2 EG Wohnz. links/rechts S RM" Address="3/0/57" />
+      <GroupAddress Name="4.A2 EG Wohnz. links/rechts HW RM" Address="3/0/58" />
+      <GroupAddress Name="4.A2 EG Wohnz. links/rechts K/Ü" Address="3/0/59" />
+      <GroupAddress Name="Büro EG/Gast S" Address="3/0/60" />
+      <GroupAddress Name="Büro EG/Gast D" Address="3/0/61" />
+      <GroupAddress Name="Büro EG/Gast HW" Address="3/0/62" />
+      <GroupAddress Name="Büro EG/Gast S RM" Address="3/0/63" />
+      <GroupAddress Name="Büro EG/Gast HW RM" Address="3/0/64" />
+      <GroupAddress Name="Büro EG/Gast K/Ü" Address="3/0/65" />
+    </GroupRange>
+    <GroupRange Name="KG" RangeStart="6400" RangeEnd="6655">
+      <GroupAddress Name="1.A1 Sauna Decke S" Address="3/1/0" DPTs="DPST-1-1" />
+      <GroupAddress Name="1.A1 Sauna Decke D" Address="3/1/1" DPTs="DPST-3-7" />
+      <GroupAddress Name="1.A1 Sauna Decke HW" Address="3/1/2" DPTs="DPST-5-1" />
+      <GroupAddress Name="1.A1 Sauna Decke S RM" Address="3/1/3" DPTs="DPST-1-11" />
+      <GroupAddress Name="1.A1 Sauna Decke HW RM" Address="3/1/4" DPTs="DPST-5-1" />
+      <GroupAddress Name="1.A1 Sauna Decke K/Ü" Address="3/1/5" />
+      <GroupAddress Name="1.A2 Gast/Hobby S" Address="3/1/6" DPTs="DPST-1-1" />
+      <GroupAddress Name="1.A2 Gast/Hobby D" Address="3/1/7" DPTs="DPST-3-7" />
+      <GroupAddress Name="1.A2 Gast/Hobby HW" Address="3/1/8" DPTs="DPST-5-1" />
+      <GroupAddress Name="1.A2 Gast/Hobby S RM" Address="3/1/9" DPTs="DPST-1-11" />
+      <GroupAddress Name="1.A2 Gast/Hobby HW RM" Address="3/1/10" DPTs="DPST-5-1" />
+      <GroupAddress Name="1.A2 Gast/Hobby K/Ü" Address="3/1/11" />
+      <GroupAddress Name="2.A1 Kind 1 S" Address="3/1/12" DPTs="DPST-1-1" />
+      <GroupAddress Name="2.A1 Kind 1 D" Address="3/1/13" DPTs="DPST-3-7" />
+      <GroupAddress Name="2.A1 Kind 1 HW" Address="3/1/14" DPTs="DPST-5-1" />
+      <GroupAddress Name="2.A1 Kind 1 S RM" Address="3/1/15" DPTs="DPST-1-11" />
+      <GroupAddress Name="2.A1 Kind 1 HW RM" Address="3/1/16" DPTs="DPST-5-1" />
+      <GroupAddress Name="2.A1 Kind 1 K/Ü" Address="3/1/17" />
+      <GroupAddress Name="2.A2 Kind 2 S" Address="3/1/18" DPTs="DPST-1-1" />
+      <GroupAddress Name="2.A2 Kind 2 D" Address="3/1/19" DPTs="DPST-3-7" />
+      <GroupAddress Name="2.A2 Kind 2 HW" Address="3/1/20" DPTs="DPST-5-1" />
+      <GroupAddress Name="2.A2 Kind 2 S RM" Address="3/1/21" DPTs="DPST-1-11" />
+      <GroupAddress Name="2.A2 Kind 2 HW RM" Address="3/1/22" DPTs="DPST-5-1" />
+      <GroupAddress Name="2.A2 Kind 2 K/Ü" Address="3/1/23" />
+      <GroupAddress Name="2.A1/A2 Kind 1/2 zentral S" Address="3/1/24" />
+      <GroupAddress Name="2.A1/A2 Kind 1/2 zentral D" Address="3/1/25" />
+      <GroupAddress Name="3.A1 Flur S" Address="3/1/26" DPTs="DPST-1-1" />
+      <GroupAddress Name="3.A1 Flur D" Address="3/1/27" DPTs="DPST-3-7" />
+      <GroupAddress Name="3.A1 Flur HW" Address="3/1/28" DPTs="DPST-5-1" />
+      <GroupAddress Name="3.A1 Flur S RM" Address="3/1/29" DPTs="DPST-1-11" />
+      <GroupAddress Name="3.A1 Flur HW RM" Address="3/1/30" DPTs="DPST-5-1" />
+      <GroupAddress Name="3.A1 Flur K/Ü" Address="3/1/31" />
+    </GroupRange>
+  </GroupRange>
+  <GroupRange Name="Jalousien" RangeStart="8192" RangeEnd="10239">
+    <GroupRange Name="OG/EG/KG Aussen" RangeStart="8192" RangeEnd="8447">
+      <GroupAddress Name="A1 OG Ankleide LZ" Address="4/0/0" />
+      <GroupAddress Name="A1 OG Ankleide KZ" Address="4/0/1" />
+      <GroupAddress Name="A1 OG Ankleide R JP" Address="4/0/2" />
+      <GroupAddress Name="A1 OG Ankleide JP" Address="4/0/3" />
+      <GroupAddress Name="A2 OG Arbeiten LZ" Address="4/0/4" />
+      <GroupAddress Name="A2 OG Arbeiten KZ" Address="4/0/5" />
+      <GroupAddress Name="A2 OG Arbeiten R JP" Address="4/0/6" />
+      <GroupAddress Name="A2 OG Arbeiten JP" Address="4/0/7" />
+      <GroupAddress Name="A3 OG WC LZ" Address="4/0/8" />
+      <GroupAddress Name="A3 OG WC KZ" Address="4/0/9" />
+      <GroupAddress Name="A3 OG WC R JP" Address="4/0/10" />
+      <GroupAddress Name="A3 OG WC JP" Address="4/0/11" />
+      <GroupAddress Name="A4 OG Bad Panoramaf. LZ" Address="4/0/12" />
+      <GroupAddress Name="A4 OG Bad Panoramaf. KZ" Address="4/0/13" />
+      <GroupAddress Name="A4 OG Bad Panoramaf. R JP" Address="4/0/14" />
+      <GroupAddress Name="A4 OG Bad Panoramaf. JP" Address="4/0/15" />
+      <GroupAddress Name="A5 OG Bad rechts LZ" Address="4/0/16" />
+      <GroupAddress Name="A5 OG Bad rechts KZ" Address="4/0/17" />
+      <GroupAddress Name="A5 OG Bad rechts R JP" Address="4/0/18" />
+      <GroupAddress Name="A5 OG Bad rechts JP" Address="4/0/19" />
+      <GroupAddress Name="A6 OG Bad mitte LZ" Address="4/0/20" />
+      <GroupAddress Name="A6 OG Bad mitte KZ" Address="4/0/21" />
+      <GroupAddress Name="A6 OG Bad mitte R JP" Address="4/0/22" />
+      <GroupAddress Name="A6 OG Bad mitte JP" Address="4/0/23" />
+      <GroupAddress Name="A7 OG Bad links LZ" Address="4/0/24" />
+      <GroupAddress Name="A7 OG Bad links KZ" Address="4/0/25" />
+      <GroupAddress Name="A7 OG Bad links R JP" Address="4/0/26" />
+      <GroupAddress Name="A7 OG Bad links JP" Address="4/0/27" />
+      <GroupAddress Name="A8 OG Flur rechts LZ" Address="4/0/28" />
+      <GroupAddress Name="A8 OG Flur rechts KZ" Address="4/0/29" />
+      <GroupAddress Name="A8 OG Flur rechts R JP" Address="4/0/30" />
+      <GroupAddress Name="A8 OG Flur rechts JP" Address="4/0/31" />
+      <GroupAddress Name="2A1 OG Flur Tür vor Treppe LZ" Address="4/0/32" />
+      <GroupAddress Name="2A1 OG Flur Tür vor Treppe KZ" Address="4/0/33" />
+      <GroupAddress Name="2A1 OG Flur Tür vor Treppe R JP" Address="4/0/34" />
+      <GroupAddress Name="2A1 OG Flur Tür vor Treppe JP" Address="4/0/35" />
+      <GroupAddress Name="2A2 OG Schlafz. rechts LZ" Address="4/0/36" />
+      <GroupAddress Name="2A2 OG Schlafz. rechts KZ" Address="4/0/37" />
+      <GroupAddress Name="2A2 OG Schlafz. rechts R JP" Address="4/0/38" />
+      <GroupAddress Name="2A2 OG Schlafz. rechts JP" Address="4/0/39" />
+      <GroupAddress Name="2A3 OG Schlafz. mitte LZ" Address="4/0/40" />
+      <GroupAddress Name="2A3 OG Schlafz. mitte KZ" Address="4/0/41" />
+      <GroupAddress Name="2A3 OG Schlafz. mitte R JP" Address="4/0/42" />
+      <GroupAddress Name="2A3 OG Schlafz. mitte JP" Address="4/0/43" />
+      <GroupAddress Name="2A4 OG Schlafz. links LZ" Address="4/0/44" />
+      <GroupAddress Name="2A4 OG Schlafz. links KZ" Address="4/0/45" />
+      <GroupAddress Name="2A4 OG Schlafz. links R JP" Address="4/0/46" />
+      <GroupAddress Name="2A4 OG Schlafz. links JP" Address="4/0/47" />
+      <GroupAddress Name="3A1 OG Schlafz. Panoramaf. LZ" Address="4/0/48" />
+      <GroupAddress Name="3A1 OG Schlafz. Panoramaf. KZ" Address="4/0/49" />
+      <GroupAddress Name="3A1 OG Schlafz. Panoramaf. R JP" Address="4/0/50" />
+      <GroupAddress Name="3A1 OG Schlafz. Panoramaf. JP" Address="4/0/51" />
+      <GroupAddress Name="3A2 OG über Treppe LZ" Address="4/0/52" />
+      <GroupAddress Name="3A2 OG über Treppe KZ" Address="4/0/53" />
+      <GroupAddress Name="3A2 OG über Treppe R JP" Address="4/0/54" />
+      <GroupAddress Name="3A2 OG über Treppe JP" Address="4/0/55" />
+      <GroupAddress Name="3A3 EG Wohnz. Panoramaf. LZ" Address="4/0/56" />
+      <GroupAddress Name="3A3 EG Wohnz. Panoramaf. KZ" Address="4/0/57" />
+      <GroupAddress Name="3A3 EG Wohnz. Panoramaf. R JP" Address="4/0/58" />
+      <GroupAddress Name="3A3 EG Wohnz. Panoramaf. JP" Address="4/0/59" />
+      <GroupAddress Name="3A4 EG Wohnz. Terrasse LZ" Address="4/0/60" />
+      <GroupAddress Name="3A4 EG Wohnz. Terrasse KZ" Address="4/0/61" />
+      <GroupAddress Name="3A4 EG Wohnz. Terrasse R JP" Address="4/0/62" />
+      <GroupAddress Name="3A4 EG Wohnz. Terrasse JP" Address="4/0/63" />
+      <GroupAddress Name="3A5 EG Küche Terrasse LZ" Address="4/0/64" />
+      <GroupAddress Name="3A5 EG Küche Terrasse KZ" Address="4/0/65" />
+      <GroupAddress Name="3A5 EG Küche Terrasse R JP" Address="4/0/66" />
+      <GroupAddress Name="3A5 EG Küche Terrasse JP" Address="4/0/67" />
+      <GroupAddress Name="3A6 EG Küche Seite LZ" Address="4/0/68" />
+      <GroupAddress Name="3A6 EG Küche Seite KZ" Address="4/0/69" />
+      <GroupAddress Name="3A6 EG Küche Seite R JP" Address="4/0/70" />
+      <GroupAddress Name="3A6 EG Küche Seite JP" Address="4/0/71" />
+      <GroupAddress Name="3A7 EG Küche Nebeneingang LZ" Address="4/0/72" />
+      <GroupAddress Name="3A7 EG Küche Nebeneingang KZ" Address="4/0/73" />
+      <GroupAddress Name="3A7 EG Küche Nebeneingang R JP" Address="4/0/74" />
+      <GroupAddress Name="3A7 EG Küche Nebeneingang JP" Address="4/0/75" />
+      <GroupAddress Name="3A8 EG Gast rechts LZ" Address="4/0/76" />
+      <GroupAddress Name="3A8 EG Gast rechts KZ" Address="4/0/77" />
+      <GroupAddress Name="3A8 EG Gast rechts R JP" Address="4/0/78" />
+      <GroupAddress Name="3A8 EG Gast rechts JP" Address="4/0/79" />
+      <GroupAddress Name="4A1 EG Gast links LZ" Address="4/0/80" />
+      <GroupAddress Name="4A1 EG Gast links KZ" Address="4/0/81" />
+      <GroupAddress Name="4A1 EG Gast links R JP" Address="4/0/82" />
+      <GroupAddress Name="4A1 EG Gast links JP" Address="4/0/83" />
+      <GroupAddress Name="4A2 KG Kind links LZ" Address="4/0/84" />
+      <GroupAddress Name="4A2 KG Kind links KZ" Address="4/0/85" />
+      <GroupAddress Name="4A2 KG Kind links R JP" Address="4/0/86" />
+      <GroupAddress Name="4A2 KG Kind links JP" Address="4/0/87" />
+      <GroupAddress Name="4A3 KG Kind rechts LZ" Address="4/0/88" />
+      <GroupAddress Name="4A3 KG Kind rechts KZ" Address="4/0/89" />
+      <GroupAddress Name="4A3 KG Kind rechts R JP" Address="4/0/90" />
+      <GroupAddress Name="4A3 KG Kind rechts JP" Address="4/0/91" />
+      <GroupAddress Name="4A2/A3 KG Kind zentral LZ" Address="4/0/92" />
+      <GroupAddress Name="4A2/A3 KG Kind zentral KZ" Address="4/0/93" />
+      <GroupAddress Name="5A2 Sonnensegel LZ" Address="4/0/94" />
+      <GroupAddress Name="5A2 Sonnensegel KZ" Address="4/0/95" />
+      <GroupAddress Name="5A2 Sonnensegel R JP" Address="4/0/96" />
+      <GroupAddress Name="5A2 Sonnensegel JP" Address="4/0/97" />
+    </GroupRange>
+    <GroupRange Name="OG Innen" RangeStart="8448" RangeEnd="8703">
+      <GroupAddress Name="4A4 OG Bad mitte LZ" Address="4/1/0" />
+      <GroupAddress Name="4A4 OG Bad mitte KZ" Address="4/1/1" />
+      <GroupAddress Name="4A4 OG Bad mitte R JP" Address="4/1/2" />
+      <GroupAddress Name="4A4 OG Bad mitte JP" Address="4/1/3" />
+      <GroupAddress Name="4A5 OG Bad links LZ" Address="4/1/4" />
+      <GroupAddress Name="4A5 OG Bad links KZ" Address="4/1/5" />
+      <GroupAddress Name="4A5 OG Bad links R JP" Address="4/1/6" />
+      <GroupAddress Name="4A5 OG Bad links JP" Address="4/1/7" />
+      <GroupAddress Name="4A6 OG Schlafz. rechts LZ" Address="4/1/8" />
+      <GroupAddress Name="4A6 OG Schlafz. rechts KZ" Address="4/1/9" />
+      <GroupAddress Name="4A6 OG Schlafz. rechts R JP" Address="4/1/10" />
+      <GroupAddress Name="4A6 OG Schlafz. rechts JP" Address="4/1/11" />
+      <GroupAddress Name="4A7 OG Schlafz. mitte LZ" Address="4/1/12" />
+      <GroupAddress Name="4A7 OG Schlafz. mitte KZ" Address="4/1/13" />
+      <GroupAddress Name="4A7 OG Schlafz. mitte R JP" Address="4/1/14" />
+      <GroupAddress Name="4A7 OG Schlafz. mitte JP" Address="4/1/15" />
+      <GroupAddress Name="4A8 OG Schlafz. links LZ" Address="4/1/16" />
+      <GroupAddress Name="4A8 OG Schlafz. links KZ" Address="4/1/17" />
+      <GroupAddress Name="4A8 OG Schlafz. links R JP" Address="4/1/18" />
+      <GroupAddress Name="4A8 OG Schlafz. links JP" Address="4/1/19" />
+      <GroupAddress Name="5A1 OG Schlafz. Panorama LZ" Address="4/1/20" />
+      <GroupAddress Name="5A1 OG Schlafz. Panorama KZ" Address="4/1/21" />
+      <GroupAddress Name="5A1 OG Schlafz. Panorama R JP" Address="4/1/22" />
+      <GroupAddress Name="5A1 OG Schlafz. Panorama JP" Address="4/1/23" />
+      <GroupAddress Name="5A3 OG Bad rechts LZ" Address="4/1/24" />
+      <GroupAddress Name="5A3 OG Bad rechts KZ" Address="4/1/25" />
+      <GroupAddress Name="5A3 OG Bad rechts R JP" Address="4/1/26" />
+      <GroupAddress Name="5A3 OG Bad rechts JP" Address="4/1/27" />
+    </GroupRange>
+    <GroupRange Name="Gruppen" RangeStart="8704" RangeEnd="8959">
+      <GroupAddress Name="OG Schlafz. 3x Front innen LZ" Address="4/2/0" />
+      <GroupAddress Name="OG Schlafz. 3x Front innen KZ" Address="4/2/1" />
+      <GroupAddress Name="OG Bad 3x innen LZ" Address="4/2/2" />
+      <GroupAddress Name="OG Bad 3x innen KZ " Address="4/2/3" />
+      <GroupAddress Name="OG Schlafz. 4x aussen LZ" Address="4/2/4" />
+      <GroupAddress Name="OG Schlafz. 4x aussen KZ" Address="4/2/5" />
+      <GroupAddress Name="OG Schlafz. 3x aussen Front LZ" Address="4/2/6" />
+      <GroupAddress Name="OG Schlafz. 3x aussen Front KZ" Address="4/2/7" />
+      <GroupAddress Name="OG Bad 5x aussen LZ" Address="4/2/8" />
+      <GroupAddress Name="OG Bad 5x aussen KZ" Address="4/2/9" />
+      <GroupAddress Name="EG Gast zentral LZ" Address="4/2/10" />
+      <GroupAddress Name="EG Gast zentral KZ" Address="4/2/11" />
+      <GroupAddress Name="OG Schlafz. 4 x innen LZ" Address="4/2/12" />
+      <GroupAddress Name="OG Schlafz. 4 x innen KZ" Address="4/2/13" />
+      <GroupAddress Name="OG Tür Treppe+Flur rechts LZ" Address="4/2/14" />
+      <GroupAddress Name="OG Tür Treppe+Flur rechts KZ" Address="4/2/15" />
+      <GroupAddress Name="EG Küche 3x LZ" Address="4/2/16" />
+      <GroupAddress Name="EG Küche 3x KZ" Address="4/2/17" />
+      <GroupAddress Name="EG Wohnz. 2x LZ" Address="4/2/18" />
+      <GroupAddress Name="EG Wohnz. 2x KZ" Address="4/2/19" />
+    </GroupRange>
+  </GroupRange>
+  <GroupRange Name="Heizung" RangeStart="10240" RangeEnd="12287">
+    <GroupRange Name="EG / OG" RangeStart="10240" RangeEnd="10495">
+      <GroupAddress Name="--1A1 OG Schlafz. Basis Sollwert" Address="5/0/0" />
+      <GroupAddress Name="OG Schlafz. Betriebsmodiumschaltung" Address="5/0/1" />
+      <GroupAddress Name="OG Schlafz. Meldung Heizen" Address="5/0/2" />
+      <GroupAddress Name="OG Schlafz. Ist-Temp" Address="5/0/4" />
+      <GroupAddress Name="OG Schlafz. Meldung Kühlen" Address="5/0/5" />
+      <GroupAddress Name="OG Schlafz. Soll-Temp" Address="5/0/6" />
+      <GroupAddress Name="OG Schlafz. Stellgröße Heizen/Kühlen" Address="5/0/7" />
+      <GroupAddress Name="OG Schlafz. Zwangsobjekt" Address="5/0/8" />
+      <GroupAddress Name="OG Schlafz. Status Stellgröße" Address="5/0/9" />
+      <GroupAddress Name="OG Schlafz. Überlast/KS" Address="5/0/10" />
+      <GroupAddress Name="--1A2 OG Bad Basis Sollwert" Address="5/0/15" />
+      <GroupAddress Name="OG Bad Betriebsmodiumschaltung" Address="5/0/16" />
+      <GroupAddress Name="OG Bad Meldung Heizen" Address="5/0/17" />
+      <GroupAddress Name="OG Bad Ist-Temp" Address="5/0/19" />
+      <GroupAddress Name="OG Bad Meldung Kühlen" Address="5/0/20" />
+      <GroupAddress Name="OG Bad Soll-Temp" Address="5/0/21" />
+      <GroupAddress Name="OG Bad Stellgröße Heizen/Kühlen" Address="5/0/22" />
+      <GroupAddress Name="OG Bad Zwangsobjekt" Address="5/0/23" />
+      <GroupAddress Name="OG Bad Status Stellgröße" Address="5/0/24" />
+      <GroupAddress Name="OG Bad Überlast/KS" Address="5/0/25" />
+      <GroupAddress Name="--1A3 OG Arbeiten/Flur Basis Sollwert" Address="5/0/30" />
+      <GroupAddress Name="OG Arbeiten/Flur Betriebsmodiumschaltung" Address="5/0/31" />
+      <GroupAddress Name="OG Arbeiten/Flur Meldung Heizen" Address="5/0/32" />
+      <GroupAddress Name="OG Arbeiten/Flur Ist-Temp" Address="5/0/34" />
+      <GroupAddress Name="OG Arbeiten/Flur Meldung Kühlen" Address="5/0/35" />
+      <GroupAddress Name="OG Arbeiten/Flur Soll-Temp" Address="5/0/36" />
+      <GroupAddress Name="OG Arbeiten/Flur Stellgröße Heizen/Kühlen" Address="5/0/37" />
+      <GroupAddress Name="OG Arbeiten/Flur Zwangsobjekt" Address="5/0/38" />
+      <GroupAddress Name="OG Arbeiten/Flur Status Stellgröße" Address="5/0/39" />
+      <GroupAddress Name="OG Arbeiten/Flur Überlast/KS" Address="5/0/40" />
+      <GroupAddress Name="--1A4 OG Ankleide Basis Sollwert" Address="5/0/45" />
+      <GroupAddress Name="OG Ankleide Betriebsmodiumschaltung" Address="5/0/46" />
+      <GroupAddress Name="OG Ankleide Meldung Heizen" Address="5/0/47" />
+      <GroupAddress Name="OG Ankleide Ist-Temp" Address="5/0/49" />
+      <GroupAddress Name="OG Ankleide Meldung Kühlen" Address="5/0/50" />
+      <GroupAddress Name="OG Ankleide Soll-Temp" Address="5/0/51" />
+      <GroupAddress Name="OG Ankleide Stellgröße Heizen/Kühlen" Address="5/0/52" />
+      <GroupAddress Name="OG Ankleide Zwangsobjekt" Address="5/0/53" />
+      <GroupAddress Name="OG Ankleide Status Stellgröße" Address="5/0/54" />
+      <GroupAddress Name="OG Ankleide Überlast/KS" Address="5/0/55" />
+      <GroupAddress Name="--1A5 EG Diele Basis Sollwert" Address="5/0/60" />
+      <GroupAddress Name="EG Diele Betriebsmodiumschaltung" Address="5/0/61" />
+      <GroupAddress Name="EG Diele Meldung Heizen" Address="5/0/62" />
+      <GroupAddress Name="EG Diele Ist-Temp" Address="5/0/64" />
+      <GroupAddress Name="EG Diele Meldung Kühlen" Address="5/0/65" />
+      <GroupAddress Name="EG Diele Soll-Temp" Address="5/0/66" />
+      <GroupAddress Name="EG Diele Stellgröße Heizen/Kühlen" Address="5/0/67" />
+      <GroupAddress Name="EG Diele Zwangsobjekt" Address="5/0/68" />
+      <GroupAddress Name="EG Diele Status Stellgröße" Address="5/0/69" />
+      <GroupAddress Name="EG Diele Überlast/KS" Address="5/0/70" />
+      <GroupAddress Name="--1A6 EG Gast Basis Sollwert" Address="5/0/75" />
+      <GroupAddress Name="EG Gast Betriebsmodiumschaltung" Address="5/0/76" />
+      <GroupAddress Name="EG Gast Meldung Heizen" Address="5/0/77" />
+      <GroupAddress Name="EG Gast Ist-Temp" Address="5/0/79" />
+      <GroupAddress Name="EG Gast Meldung Kühlen" Address="5/0/80" />
+      <GroupAddress Name="EG Gast Soll-Temp" Address="5/0/81" />
+      <GroupAddress Name="EG Gast Stellgröße Heizen/Kühlen" Address="5/0/82" />
+      <GroupAddress Name="EG Gast Zwangsobjekt" Address="5/0/83" />
+      <GroupAddress Name="EG Gast Status Stellgröße" Address="5/0/84" />
+      <GroupAddress Name="EG Gast Überlast/KS" Address="5/0/85" />
+      <GroupAddress Name="--2A1 EG Flur Gast Basis Sollwert" Address="5/0/90" />
+      <GroupAddress Name="EG Flur Gast Betriebsmodiumschaltung" Address="5/0/91" />
+      <GroupAddress Name="EG Flur Gast Meldung Heizen" Address="5/0/92" />
+      <GroupAddress Name="EG Flur Gast Ist-Temp" Address="5/0/94" />
+      <GroupAddress Name="EG Flur Gast Meldung Kühlen" Address="5/0/95" />
+      <GroupAddress Name="EG Flur Gast Soll-Temp" Address="5/0/96" />
+      <GroupAddress Name="EG Flur Gast Stellgröße Heizen/Kühlen" Address="5/0/97" />
+      <GroupAddress Name="EG Flur Gast Zwangsobjekt" Address="5/0/98" />
+      <GroupAddress Name="EG Flur Gast Status Stellgröße" Address="5/0/99" />
+      <GroupAddress Name="EG Flur Gast Überlast/KS" Address="5/0/100" />
+      <GroupAddress Name="--2A2 EG Bad Gast Basis Sollwert" Address="5/0/105" />
+      <GroupAddress Name="EG Bad Gast Betriebsmodiumschaltung" Address="5/0/106" />
+      <GroupAddress Name="EG Bad Gast Meldung Heizen" Address="5/0/107" />
+      <GroupAddress Name="EG Bad Gast Ist-Temp" Address="5/0/109" />
+      <GroupAddress Name="EG Bad Gast Meldung Kühlen" Address="5/0/110" />
+      <GroupAddress Name="EG Bad Gast Soll-Temp" Address="5/0/111" />
+      <GroupAddress Name="EG Bad Gast Stellgröße Heizen/Kühlen" Address="5/0/112" />
+      <GroupAddress Name="EG Bad Gast Zwangsobjekt" Address="5/0/113" />
+      <GroupAddress Name="EG Bad Gast Status Stellgröße" Address="5/0/114" />
+      <GroupAddress Name="EG Bad Gast Überlast/KS" Address="5/0/115" />
+      <GroupAddress Name="--2A3 EG WC Basis Sollwert" Address="5/0/120" />
+      <GroupAddress Name="EG WC Betriebsmodiumschaltung" Address="5/0/121" />
+      <GroupAddress Name="EG WC Meldung Heizen" Address="5/0/122" />
+      <GroupAddress Name="EG WC Ist-Temp" Address="5/0/124" />
+      <GroupAddress Name="EG WC Meldung Kühlen" Address="5/0/125" />
+      <GroupAddress Name="EG WC Soll-Temp" Address="5/0/126" />
+      <GroupAddress Name="EG WC Stellgröße Heizen/Kühlen" Address="5/0/127" />
+      <GroupAddress Name="EG WC Zwangsobjekt" Address="5/0/128" />
+      <GroupAddress Name="EG WC Status Stellgröße" Address="5/0/129" />
+      <GroupAddress Name="EG WC Überlast/KS" Address="5/0/130" />
+      <GroupAddress Name="--2A4 EG Gaderobe Basis Sollwert" Address="5/0/135" />
+      <GroupAddress Name="EG Gaderobe Betriebsmodiumschaltung" Address="5/0/136" />
+      <GroupAddress Name="EG Gaderobe Meldung Heizen" Address="5/0/137" />
+      <GroupAddress Name="EG Gaderobe Ist-Temp" Address="5/0/139" />
+      <GroupAddress Name="EG Gaderobe Meldung Kühlen" Address="5/0/140" />
+      <GroupAddress Name="EG Gaderobe Soll-Temp" Address="5/0/141" />
+      <GroupAddress Name="EG Gaderobe Stellgröße Heizen/Kühlen" Address="5/0/142" />
+      <GroupAddress Name="EG Gaderobe Zwangsobjekt" Address="5/0/143" />
+      <GroupAddress Name="EG Gaderobe Status Stellgröße" Address="5/0/144" />
+      <GroupAddress Name="EG Gaderobe Überlast/KS" Address="5/0/145" />
+      <GroupAddress Name="--2A5 EG Technik Basis Sollwert" Address="5/0/150" />
+      <GroupAddress Name="EG Technik Betriebsmodiumschaltung" Address="5/0/151" />
+      <GroupAddress Name="EG Technik Meldung Heizen" Address="5/0/152" />
+      <GroupAddress Name="EG Technik Ist-Temp" Address="5/0/154" />
+      <GroupAddress Name="EG Technik Meldung Kühlen" Address="5/0/155" />
+      <GroupAddress Name="EG Technik Soll-Temp" Address="5/0/156" />
+      <GroupAddress Name="EG Technik Stellgröße Heizen/Kühlen" Address="5/0/157" />
+      <GroupAddress Name="EG Technik Zwangsobjekt" Address="5/0/158" />
+      <GroupAddress Name="EG Technik Status Stellgröße" Address="5/0/159" />
+      <GroupAddress Name="EG Technik Überlast/KS" Address="5/0/160" />
+      <GroupAddress Name="--2A6 EG Küche Basis Sollwert" Address="5/0/165" />
+      <GroupAddress Name="EG Küche Betriebsmodiumschaltung" Address="5/0/166" />
+      <GroupAddress Name="EG Küche Meldung Heizen" Address="5/0/167" />
+      <GroupAddress Name="EG Küche Ist-Temp" Address="5/0/169" />
+      <GroupAddress Name="EG Küche Meldung Kühlen" Address="5/0/170" />
+      <GroupAddress Name="EG Küche Soll-Temp" Address="5/0/171" />
+      <GroupAddress Name="EG Küche Stellgröße Heizen/Kühlen" Address="5/0/172" />
+      <GroupAddress Name="EG Küche Zwangsobjekt" Address="5/0/173" />
+      <GroupAddress Name="EG Küche Status Stellgröße" Address="5/0/174" />
+      <GroupAddress Name="EG Küche Überlast/KS" Address="5/0/175" />
+      <GroupAddress Name="--3A1 EG Wohnz. Basis Sollwert" Address="5/0/180" />
+      <GroupAddress Name="EG Wohnz. Betriebsmodiumschaltung" Address="5/0/181" />
+      <GroupAddress Name="EG Wohnz. Meldung Heizen" Address="5/0/182" />
+      <GroupAddress Name="EG Wohnz. Ist-Temp" Address="5/0/184" />
+      <GroupAddress Name="EG Wohnz. Meldung Kühlen" Address="5/0/185" />
+      <GroupAddress Name="EG Wohnz. Soll-Temp" Address="5/0/186" />
+      <GroupAddress Name="EG Wohnz. Stellgröße Heizen/Kühlen" Address="5/0/187" />
+      <GroupAddress Name="EG Wohnz. Zwangsobjekt" Address="5/0/188" />
+      <GroupAddress Name="EG Wohnz. Status Stellgröße" Address="5/0/189" />
+      <GroupAddress Name="EG Wohnz. Überlast/KS" Address="5/0/190" />
+    </GroupRange>
+    <GroupRange Name="KG" RangeStart="10496" RangeEnd="10751">
+      <GroupAddress Name="--4A1 Flur Basissollwert" Address="5/1/0" />
+      <GroupAddress Name="Flur Betriebsmodiumschaltung" Address="5/1/1" />
+      <GroupAddress Name="Flur Meldung Heizen" Address="5/1/2" />
+      <GroupAddress Name="Flur Ist-Temp" Address="5/1/4" />
+      <GroupAddress Name="Flur Meldung Kühlen" Address="5/1/5" />
+      <GroupAddress Name="Flur Soll-Temp" Address="5/1/6" />
+      <GroupAddress Name="Flur Stellgröße Heizen/Kühlen" Address="5/1/7" />
+      <GroupAddress Name="Flur Zwangsobjekt" Address="5/1/8" />
+      <GroupAddress Name="Flur Status Stellgröße" Address="5/1/9" />
+      <GroupAddress Name="Flur Überlast/KS" Address="5/1/10" />
+      <GroupAddress Name="--4A2 Gast Basissollwert " Address="5/1/15" />
+      <GroupAddress Name="Gast  Betriebsmodiumschaltung" Address="5/1/16" />
+      <GroupAddress Name="Gast  Meldung Heizen" Address="5/1/17" />
+      <GroupAddress Name="Gast  Ist-Temp" Address="5/1/19" />
+      <GroupAddress Name="Gast  Meldung Kühlen" Address="5/1/20" />
+      <GroupAddress Name="Gast  Soll-Temp" Address="5/1/21" />
+      <GroupAddress Name="Gast  Stellgröße Heizen/Kühlen" Address="5/1/22" />
+      <GroupAddress Name="Gast  Zwangsobjekt" Address="5/1/23" />
+      <GroupAddress Name="Gast  Status Stellgröße" Address="5/1/24" />
+      <GroupAddress Name="Gast  Überlast/KS" Address="5/1/25" />
+      <GroupAddress Name="--4A3 Bad Basissollwert" Address="5/1/30" />
+      <GroupAddress Name="Bad Betriebsmodiumschaltung" Address="5/1/31" />
+      <GroupAddress Name="Bad Meldung Heizen" Address="5/1/32" />
+      <GroupAddress Name="Bad Ist-Temp" Address="5/1/34" />
+      <GroupAddress Name="Bad Meldung Kühlen" Address="5/1/35" />
+      <GroupAddress Name="Bad Soll-Temp" Address="5/1/36" />
+      <GroupAddress Name="Bad Stellgröße Heizen/Kühlen" Address="5/1/37" />
+      <GroupAddress Name="Bad Zwangsobjekt" Address="5/1/38" />
+      <GroupAddress Name="Bad Status Stellgröße" Address="5/1/39" />
+      <GroupAddress Name="Bad Überlast/KS" Address="5/1/40" />
+      <GroupAddress Name="--4A4 Kind 1 links Basissollwert" Address="5/1/45" />
+      <GroupAddress Name="Kind 1 links Betriebsmodiumschaltung" Address="5/1/46" />
+      <GroupAddress Name="Kind 1 links Meldung Heizen" Address="5/1/47" />
+      <GroupAddress Name="Kind 1 links Ist-Temp" Address="5/1/49" />
+      <GroupAddress Name="Kind 1 links Meldung Kühlen" Address="5/1/50" />
+      <GroupAddress Name="Kind 1 links Soll-Temp" Address="5/1/51" />
+      <GroupAddress Name="Kind 1 links Stellgröße Heizen/Kühlen" Address="5/1/52" />
+      <GroupAddress Name="Kind 1 links Zwangsobjekt" Address="5/1/53" />
+      <GroupAddress Name="Kind 1 links Status Stellgröße" Address="5/1/54" />
+      <GroupAddress Name="Kind 1 links Überlast/KS" Address="5/1/55" />
+      <GroupAddress Name="--4A5 Kind 2 rechts Basissollwert" Address="5/1/60" />
+      <GroupAddress Name="Kind 2 rechts Betriebsmodiumschaltung" Address="5/1/61" />
+      <GroupAddress Name="Kind 2 rechts Meldung Heizen" Address="5/1/62" />
+      <GroupAddress Name="Kind 2 rechts Ist-Temp" Address="5/1/64" />
+      <GroupAddress Name="Kind 2 rechts Meldung Kühlen" Address="5/1/65" />
+      <GroupAddress Name="Kind 2 rechts Soll-Temp" Address="5/1/66" />
+      <GroupAddress Name="Kind 2 rechts Stellgröße Heizen/Kühlen" Address="5/1/67" />
+      <GroupAddress Name="Kind 2 rechts Zwangsobjekt" Address="5/1/68" />
+      <GroupAddress Name="Kind 2 rechts Status Stellgröße" Address="5/1/69" />
+      <GroupAddress Name="Kind 2 rechts Überlast/KS" Address="5/1/70" />
+    </GroupRange>
+  </GroupRange>
+  <GroupRange Name="Eldat Funk" RangeStart="12288" RangeEnd="14335">
+    <GroupRange Name="Funktionen" RangeStart="13312" RangeEnd="13567">
+      <GroupAddress Name="Kanal Lernen" Address="6/4/1" />
+      <GroupAddress Name="Kanal Löschen" Address="6/4/2" />
+      <GroupAddress Name="Alle Kanäle Löschen" Address="6/4/3" />
+      <GroupAddress Name="Esstisch Dimmen Funk" Address="6/4/10" />
+    </GroupRange>
+  </GroupRange>
+</GroupAddress-Export>

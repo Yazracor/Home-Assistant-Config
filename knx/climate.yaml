@@ -7,10 +7,16 @@
 # temperature_address: 5/0/79 -> EG Gast Ist-Temp | Heizung > EG / OG
 # target_temperature_address: 5/0/81 -> EG Gast Soll-Temp | Heizung > EG / OG
 # target_temperature_state_address: 5/0/81 -> EG Gast Soll-Temp | Heizung > EG / OG
-# HINWEIS: Konvertiert als KNX climate mit Ist-Temperatur und Sollwert. Heiz-/Kühlmeldung zusätzlich als binary_sensor.
+# command_value_state_address: 5/0/82 -> EG Gast Stellgröße Heizen/Kühlen | Heizung > EG / OG
+# HINWEIS: Heizen/Kühlen-Umschaltung (5/0/76) erfolgt zentral und wird hier nicht bedient.
+# HINWEIS: Meldung Heizen/Kühlen (5/0/77, 5/0/80) sind separate Energieanforderungen in binary_sensors.yaml.
 - name: "TH_EG_Buero"
   temperature_address: "5/0/79"
   target_temperature_address: "5/0/81"
   target_temperature_state_address: "5/0/81"
+  command_value_state_address: "5/0/82"
+  controller_modes:
+    - "auto"
+  default_controller_mode: "auto"
   min_temp: 7.0
   max_temp: 32.0
