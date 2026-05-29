@@ -60,7 +60,9 @@ Der Hintergrundlauf schreibt nach `/config/.knx-area-assignment.log`. Die
 Startverzögerung nach dem Pull kann mit `KNX_AREA_ASSIGNMENT_DELAY_SECONDS`
 angepasst werden. Zum Stoppen und Starten von Home Assistant Core nutzt das
 Script zuerst `ha`; wenn das Kommando in der Hook-Umgebung nicht verfügbar ist,
-fällt es auf die Supervisor-API mit `SUPERVISOR_TOKEN` zurück.
+fällt es auf die Supervisor-API mit `SUPERVISOR_TOKEN` zurück. Für das
+Registry-Patch-Script muss in der Hook-Umgebung Python verfügbar sein; falls
+Python nicht im `PATH` liegt, kann der Pfad mit `PYTHON_BIN` gesetzt werden.
 
 Der Installer setzt außerdem `git config pull.rebase false`, damit lokale
 HA-Snapshot-Commits und Remote-Änderungen per Merge zusammengeführt werden.
