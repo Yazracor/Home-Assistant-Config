@@ -37,11 +37,37 @@ cleanup() {
 
 trap cleanup EXIT
 
-python_bin="$(command -v python3 || command -v python || true)"
+find_python() {
+  for candidate in \
+    python3 \
+    python \
+    python3.14 \
+    python3.13 \
+    python3.12 \
+    python3.11 \
+    /usr/local/bin/python3 \
+    /usr/local/bin/python \
+    /usr/local/bin/python3.14 \
+    /usr/local/bin/python3.13 \
+    /usr/local/bin/python3.12 \
+    /usr/local/bin/python3.11 \
+    /usr/bin/python3 \
+    /usr/bin/python
+  do
+    if command -v "$candidate" >/dev/null 2>&1; then
+      command -v "$candidate"
+      return 0
+    fi
+  done
+  return 1
+}
+
+python_bin="$(find_python || true)"
 if [ -z "$python_bin" ]; then
-  echo "python3/python not found" >&2
+  echo "python not found in PATH=$PATH" >&2
   exit 1
 fi
+echo "Using Python: $python_bin"
 
 if [ ! -f "$repo_root/tools/apply_knx_area_assignments.py" ]; then
   echo "tools/apply_knx_area_assignments.py not found" >&2
