@@ -9,10 +9,3 @@
 - name: "Garagentor Impuls"
   address: "2/3/14"
   payload: 1
-
-# FHEM: KNX_Esszimmer.Tisch_knx
-# address: 6/4/10 -> Esstisch Dimmen Funk | Eldat Funk > Funktionen
-# HINWEIS: Funk-/Tasterfunktion ohne Statusrückmeldung; bewusst als HA button abgebildet.
-- name: "Esstisch Taster KNX"
-  address: "6/4/10"
-  payload: 1

@@ -398,19 +398,3 @@
 - name: "Aussenleuchten links"
   address: "2/3/31"
   state_address: "2/3/32"
-
-# Quelle: KNX.xml
-# address: 2/0/8 -> EG Gast 1.A5 | Schalten > EG/OG Beleuchtung
-# state_address: 2/0/9 -> EG Gast 1.A5 RM | Schalten > EG/OG Beleuchtung
-# HINWEIS: Testobjekt; laut ETS vorhanden, es ist aber unklar, ob ein Verbraucher angeschlossen ist.
-- name: "EG Gast 1.A5"
-  address: "2/0/8"
-  state_address: "2/0/9"
-
-# Quelle: KNX.xml
-# address: 2/1/2 -> Flur A2 | Schalten > KG Beleuchtung
-# state_address: 2/1/3 -> Flur A2 RM | Schalten > KG Beleuchtung
-# HINWEIS: Testobjekt; laut ETS vorhanden, es ist aber unklar, ob ein Verbraucher angeschlossen ist.
-- name: "Flur KG A2"
-  address: "2/1/2"
-  state_address: "2/1/3"
