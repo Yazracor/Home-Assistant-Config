@@ -19,7 +19,7 @@ light,Flur EG Galerie,light.flur_eg_galerie,2/0/18,flur_eg,Flur EG,erdgeschoss,E
 light,Garderobe Schuhschrank,light.garderobe_schuhschrank,2/0/10,garderobe,Garderobe,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
 light,Vorratsraum Decke,light.vorratsraum_decke,2/0/20,vorratsraum,Vorratsraum,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
 light,Flur EG Decke,light.flur_eg_decke,3/0/12,flur_eg,Flur EG,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
-light,Büro EG Decke,light.buro_eg_decke,3/0/60,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,Bestehende KNX-Panel-Entität light.arbeitszimmer_decke existiert bereits; daher eindeutiger YAML-Entity-Name.
+light,Büro EG Decke,light.arbeitszimmer_decke,3/0/60,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,Aktuelle HA-Entity-ID für die Arbeitszimmer-Deckenleuchte.
 light,Sauna Decke,light.sauna_decke,3/1/0,sauna,Sauna,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,
 light,Gast/Hobby Decke,light.gast_hobby_decke,3/1/6,gast_hobby,Gast/Hobby,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,
 light,Zimmer Sinja Decke,light.zimmer_sinja_decke,3/1/12,zimmer_sinja,Zimmer Sinja,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,
@@ -61,6 +61,3 @@ binary_sensor,Garagentor Status,binary_sensor.garagentor_status,2/3/15,garage,Ga
 sensor,Wetterstation Wind,sensor.wetterstation_wind,1/1/1,wetterstation,Wetterstation,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,
 button,Garagentor Impuls,button.garagentor_impuls,2/3/14_1,garage,Garage,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,
 cover,Garagentor,cover.garagentor,knx_garagentor_virtual_cover,garage,Garage,aussenbereich,Außenbereich,virtual template,Virtuelles Cover aus Garagentor-Impuls und KNX-Status.
-light,Arbeitszimmer.Decke,light.arbeitszimmer_decke,knx_es_01KS5QWDP23N0DWJGN8G6D3KFK,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,existing KNX panel entity,Bestehende KNX-Panel-Entität aus core.entity_registry/config_store.json.
-cover,Garten,cover.garten,knx_es_01KS5RDTK7CMSH1X60C3E3KAFG,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,existing KNX panel entity,Bestehende KNX-Panel-Entität; Fenster des Arbeitszimmers.
-cover,Vorgarten,cover.vorgarten,knx_es_01KS5YYAF3BR65JHMB9DB5VKA1,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,existing KNX panel entity,Bestehende KNX-Panel-Entität; Fenster des Arbeitszimmers.
