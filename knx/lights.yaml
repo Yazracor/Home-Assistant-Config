@@ -344,11 +344,11 @@
   state_address: "2/1/1"
 
 # Quelle: KNX.xml
-# address: 2/3/0 -> Garage 4x Innen | Schalten > Aussen/Garage
+# address: 2/3/10 -> Garage 4x Innen Normal | Schalten > Aussen/Garage
 # state_address: 2/3/1 -> Garage 4x Innen  RM | Schalten > Aussen/Garage
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
 - name: "Licht"
-  address: "2/3/0"
+  address: "2/3/10"
   state_address: "2/3/1"
 
 # Quelle: KNX.xml
