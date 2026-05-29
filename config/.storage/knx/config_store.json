@@ -1,0 +1,85 @@
+{
+  "version": 2,
+  "minor_version": 4,
+  "key": "knx/config_store.json",
+  "data": {
+    "entities": {
+      "light": {
+        "knx_es_01KS5QWDP23N0DWJGN8G6D3KFK": {
+          "entity": {
+            "entity_category": null,
+            "device_info": "knx_vdev_01KS5R4Y5MR3PZET3MDX6M5D9C",
+            "name": null
+          },
+          "knx": {
+            "ga_switch": {
+              "write": "3/0/60",
+              "state": "3/0/63",
+              "passive": []
+            },
+            "ga_brightness": {
+              "write": "3/0/62",
+              "state": "3/0/64",
+              "passive": []
+            },
+            "color_temp_max": 6000.0,
+            "sync_state": true,
+            "color_temp_min": 2700.0
+          }
+        }
+      },
+      "cover": {
+        "knx_es_01KS5RDTK7CMSH1X60C3E3KAFG": {
+          "entity": {
+            "device_info": "knx_vdev_01KS5RDGVYNE1D03KM8Y17KS2A",
+            "name": null,
+            "entity_category": null
+          },
+          "knx": {
+            "ga_up_down": {
+              "write": "4/0/76",
+              "passive": []
+            },
+            "ga_position_state": {
+              "state": "4/0/78",
+              "passive": []
+            },
+            "travelling_time_up": 27.0,
+            "travelling_time_down": 27.0,
+            "ga_step": {
+              "write": "4/0/77",
+              "passive": []
+            },
+            "sync_state": true
+          }
+        },
+        "knx_es_01KS5YYAF3BR65JHMB9DB5VKA1": {
+          "entity": {
+            "device_info": "knx_vdev_01KS5YY8BXA5HRYTY0SGCQYKZ7",
+            "name": null,
+            "entity_category": null
+          },
+          "knx": {
+            "ga_up_down": {
+              "write": "4/0/80",
+              "passive": []
+            },
+            "ga_step": {
+              "write": "4/0/81",
+              "passive": []
+            },
+            "ga_position_state": {
+              "state": "4/0/82",
+              "passive": []
+            },
+            "travelling_time_up": 27.0,
+            "travelling_time_down": 27.0,
+            "sync_state": true
+          }
+        }
+      }
+    },
+    "expose": {},
+    "time_server": {}
+  }
+}
