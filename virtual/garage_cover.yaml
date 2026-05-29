@@ -3,17 +3,17 @@ script:
     alias: Garagentor Impuls
     sequence:
       - variables:
-          impulse_button: >
-            {% if states('button.aussenbereich_garage_garagentor_impuls') not in ['unknown', 'unavailable'] %}
-              button.aussenbereich_garage_garagentor_impuls
-            {% elif states('button.garage_aussenbereich_garagentor_impuls') not in ['unknown', 'unavailable'] %}
-              button.garage_aussenbereich_garagentor_impuls
-            {% else %}
-              button.garagentor_impuls
-            {% endif %}
+          impulse_button: >-
+            {% if states.button.aussenbereich_garage_garagentor_impuls is defined -%}
+            button.aussenbereich_garage_garagentor_impuls
+            {%- elif states.button.garage_aussenbereich_garagentor_impuls is defined -%}
+            button.garage_aussenbereich_garagentor_impuls
+            {%- else -%}
+            button.garagentor_impuls
+            {%- endif %}
       - action: button.press
         target:
-          entity_id: "{{ impulse_button }}"
+          entity_id: "{{ impulse_button | trim }}"
 
 template:
   - cover:
