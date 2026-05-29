@@ -9,7 +9,7 @@ script:
 template:
   - cover:
       - name: "Garagentor"
-        unique_id: knx_garagentuer_virtual_cover
+        unique_id: knx_garagentor_virtual_cover
         device_class: garage
 
         availability: >
