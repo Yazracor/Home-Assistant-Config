@@ -60,6 +60,7 @@ binary_sensor,Arbeitszimmer Anforderung Kühlen,binary_sensor.arbeitszimmer_anfo
 binary_sensor,Garagentor Status,binary_sensor.garagentor_status,2/3/15,garage,Garage,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,
 sensor,Wetterstation Wind,sensor.wetterstation_wind,1/1/1,wetterstation,Wetterstation,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,
 button,Garagentor Impuls,button.garagentor_impuls,2/3/14_1,garage,Garage,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,
+cover,Garagentor,cover.garagentor,knx_garagentor_virtual_cover,garage,Garage,aussenbereich,Außenbereich,virtual template,Virtuelles Cover aus Garagentor-Impuls und KNX-Status.
 light,Arbeitszimmer.Decke,light.arbeitszimmer_decke,knx_es_01KS5QWDP23N0DWJGN8G6D3KFK,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,existing KNX panel entity,Bestehende KNX-Panel-Entität aus core.entity_registry/config_store.json.
 cover,Garten,cover.garten,knx_es_01KS5RDTK7CMSH1X60C3E3KAFG,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,existing KNX panel entity,Bestehende KNX-Panel-Entität; Fenster des Arbeitszimmers.
 cover,Vorgarten,cover.vorgarten,knx_es_01KS5YYAF3BR65JHMB9DB5VKA1,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,existing KNX panel entity,Bestehende KNX-Panel-Entität; Fenster des Arbeitszimmers.

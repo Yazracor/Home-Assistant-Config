@@ -146,7 +146,7 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
     by_eid: dict[str, dict] = {}
     for e in entities:
         by_eid[e.get('entity_id')] = e
-        if e.get('platform') == 'knx' and e.get('unique_id'):
+        if e.get('unique_id'):
             by_uid.setdefault(e['unique_id'], []).append(e)
 
     changed = 0

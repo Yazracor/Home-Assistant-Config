@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+
+repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+
+if [ -f "$repo_root/tools/apply_knx_area_assignments.py" ]; then
+  python3 "$repo_root/tools/apply_knx_area_assignments.py" \
+    --config-dir "$repo_root" \
+    --data-dir "$repo_root"
+fi

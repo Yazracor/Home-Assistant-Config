@@ -29,5 +29,21 @@ Für die automatische Raumzuordnung nach dem ersten erfolgreichen HA-Start mit d
 ```bash
 ha core stop
 python3 /config/tools/apply_knx_area_assignments.py --config-dir /config
+
+## Git-Hook nach `git pull`
+
+Auf der Home-Assistant-Instanz kann die Area-Zuordnung automatisch nach einem
+erfolgreichen `git pull` ausgeführt werden:
+
+```bash
+cd /config
+./devscripts/install-git-hooks.sh
+```
+
+Das installiert `.git/hooks/post-merge`. Der Hook ruft nach jedem Merge/Pull
+`tools/apply_knx_area_assignments.py --config-dir /config --data-dir /config`
+auf und weist damit auch virtuelle Template-Entities wie `cover.garagentor`
+dem passenden Raum zu. Home Assistant sollte danach neu gestartet werden, wenn
+neue YAML-Entities gerade erst angelegt wurden.
 ha core start
 ```
