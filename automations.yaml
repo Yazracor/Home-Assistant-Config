@@ -1,7 +1,7 @@
-- alias: "Git snapshot after UI changes"
+- id: git_snapshot_after_ui_changes
+  alias: "Git snapshot after UI changes"
   triggers:
     - trigger: time_pattern
       minutes: "/30"
   actions:
     - action: shell_command.git_snapshot
-      

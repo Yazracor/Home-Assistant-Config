@@ -13,5 +13,8 @@ automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 
+shell_command:
+  git_snapshot: /bin/sh /config/git-snapshot.sh
+
 # KNX entities converted from FHEM/ETS
 knx: !include knx.yaml
