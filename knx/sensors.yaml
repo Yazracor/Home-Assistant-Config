@@ -21,9 +21,3 @@
 - name: "Wetterstation Helligkeit"
   state_address: "1/1/3"
   type: "illuminance"
-
-# ETS: Messwert Temperatur
-# state_address: 1/1/4 -> Messwert Temperatur | Zentralfunktionen > Wetterstation
-- name: "Wetterstation Temperatur"
-  state_address: "1/1/4"
-  type: "temperature"

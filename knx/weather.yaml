@@ -1,0 +1,13 @@
+# KNX-Wetterstationsobjekte.
+# Datei: knx/weather.yaml
+
+# ETS: Wetterstation
+# Hinweis: Die KNX-Weather-Entity nutzt Temperatur, Wind und Niederschlag im
+# Home-Assistant-Weather-Modell. Helligkeit Süd und Dämmerung bleiben zusätzlich
+# als versteckte Rohsensoren verfügbar, da HA sie nicht als Weather-Attribute
+# anzeigt.
+- name: "Wetterstation"
+  address_temperature: "1/1/4"
+  address_brightness_south: "1/1/3"
+  address_wind_speed: "1/1/1"
+  address_rain_alarm: "1/1/12"
