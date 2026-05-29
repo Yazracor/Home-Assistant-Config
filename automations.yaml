@@ -59,12 +59,12 @@
     - Open
     for:
       hours: 0
-      minutes: 5
-      seconds: 0
+      minutes: 0
+      seconds: 20
   conditions: []
   actions:
-  - action: notify.notify
+  - action: notify.mobile_app_torbens_iphone
     metadata: {}
     data:
-      message: Garage offen
+      message: Garage offen!
   mode: single
