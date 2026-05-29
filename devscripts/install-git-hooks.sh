@@ -7,3 +7,4 @@ hooks_dir="$repo_root/.git/hooks"
 install -m 755 "$repo_root/devscripts/post-merge" "$hooks_dir/post-merge"
 
 echo "Installed Git hook: $hooks_dir/post-merge"
+echo "Hook log will be written to: $hooks_dir/post-merge.log"

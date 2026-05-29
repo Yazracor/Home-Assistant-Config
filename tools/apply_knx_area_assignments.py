@@ -132,7 +132,7 @@ def upsert_areas(storage: Path, areas_csv: Path, dry_run: bool) -> tuple[int, in
     return created, updated
 
 
-def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> tuple[int, int, list[str], dict[str,str]]:
+def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> tuple[int, int, int, list[str], dict[str,str]]:
     assignments = [r for r in load_csv(assignments_csv) if r.get('area_id')]
     path = storage / 'core.entity_registry'
     if not path.exists():
@@ -150,6 +150,7 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
             by_uid.setdefault(e['unique_id'], []).append(e)
 
     changed = 0
+    renamed = 0
     unmatched: list[str] = []
     device_area: dict[str, str] = {}
     t = now_iso()
@@ -165,6 +166,15 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
         if e is None:
             unmatched.append(f"{a.get('domain')}.{a.get('name')} / unique_id={a.get('unique_id')} / expected={a.get('expected_entity_id')}")
             continue
+        expected_entity_id = a.get('expected_entity_id')
+        if expected_entity_id and e.get('entity_id') != expected_entity_id and expected_entity_id not in by_eid:
+            old_entity_id = e.get('entity_id')
+            e['entity_id'] = expected_entity_id
+            e['modified_at'] = t
+            if old_entity_id in by_eid:
+                del by_eid[old_entity_id]
+            by_eid[expected_entity_id] = e
+            renamed += 1
         if e.get('area_id') != a['area_id']:
             e['area_id'] = a['area_id']
             e['modified_at'] = t
@@ -176,7 +186,7 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
     elif dry_run:
         # no write
         pass
-    return changed, len(unmatched), unmatched, device_area
+    return changed, renamed, len(unmatched), unmatched, device_area
 
 
 def apply_device_areas(storage: Path, device_area: dict[str,str], dry_run: bool) -> int:
@@ -221,12 +231,12 @@ def main() -> int:
 
     fc, fu = upsert_floors(storage, floors_csv, args.dry_run)
     ac, au = upsert_areas(storage, areas_csv, args.dry_run)
-    ec, missing, unmatched, device_area = apply_entity_areas(storage, assignments_csv, args.dry_run)
+    ec, er, missing, unmatched, device_area = apply_entity_areas(storage, assignments_csv, args.dry_run)
     dc = apply_device_areas(storage, device_area, args.dry_run)
 
     print(f'Floors: erstellt={fc}, aktualisiert={fu}')
     print(f'Areas: erstellt={ac}, aktualisiert={au}')
-    print(f'Entities: Area geändert={ec}, nicht gefunden={missing}')
+    print(f'Entities: Area geändert={ec}, Entity-ID geändert={er}, nicht gefunden={missing}')
     print(f'Devices: Area geändert={dc}')
     if unmatched:
         print('\nNicht zugeordnete erwartete Entitäten:')

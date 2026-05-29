@@ -2,9 +2,18 @@
 set -eu
 
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+log_file="$repo_root/.git/hooks/post-merge.log"
 
-if [ -f "$repo_root/tools/apply_knx_area_assignments.py" ]; then
-  python3 "$repo_root/tools/apply_knx_area_assignments.py" \
-    --config-dir "$repo_root" \
-    --data-dir "$repo_root"
-fi
+{
+  echo "$(date -u '+%Y-%m-%dT%H:%M:%SZ') post-merge hook started in $repo_root"
+
+  if [ -f "$repo_root/tools/apply_knx_area_assignments.py" ]; then
+    python3 "$repo_root/tools/apply_knx_area_assignments.py" \
+      --config-dir "$repo_root" \
+      --data-dir "$repo_root"
+  else
+    echo "tools/apply_knx_area_assignments.py not found"
+  fi
+
+  echo "$(date -u '+%Y-%m-%dT%H:%M:%SZ') post-merge hook finished"
+} >> "$log_file" 2>&1

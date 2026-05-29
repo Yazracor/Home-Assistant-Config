@@ -54,7 +54,7 @@ cover,WC OG Fenster,cover.wc_og_fenster,4/0/8_4/0/11,wc_og,WC OG,obergeschoss,Ob
 cover,Bad OG innen,cover.bad_og_innen,4/2/2_4/1/3,bad_og,Bad OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
 cover,Bad OG Balkon,cover.bad_og_balkon,4/2/8_4/0/15,bad_og,Bad OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
 cover,Bad OG Panorama außen,cover.bad_og_panorama_aussen,4/0/12_4/0/15,bad_og,Bad OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,
-climate,Arbeitszimmer Thermostat,climate.arbeitszimmer_thermostat,5/0/79_5/0/81_5/0/81_None,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
+climate,Arbeitszimmer Thermostat,climate.arbeitszimmer_thermostat,5/0/79_5/0/81_5/0/75_None,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
 binary_sensor,Arbeitszimmer Anforderung Heizen,binary_sensor.arbeitszimmer_anforderung_heizen,5/0/77,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
 binary_sensor,Arbeitszimmer Anforderung Kühlen,binary_sensor.arbeitszimmer_anforderung_kuhlen,5/0/80,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,
 binary_sensor,Garagentor Status,binary_sensor.garagentor_status,2/3/15,garage,Garage,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,
