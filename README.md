@@ -44,6 +44,6 @@ cd /config
 
 Das installiert `.git/hooks/post-merge`. Der Hook ruft nach jedem Merge/Pull
 `tools/apply_knx_area_assignments.py --config-dir /config --data-dir /config`
-auf und weist damit auch virtuelle Template-Entities wie `cover.garage_aussenbereich_garagentor`
+auf und weist damit auch virtuelle Template-Entities wie `cover.aussenbereich_garage_garagentor`
 dem passenden Raum zu. Home Assistant sollte danach neu gestartet werden, wenn
 neue YAML-Entities gerade erst angelegt wurden.
