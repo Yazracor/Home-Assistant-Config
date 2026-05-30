@@ -279,13 +279,6 @@
 - name: "Keller vorn"
   address: "2/1/14"
 
-# FHEM: KG_Keller_gesamt
-# FHEM room: KNX,KG_Keller,homebridge
-# address: 2/2/0 -> Keller 3 x  | Schalten > Gruppen
-# HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "Keller alle"
-  address: "2/2/0"
-
 # FHEM: Eingangsbereich
 # FHEM room: KNX,Aussen,homebridge
 # address: 2/3/21 -> Dauerschaltung Eingangsb. | Schalten > Aussen/Garage
