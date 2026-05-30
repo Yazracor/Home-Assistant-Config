@@ -12,9 +12,3 @@
   address: "5/0/75"
   reason: "Erste DPT9.001-Adresse ohne FHEM-Alias; ETS-Name: --1A6 EG Gast Basis Sollwert. Nicht automatisch in climate eingebunden."
   # 5/0/75: --1A6 EG Gast Basis Sollwert |  | Heizung > EG / OG
-
-- fhem_device: "Jal_OG_Schlafzimmer_Aussen_Front_All_lang"
-  kind: "command_group"
-  address: "4/2/7"
-  reason: "Einzelne Jalousie-Gruppenadresse ohne Richtungspaar/Status; nicht als cover oder button aktiviert."
-  # 4/2/7: OG Schlafz. 3x aussen Front KZ |  | Jalousien > Gruppen

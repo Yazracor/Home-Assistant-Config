@@ -8,7 +8,7 @@
 # move_short_address: 4/0/77 -> 3A8 EG Gast rechts KZ | Jalousien > OG/EG/KG Aussen
 # position_address: 4/0/79 -> 3A8 EG Gast rechts JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/78 -> 3A8 EG Gast rechts R JP | Jalousien > OG/EG/KG Aussen
-- name: "Arbeitszimmer Garten"
+- name: "Jalousie_EG_Buero_Fenster_Garten"
   move_long_address: "4/0/76"
   move_short_address: "4/0/77"
   position_state_address: "4/0/78"
@@ -20,7 +20,7 @@
 # move_short_address: 4/0/81 -> 4A1 EG Gast links KZ | Jalousien > OG/EG/KG Aussen
 # position_address: 4/0/83 -> 4A1 EG Gast links JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/82 -> 4A1 EG Gast links R JP | Jalousien > OG/EG/KG Aussen
-- name: "Arbeitszimmer Vorgarten"
+- name: "Jalousie_EG_Buero_Fenster_Vorgarten"
   move_long_address: "4/0/80"
   move_short_address: "4/0/81"
   position_state_address: "4/0/82"
@@ -32,7 +32,7 @@
 # move_short_address: 4/0/57 -> 3A3 EG Wohnz. Panoramaf. KZ | Jalousien > OG/EG/KG Aussen
 # position_address: 4/0/59 -> 3A3 EG Wohnz. Panoramaf. JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/58 -> 3A3 EG Wohnz. Panoramaf. R JP | Jalousien > OG/EG/KG Aussen
-- name: "Wohnzimmer Panorama"
+- name: "Jalousie_EG_Wohnzimmer_Panorama"
   move_long_address: "4/0/56"
   move_short_address: "4/0/57"
   position_state_address: "4/0/58"
@@ -44,7 +44,7 @@
 # move_short_address: 4/0/61 -> 3A4 EG Wohnz. Terrasse KZ | Jalousien > OG/EG/KG Aussen
 # position_address: 4/0/63 -> 3A4 EG Wohnz. Terrasse JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/62 -> 3A4 EG Wohnz. Terrasse R JP | Jalousien > OG/EG/KG Aussen
-- name: "Wohnzimmer Balkon"
+- name: "Jalousie_EG_Wohnzimmer_Terrasse"
   move_long_address: "4/0/60"
   move_short_address: "4/0/61"
   position_state_address: "4/0/62"
@@ -56,7 +56,7 @@
 # move_short_address: 4/0/65 -> 3A5 EG Küche Terrasse KZ | Jalousien > OG/EG/KG Aussen
 # position_address: 4/0/67 -> 3A5 EG Küche Terrasse JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/66 -> 3A5 EG Küche Terrasse R JP | Jalousien > OG/EG/KG Aussen
-- name: "Küche Balkon"
+- name: "Jalousie_EG_Kueche_Terrasse"
   move_long_address: "4/0/64"
   move_short_address: "4/0/65"
   position_state_address: "4/0/66"
@@ -68,7 +68,7 @@
 # move_short_address: 4/0/69 -> 3A6 EG Küche Seite KZ | Jalousien > OG/EG/KG Aussen
 # position_address: 4/0/71 -> 3A6 EG Küche Seite JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/70 -> 3A6 EG Küche Seite R JP | Jalousien > OG/EG/KG Aussen
-- name: "Küche Seite"
+- name: "Jalousie_EG_Kueche_Seite"
   move_long_address: "4/0/68"
   move_short_address: "4/0/69"
   position_state_address: "4/0/70"
@@ -80,7 +80,7 @@
 # move_short_address: 4/0/73 -> 3A7 EG Küche Nebeneingang KZ | Jalousien > OG/EG/KG Aussen
 # position_address: 4/0/75 -> 3A7 EG Küche Nebeneingang JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/74 -> 3A7 EG Küche Nebeneingang R JP | Jalousien > OG/EG/KG Aussen
-- name: "Küche Nebeneingang"
+- name: "Jalousie_EG_Kueche_Nebeneingang"
   move_long_address: "4/0/72"
   move_short_address: "4/0/73"
   position_state_address: "4/0/74"
@@ -92,7 +92,7 @@
 # move_short_address: 4/0/95 -> 5A2 Sonnensegel KZ | Jalousien > OG/EG/KG Aussen
 # position_address: 4/0/97 -> 5A2 Sonnensegel JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/96 -> 5A2 Sonnensegel R JP | Jalousien > OG/EG/KG Aussen
-- name: "Sonnensegel"
+- name: "Jalousie_EG_Kueche_Sonnensegel"
   move_long_address: "4/0/94"
   move_short_address: "4/0/95"
   position_state_address: "4/0/96"
@@ -103,7 +103,7 @@
 # move_short_address: 4/0/85 -> 4A2 KG Kind links KZ | Jalousien > KG
 # position_address: 4/0/87 -> 4A2 KG Kind links JP | Jalousien > KG
 # position_state_address: 4/0/86 -> 4A2 KG Kind links R JP | Jalousien > KG
-- name: "Zimmer Sinja Jalousie"
+- name: "Jalousie_KG_Kind_links"
   move_long_address: "4/0/84"
   move_short_address: "4/0/85"
   position_state_address: "4/0/86"
@@ -114,7 +114,7 @@
 # move_short_address: 4/0/89 -> 4A3 KG Kind rechts KZ | Jalousien > KG
 # position_address: 4/0/91 -> 4A3 KG Kind rechts JP | Jalousien > KG
 # position_state_address: 4/0/90 -> 4A3 KG Kind rechts R JP | Jalousien > KG
-- name: "Zimmer Silas Jalousie"
+- name: "Jalousie_KG_Kind_rechts"
   move_long_address: "4/0/88"
   move_short_address: "4/0/89"
   position_state_address: "4/0/90"
@@ -128,7 +128,7 @@
 # HINWEIS: position_state_address aus Sicherheitsgründen weggelassen: ETS-Name zu 4/2/2 lautet 'OG Bad 3x innen LZ', nicht R JP.
 # AUSKOMMENTIERT position_address: "4/2/3"  # FHEM alias ziel; ETS: OG Bad 3x innen KZ 
 # AUSKOMMENTIERT position_state_address: "4/2/2"  # FHEM alias status; ETS: OG Bad 3x innen LZ
-- name: "Schlafzimmer Front innen"
+- name: "Jalousie_OG_Schlafzimmer_Innen_Front"
   move_long_address: "4/2/0"
   move_short_address: "4/2/1"
   travelling_time_down: 27
@@ -139,46 +139,19 @@
 # move_short_address: 4/1/21 -> 5A1 OG Schlafz. Panorama KZ | Jalousien > OG Innen
 # position_address: 4/1/23 -> 5A1 OG Schlafz. Panorama JP | Jalousien > OG Innen
 # position_state_address: 4/1/22 -> 5A1 OG Schlafz. Panorama R JP | Jalousien > OG Innen
-- name: "Schlafzimmer Panorama innen"
+- name: "Jalousie_OG_Schlafzimmer_Innen_Panorama"
   move_long_address: "4/1/20"
   move_short_address: "4/1/21"
   position_state_address: "4/1/22"
   travelling_time_down: 27
   travelling_time_up: 27
-# FHEM: Jalousie_OG_Schlafzimmer_Aussen_Front_1
-# FHEM room: Schlafzimmer_hidden,KNX
-# move_long_address: 4/0/40 -> 2A3 OG Schlafz. mitte LZ | Jalousien > OG/EG/KG Aussen
-# move_short_address: 4/0/41 -> 2A3 OG Schlafz. mitte KZ | Jalousien > OG/EG/KG Aussen
-# position_address: 4/0/43 -> 2A3 OG Schlafz. mitte JP | Jalousien > OG/EG/KG Aussen
-# position_state_address: 4/0/42 -> 2A3 OG Schlafz. mitte R JP | Jalousien > OG/EG/KG Aussen
-- name: "Schlafzimmer Front Mitte"
-  move_long_address: "4/0/40"
-  move_short_address: "4/0/41"
-  position_state_address: "4/0/42"
-  travelling_time_down: 27
-  travelling_time_up: 27
-# FHEM: Jalousie_OG_Schlafzimmer_Aussen_Front_2
-# FHEM room: Schlafzimmer_hidden,KNX
-# move_long_address: 4/0/36 -> 2A2 OG Schlafz. rechts LZ | Jalousien > OG/EG/KG Aussen
-# move_short_address: 4/0/37 -> 2A2 OG Schlafz. rechts KZ | Jalousien > OG/EG/KG Aussen
-# position_address: 4/0/39 -> 2A2 OG Schlafz. rechts JP | Jalousien > OG/EG/KG Aussen
-# position_state_address: 4/0/38 -> 2A2 OG Schlafz. rechts R JP | Jalousien > OG/EG/KG Aussen
-- name: "Schlafzimmer Front rechts"
-  move_long_address: "4/0/36"
-  move_short_address: "4/0/37"
-  position_state_address: "4/0/38"
-  travelling_time_down: 27
-  travelling_time_up: 27
-# FHEM: Jalousie_OG_Schlafzimmer_Aussen_Front_3
-# FHEM room: Schlafzimmer_hidden,KNX
-# move_long_address: 4/0/44 -> 2A4 OG Schlafz. links LZ | Jalousien > OG/EG/KG Aussen
-# move_short_address: 4/0/45 -> 2A4 OG Schlafz. links KZ | Jalousien > OG/EG/KG Aussen
-# position_address: 4/0/47 -> 2A4 OG Schlafz. links JP | Jalousien > OG/EG/KG Aussen
-# position_state_address: 4/0/46 -> 2A4 OG Schlafz. links R JP | Jalousien > OG/EG/KG Aussen
-- name: "Schlafzimmer Front links"
-  move_long_address: "4/0/44"
-  move_short_address: "4/0/45"
-  position_state_address: "4/0/46"
+# FHEM: Jal_OG_Schlafzimmer_Aussen_Front_All_lang
+# FHEM room: KNX,Schlafzimmer_hidden
+# move_long_address: 4/2/6 -> OG Schlafz. 3x aussen Front LZ | Jalousien > Gruppen
+# move_short_address: 4/2/7 -> OG Schlafz. 3x aussen Front KZ | Jalousien > Gruppen
+- name: "OG_Schlafzimmer_Front"
+  move_long_address: "4/2/6"
+  move_short_address: "4/2/7"
   travelling_time_down: 27
   travelling_time_up: 27
 # FHEM: Jalousie_OG_Schlafzimmer_Aussen_Panorama
@@ -187,7 +160,7 @@
 # move_short_address: 4/0/49 -> 3A1 OG Schlafz. Panoramaf. KZ | Jalousien > OG/EG/KG Aussen
 # position_address: 4/0/51 -> 3A1 OG Schlafz. Panoramaf. JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/50 -> 3A1 OG Schlafz. Panoramaf. R JP | Jalousien > OG/EG/KG Aussen
-- name: "Schlafzimmer Panorama außen"
+- name: "Jalousie_OG_Schlafzimmer_Aussen_Panorama"
   move_long_address: "4/0/48"
   move_short_address: "4/0/49"
   position_state_address: "4/0/50"
@@ -199,7 +172,7 @@
 # move_short_address: 4/0/5 -> A2 OG Arbeiten KZ | Jalousien > OG/EG/KG Aussen
 # position_address: 4/0/7 -> A2 OG Arbeiten JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/6 -> A2 OG Arbeiten R JP | Jalousien > OG/EG/KG Aussen
-- name: "Büro OG Fenster"
+- name: "Jalousie_OG_Buero"
   move_long_address: "4/0/4"
   move_short_address: "4/0/5"
   position_state_address: "4/0/6"
@@ -211,7 +184,7 @@
 # move_short_address: 4/0/1 -> A1 OG Ankleide KZ | Jalousien > OG/EG/KG Aussen
 # position_address: 4/0/3 -> A1 OG Ankleide JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/2 -> A1 OG Ankleide R JP | Jalousien > OG/EG/KG Aussen
-- name: "Ankleide Fenster"
+- name: "Jalousie_OG_Ankleide"
   move_long_address: "4/0/0"
   move_short_address: "4/0/1"
   position_state_address: "4/0/2"
@@ -223,7 +196,7 @@
 # move_short_address: 4/2/15 -> OG Tür Treppe+Flur rechts KZ | Jalousien > Gruppen
 # position_address: 4/0/31 -> A8 OG Flur rechts JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/30 -> A8 OG Flur rechts R JP | Jalousien > OG/EG/KG Aussen
-- name: "Flur OG Fenster"
+- name: "Jalousie_OG_Flur"
   move_long_address: "4/2/14"
   move_short_address: "4/2/15"
   position_state_address: "4/0/30"
@@ -235,7 +208,7 @@
 # move_short_address: 4/0/53 -> 3A2 OG über Treppe KZ | Jalousien > OG/EG/KG Aussen
 # position_address: 4/0/55 -> 3A2 OG über Treppe JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/54 -> 3A2 OG über Treppe R JP | Jalousien > OG/EG/KG Aussen
-- name: "Treppe OG"
+- name: "Jalousie_OG_Treppe"
   move_long_address: "4/0/52"
   move_short_address: "4/0/53"
   position_state_address: "4/0/54"
@@ -247,7 +220,7 @@
 # move_short_address: 4/0/9 -> A3 OG WC KZ | Jalousien > OG/EG/KG Aussen
 # position_address: 4/0/11 -> A3 OG WC JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/10 -> A3 OG WC R JP | Jalousien > OG/EG/KG Aussen
-- name: "WC OG Fenster"
+- name: "Jalousie_OG_WC"
   move_long_address: "4/0/8"
   move_short_address: "4/0/9"
   position_state_address: "4/0/10"
@@ -259,7 +232,7 @@
 # move_short_address: 4/2/3 -> OG Bad 3x innen KZ  | Jalousien > Gruppen
 # position_address: 4/1/3 -> 4A4 OG Bad mitte JP | Jalousien > OG Innen
 # position_state_address: 4/1/2 -> 4A4 OG Bad mitte R JP | Jalousien > OG Innen
-- name: "Bad OG innen"
+- name: "Jalousie_OG_Bad_Innen"
   move_long_address: "4/2/2"
   move_short_address: "4/2/3"
   position_state_address: "4/1/2"
@@ -271,7 +244,7 @@
 # move_short_address: 4/2/9 -> OG Bad 5x aussen KZ | Jalousien > Gruppen
 # position_address: 4/0/15 -> A4 OG Bad Panoramaf. JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/14 -> A4 OG Bad Panoramaf. R JP | Jalousien > OG/EG/KG Aussen
-- name: "Bad OG Balkon"
+- name: "Jalousie_OG_Bad_Aussen_Balkon"
   move_long_address: "4/2/8"
   move_short_address: "4/2/9"
   position_state_address: "4/0/14"
@@ -283,7 +256,7 @@
 # move_short_address: 4/0/13 -> A4 OG Bad Panoramaf. KZ | Jalousien > OG/EG/KG Aussen
 # position_address: 4/0/15 -> A4 OG Bad Panoramaf. JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/14 -> A4 OG Bad Panoramaf. R JP | Jalousien > OG/EG/KG Aussen
-- name: "Bad OG Panorama außen"
+- name: "Jalousie_OG_Bad_Aussen_Panorama"
   move_long_address: "4/0/12"
   move_short_address: "4/0/13"
   position_state_address: "4/0/14"
