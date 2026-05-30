@@ -2,9 +2,23 @@
   alias: Git snapshot after UI changes
   triggers:
   - trigger: time_pattern
-    minutes: /30
+    minutes: "/30"
+  conditions: []
   actions:
   - action: shell_command.git_snapshot
+    response_variable: git_snapshot
+  - if:
+    - condition: template
+      value_template: "{{ git_snapshot.returncode != 0 }}"
+    then:
+    - action: persistent_notification.create
+      data:
+        title: Git snapshot failed
+        message: >-
+          git-snapshot.sh failed with return code {{ git_snapshot.returncode }}.
+          stderr: {{ git_snapshot.stderr | default('') }}
+          stdout: {{ git_snapshot.stdout | default('') }}
+  mode: single
 - id: '1780071059264'
   alias: Entfeuchter an
   description: ''
@@ -83,19 +97,5 @@
           minutes: 30
           seconds: 0
           milliseconds: 0
+
   mode: single
-=======
-    - action: shell_command.git_snapshot
-      response_variable: git_snapshot
-    - if:
-        - condition: template
-          value_template: "{{ git_snapshot.returncode != 0 }}"
-      then:
-        - action: persistent_notification.create
-          data:
-            title: "Git snapshot failed"
-            message: >-
-              git-snapshot.sh failed with return code {{ git_snapshot.returncode }}.
-              stderr: {{ git_snapshot.stderr | default('') }}
-              stdout: {{ git_snapshot.stdout | default('') }}
->>>>>>> 3583006383b9e5b87e897ce891d09633e1b2d7b3
