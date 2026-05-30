@@ -106,6 +106,30 @@
   position_state_address: "4/0/96"
   travelling_time_down: 27
   travelling_time_up: 27
+# ETS: 4A2 KG Kind links
+# move_long_address: 4/0/84 -> 4A2 KG Kind links LZ | Jalousien > KG
+# move_short_address: 4/0/85 -> 4A2 KG Kind links KZ | Jalousien > KG
+# position_address: 4/0/87 -> 4A2 KG Kind links JP | Jalousien > KG
+# position_state_address: 4/0/86 -> 4A2 KG Kind links R JP | Jalousien > KG
+- name: "Zimmer Sinja Jalousie"
+  move_long_address: "4/0/84"
+  move_short_address: "4/0/85"
+  position_address: "4/0/87"
+  position_state_address: "4/0/86"
+  travelling_time_down: 27
+  travelling_time_up: 27
+# ETS: 4A3 KG Kind rechts
+# move_long_address: 4/0/88 -> 4A3 KG Kind rechts LZ | Jalousien > KG
+# move_short_address: 4/0/89 -> 4A3 KG Kind rechts KZ | Jalousien > KG
+# position_address: 4/0/91 -> 4A3 KG Kind rechts JP | Jalousien > KG
+# position_state_address: 4/0/90 -> 4A3 KG Kind rechts R JP | Jalousien > KG
+- name: "Zimmer Silas Jalousie"
+  move_long_address: "4/0/88"
+  move_short_address: "4/0/89"
+  position_address: "4/0/91"
+  position_state_address: "4/0/90"
+  travelling_time_down: 27
+  travelling_time_up: 27
 # FHEM: Jalousie_OG_Schlafzimmer_Innen_Front
 # FHEM room: Schlafzimmer,KNX,homebridge
 # move_long_address: 4/2/0 -> OG Schlafz. 3x Front innen LZ | Jalousien > Gruppen
