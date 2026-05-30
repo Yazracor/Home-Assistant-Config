@@ -13,11 +13,23 @@
     "esphome/**/*.yaml": "esphome"
   },
   "yaml.customTags": [
-    "!include",
-    "!include_dir_named",
-    "!include_dir_merge_named",
-    "!include_dir_list",
-    "!env_var",
-    "!secret"
-  ]
+    "!include scalar",
+    "!include_dir_named scalar",
+    "!include_dir_merge_named scalar",
+    "!include_dir_merge_list scalar",
+    "!include_dir_list scalar",
+    "!env_var scalar",
+    "!secret scalar"
+  ],
+  "files.exclude": {
+    "**/.DS_Store": false,
+    "**/Thumbs.db": false,
+    "**/.storage": false
+  },
+  "search.exclude": {
+    "**/.DS_Store": false,
+    "**/Thumbs.db": false,
+    "**/.storage": false
+  },
+  "explorer.excludeGitIgnore": false
 }
