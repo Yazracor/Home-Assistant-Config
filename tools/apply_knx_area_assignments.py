@@ -216,11 +216,41 @@ def remove_obsolete_areas(storage: Path, obsolete_areas_csv: Path, dry_run: bool
     return removed, entity_changed, device_changed
 
 
-def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> tuple[int, int, int, int, int, list[str], dict[str, str | None]]:
+def remove_entity(entities: list[dict], by_eid: dict[str, dict], by_uid: dict[str, list[dict]], entity: dict) -> bool:
+    try:
+        entities.remove(entity)
+    except ValueError:
+        return False
+    entity_id = entity.get('entity_id')
+    if entity_id in by_eid and by_eid[entity_id] is entity:
+        del by_eid[entity_id]
+    unique_id = entity.get('unique_id')
+    if unique_id in by_uid:
+        by_uid[unique_id] = [e for e in by_uid[unique_id] if e is not entity]
+        if not by_uid[unique_id]:
+            del by_uid[unique_id]
+    return True
+
+
+def set_unique_id(entity: dict, new_unique_id: str, by_uid: dict[str, list[dict]], modified_at: str) -> bool:
+    old_unique_id = entity.get('unique_id')
+    if old_unique_id == new_unique_id:
+        return False
+    if old_unique_id in by_uid:
+        by_uid[old_unique_id] = [e for e in by_uid[old_unique_id] if e is not entity]
+        if not by_uid[old_unique_id]:
+            del by_uid[old_unique_id]
+    entity['unique_id'] = new_unique_id
+    entity['modified_at'] = modified_at
+    by_uid.setdefault(new_unique_id, []).append(entity)
+    return True
+
+
+def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> tuple[int, int, int, int, int, int, int, list[str], dict[str, str | None]]:
     assignments = [r for r in load_csv(assignments_csv) if r.get('area_id')]
     path = storage / 'core.entity_registry'
     if not path.exists():
-        return 0, 0, 0, 0, len(assignments), ['core.entity_registry nicht gefunden; KNX-Entitäten zuerst einmal von HA anlegen lassen.'], {}
+        return 0, 0, 0, 0, 0, 0, len(assignments), ['core.entity_registry nicht gefunden; KNX-Entitäten zuerst einmal von HA anlegen lassen.'], {}
     with path.open(encoding='utf-8') as f:
         store = json.load(f)
     entities = store.get('data', {}).get('entities', [])
@@ -237,24 +267,34 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
     renamed = 0
     name_changed = 0
     hidden_changed = 0
+    unique_changed = 0
+    duplicates_removed = 0
     unmatched: list[str] = []
     device_area: dict[str, str | None] = {}
     t = now_iso()
     for a in assignments:
-        candidates = by_uid.get(a['unique_id'], []) if a.get('unique_id') else []
+        desired_unique_id = a.get('unique_id')
+        candidates = by_uid.get(desired_unique_id, []) if desired_unique_id else []
+        expected_entity_id = a.get('expected_entity_id')
         e = None
+        if expected_entity_id:
+            e = by_eid.get(expected_entity_id)
+        if e is None:
+            e = next((by_eid[x] for x in legacy_entity_ids(a) if x in by_eid), None)
         # If multiple candidates ever occur, prefer same domain.
-        if candidates:
+        if e is None and candidates:
             expected_domain = a.get('domain')
             e = next((x for x in candidates if x.get('entity_id','').startswith(expected_domain + '.')), None)
         if e is None:
-            e = by_eid.get(a.get('expected_entity_id'))
-        if e is None:
-            e = next((by_eid[x] for x in legacy_entity_ids(a) if x in by_eid), None)
-        if e is None:
             unmatched.append(f"{a.get('domain')}.{a.get('name')} / unique_id={a.get('unique_id')} / expected={a.get('expected_entity_id')}")
             continue
-        expected_entity_id = a.get('expected_entity_id')
+        if desired_unique_id:
+            for duplicate in list(by_uid.get(desired_unique_id, [])):
+                if duplicate is not e and duplicate.get('platform') == e.get('platform') and duplicate.get('entity_id', '').startswith(a.get('domain') + '.'):
+                    if remove_entity(entities, by_eid, by_uid, duplicate):
+                        duplicates_removed += 1
+            if set_unique_id(e, desired_unique_id, by_uid, t):
+                unique_changed += 1
         if expected_entity_id and e.get('entity_id') != expected_entity_id and expected_entity_id not in by_eid:
             old_entity_id = e.get('entity_id')
             e['entity_id'] = expected_entity_id
@@ -281,12 +321,12 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
                 hidden_changed += 1
         if e.get('device_id'):
             device_area[e['device_id']] = desired_device_area(a)
-    if (changed or renamed or name_changed or hidden_changed) and not dry_run:
+    if (changed or renamed or name_changed or hidden_changed or unique_changed or duplicates_removed) and not dry_run:
         write_store(path, store, dry_run=False)
     elif dry_run:
         # no write
         pass
-    return changed, renamed, name_changed, hidden_changed, len(unmatched), unmatched, device_area
+    return changed, renamed, name_changed, hidden_changed, unique_changed, duplicates_removed, len(unmatched), unmatched, device_area
 
 
 def apply_device_areas(storage: Path, device_area: dict[str, str | None], dry_run: bool) -> int:
@@ -336,13 +376,13 @@ def main() -> int:
     fc, fu = upsert_floors(storage, floors_csv, args.dry_run)
     ac, au = upsert_areas(storage, areas_csv, args.dry_run)
     ar, ae, ad = remove_obsolete_areas(storage, obsolete_areas_csv, args.dry_run)
-    ec, er, en, eh, missing, unmatched, device_area = apply_entity_areas(storage, assignments_csv, args.dry_run)
+    ec, er, en, eh, eu, ed, missing, unmatched, device_area = apply_entity_areas(storage, assignments_csv, args.dry_run)
     dc = apply_device_areas(storage, device_area, args.dry_run)
 
     print(f'Floors: erstellt={fc}, aktualisiert={fu}')
     print(f'Areas: erstellt={ac}, aktualisiert={au}')
     print(f'Obsolete Areas: entfernt={ar}, Entity-Zuordnungen geändert={ae}, Device-Zuordnungen geändert={ad}')
-    print(f'Entities: Area geändert={ec}, Entity-ID geändert={er}, Name geändert={en}, Sichtbarkeit geändert={eh}, nicht gefunden={missing}')
+    print(f'Entities: Area geändert={ec}, Entity-ID geändert={er}, Name geändert={en}, Sichtbarkeit geändert={eh}, Unique-ID geändert={eu}, Duplikate entfernt={ed}, nicht gefunden={missing}')
     print(f'Devices: Area geändert={dc}')
     if unmatched:
         print('\nNicht zugeordnete erwartete Entitäten:')
