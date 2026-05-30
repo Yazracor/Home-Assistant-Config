@@ -3,6 +3,8 @@ cd /config || exit 1
 
 git add -A
 
-git diff --cached --quiet && exit 0
+if ! git diff --cached --quiet; then
+  git commit -m "HA snapshot $(date -Iseconds)"
+fi
+git push
 
-git commit -m "HA snapshot $(date -Iseconds)"
