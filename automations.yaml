@@ -4,7 +4,6 @@
   - trigger: time_pattern
     minutes: /30
   actions:
-<<<<<<< HEAD
   - action: shell_command.git_snapshot
 - id: '1780071059264'
   alias: Entfeuchter an
