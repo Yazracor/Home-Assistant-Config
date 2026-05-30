@@ -30,7 +30,6 @@ light,Waschküche Decke,light.kg_waschkueche_decke,2/1/4,waschkueche,Waschküche
 light,Keller hinten,light.kg_keller_hinten,2/1/8,keller,Keller,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.keller_hinten;light.keller_kg_hinten
 light,Keller klein,light.kg_keller_klein,2/1/12,keller,Keller,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.keller_klein;light.keller_kg_klein
 light,Keller vorn,light.kg_keller_vorn,2/1/14,keller,Keller,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.keller_vorn;light.keller_kg_vorn
-light,Keller alle,light.kg_keller_alle,2/2/0,keller,Keller,kellergeschoss,Kellergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.keller_alle;light.keller_kg_alle
 light,Eingangsbereich,light.aussenbereich_eingangsbereich,2/3/21,eingangsbereich,Eingangsbereich,aussenbereich,Außenbereich,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.eingangsbereich;light.eingangsbereich_aussenbereich
 light,Eingang Vordach,light.aussenbereich_eingangsbereich_eingang_vordach,2/0/16,eingangsbereich,Eingangsbereich,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.eingang_vordach
 light,Balkon Licht,light.aussenbereich_balkon_licht,2/0/22,balkon,Balkon,aussenbereich,Außenbereich,KNX/ETS group address name,legacy_entity_ids=light.terrasse_eg;light.balkon_eg
