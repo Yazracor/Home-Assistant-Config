@@ -145,40 +145,13 @@
   position_state_address: "4/1/22"
   travelling_time_down: 27
   travelling_time_up: 27
-# FHEM: Jalousie_OG_Schlafzimmer_Aussen_Front_1
-# FHEM room: Schlafzimmer_hidden,KNX
-# move_long_address: 4/0/40 -> 2A3 OG Schlafz. mitte LZ | Jalousien > OG/EG/KG Aussen
-# move_short_address: 4/0/41 -> 2A3 OG Schlafz. mitte KZ | Jalousien > OG/EG/KG Aussen
-# position_address: 4/0/43 -> 2A3 OG Schlafz. mitte JP | Jalousien > OG/EG/KG Aussen
-# position_state_address: 4/0/42 -> 2A3 OG Schlafz. mitte R JP | Jalousien > OG/EG/KG Aussen
-- name: "Jalousie_OG_Schlafzimmer_Aussen_Front_1"
-  move_long_address: "4/0/40"
-  move_short_address: "4/0/41"
-  position_state_address: "4/0/42"
-  travelling_time_down: 27
-  travelling_time_up: 27
-# FHEM: Jalousie_OG_Schlafzimmer_Aussen_Front_2
-# FHEM room: Schlafzimmer_hidden,KNX
-# move_long_address: 4/0/36 -> 2A2 OG Schlafz. rechts LZ | Jalousien > OG/EG/KG Aussen
-# move_short_address: 4/0/37 -> 2A2 OG Schlafz. rechts KZ | Jalousien > OG/EG/KG Aussen
-# position_address: 4/0/39 -> 2A2 OG Schlafz. rechts JP | Jalousien > OG/EG/KG Aussen
-# position_state_address: 4/0/38 -> 2A2 OG Schlafz. rechts R JP | Jalousien > OG/EG/KG Aussen
-- name: "Jalousie_OG_Schlafzimmer_Aussen_Front_2"
-  move_long_address: "4/0/36"
-  move_short_address: "4/0/37"
-  position_state_address: "4/0/38"
-  travelling_time_down: 27
-  travelling_time_up: 27
-# FHEM: Jalousie_OG_Schlafzimmer_Aussen_Front_3
-# FHEM room: Schlafzimmer_hidden,KNX
-# move_long_address: 4/0/44 -> 2A4 OG Schlafz. links LZ | Jalousien > OG/EG/KG Aussen
-# move_short_address: 4/0/45 -> 2A4 OG Schlafz. links KZ | Jalousien > OG/EG/KG Aussen
-# position_address: 4/0/47 -> 2A4 OG Schlafz. links JP | Jalousien > OG/EG/KG Aussen
-# position_state_address: 4/0/46 -> 2A4 OG Schlafz. links R JP | Jalousien > OG/EG/KG Aussen
-- name: "Jalousie_OG_Schlafzimmer_Aussen_Front_3"
-  move_long_address: "4/0/44"
-  move_short_address: "4/0/45"
-  position_state_address: "4/0/46"
+# FHEM: Jal_OG_Schlafzimmer_Aussen_Front_All_lang
+# FHEM room: KNX,Schlafzimmer_hidden
+# move_long_address: 4/2/6 -> OG Schlafz. 3x aussen Front LZ | Jalousien > Gruppen
+# move_short_address: 4/2/7 -> OG Schlafz. 3x aussen Front KZ | Jalousien > Gruppen
+- name: "OG_Schlafzimmer_Front"
+  move_long_address: "4/2/6"
+  move_short_address: "4/2/7"
   travelling_time_down: 27
   travelling_time_up: 27
 # FHEM: Jalousie_OG_Schlafzimmer_Aussen_Panorama
