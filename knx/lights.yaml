@@ -307,7 +307,7 @@
 # address: 2/0/22 -> EG Terrasse 1.A12 | Schalten > EG/OG Beleuchtung
 # state_address: 2/0/23 -> EG Terrasse 1.A12 RM | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "Licht"
+- name: "Balkon Licht"
   address: "2/0/22"
   state_address: "2/0/23"
 
@@ -331,7 +331,7 @@
 # address: 2/0/34 -> OG Aussenbeleuchtung 2.A2 | Schalten > EG/OG Beleuchtung
 # state_address: 2/0/35 -> OG Aussenbeleuchtung 2.A2 RM | Schalten > EG/OG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "Licht"
+- name: "Balkon Obergeschoss Licht"
   address: "2/0/34"
   state_address: "2/0/35"
 
@@ -339,7 +339,7 @@
 # address: 2/1/0 -> Terrasse KG A1 | DPST-1-1 | Schalten > KG Beleuchtung
 # state_address: 2/1/1 -> Terrasse KG A1 RM | DPST-1-1 | Schalten > KG Beleuchtung
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "Licht"
+- name: "Terrasse Licht"
   address: "2/1/0"
   state_address: "2/1/1"
 
@@ -347,7 +347,7 @@
 # address: 2/3/10 -> Garage 4x Innen Normal | Schalten > Aussen/Garage
 # state_address: 2/3/1 -> Garage 4x Innen  RM | Schalten > Aussen/Garage
 # HINWEIS: Ein-/Aus-Licht aus DPT1.
-- name: "Licht"
+- name: "Garage Licht"
   address: "2/3/10"
   state_address: "2/3/1"
 

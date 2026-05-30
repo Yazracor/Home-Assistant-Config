@@ -216,11 +216,11 @@ def remove_obsolete_areas(storage: Path, obsolete_areas_csv: Path, dry_run: bool
     return removed, entity_changed, device_changed
 
 
-def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> tuple[int, int, int, int, list[str], dict[str, str | None]]:
+def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> tuple[int, int, int, int, int, list[str], dict[str, str | None]]:
     assignments = [r for r in load_csv(assignments_csv) if r.get('area_id')]
     path = storage / 'core.entity_registry'
     if not path.exists():
-        return 0, 0, 0, len(assignments), ['core.entity_registry nicht gefunden; KNX-Entitäten zuerst einmal von HA anlegen lassen.'], {}
+        return 0, 0, 0, 0, len(assignments), ['core.entity_registry nicht gefunden; KNX-Entitäten zuerst einmal von HA anlegen lassen.'], {}
     with path.open(encoding='utf-8') as f:
         store = json.load(f)
     entities = store.get('data', {}).get('entities', [])
@@ -235,6 +235,7 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
 
     changed = 0
     renamed = 0
+    name_changed = 0
     hidden_changed = 0
     unmatched: list[str] = []
     device_area: dict[str, str | None] = {}
@@ -262,6 +263,11 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
                 del by_eid[old_entity_id]
             by_eid[expected_entity_id] = e
             renamed += 1
+        desired_name = a.get('name') or None
+        if desired_name and e.get('name') != desired_name:
+            e['name'] = desired_name
+            e['modified_at'] = t
+            name_changed += 1
         if e.get('area_id') != a['area_id']:
             e['area_id'] = a['area_id']
             e['modified_at'] = t
@@ -275,12 +281,12 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
                 hidden_changed += 1
         if e.get('device_id'):
             device_area[e['device_id']] = desired_device_area(a)
-    if (changed or renamed or hidden_changed) and not dry_run:
+    if (changed or renamed or name_changed or hidden_changed) and not dry_run:
         write_store(path, store, dry_run=False)
     elif dry_run:
         # no write
         pass
-    return changed, renamed, hidden_changed, len(unmatched), unmatched, device_area
+    return changed, renamed, name_changed, hidden_changed, len(unmatched), unmatched, device_area
 
 
 def apply_device_areas(storage: Path, device_area: dict[str, str | None], dry_run: bool) -> int:
@@ -330,13 +336,13 @@ def main() -> int:
     fc, fu = upsert_floors(storage, floors_csv, args.dry_run)
     ac, au = upsert_areas(storage, areas_csv, args.dry_run)
     ar, ae, ad = remove_obsolete_areas(storage, obsolete_areas_csv, args.dry_run)
-    ec, er, eh, missing, unmatched, device_area = apply_entity_areas(storage, assignments_csv, args.dry_run)
+    ec, er, en, eh, missing, unmatched, device_area = apply_entity_areas(storage, assignments_csv, args.dry_run)
     dc = apply_device_areas(storage, device_area, args.dry_run)
 
     print(f'Floors: erstellt={fc}, aktualisiert={fu}')
     print(f'Areas: erstellt={ac}, aktualisiert={au}')
     print(f'Obsolete Areas: entfernt={ar}, Entity-Zuordnungen geändert={ae}, Device-Zuordnungen geändert={ad}')
-    print(f'Entities: Area geändert={ec}, Entity-ID geändert={er}, Sichtbarkeit geändert={eh}, nicht gefunden={missing}')
+    print(f'Entities: Area geändert={ec}, Entity-ID geändert={er}, Name geändert={en}, Sichtbarkeit geändert={eh}, nicht gefunden={missing}')
     print(f'Devices: Area geändert={dc}')
     if unmatched:
         print('\nNicht zugeordnete erwartete Entitäten:')
