@@ -1,0 +1,60 @@
+- binary_sensor:
+    - name: "Hitzeschutz Fassade West"
+      unique_id: hitzeschutz_fassade_west
+      state: >-
+        {% set lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
+        {% set outside_temp = states('sensor.aussenbereich_wetterstation_temperatur') | float(0) %}
+        {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
+        {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
+        {% set temp_threshold = 10000 if outside_temp >= 23 else 15000 if outside_temp >= 15 else 20000 if outside_temp >= 5 else 24000 %}
+        {% set elevation_factor = 0.8 if elevation > 60 else 1 %}
+        {% set delta = (((azimuth - 270 + 180) % 360) - 180) | abs %}
+        {% set load = lux * ([0, 1 - (delta / 90)] | max) * elevation_factor %}
+        {{ is_state('sun.sun', 'above_horizon') and elevation > 8 and lux > 25000 and delta < 90 and load > temp_threshold }}
+      attributes:
+        facade_azimuth: 270
+
+    - name: "Hitzeschutz Fassade Ost"
+      unique_id: hitzeschutz_fassade_ost
+      state: >-
+        {% set lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
+        {% set outside_temp = states('sensor.aussenbereich_wetterstation_temperatur') | float(0) %}
+        {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
+        {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
+        {% set temp_threshold = 10000 if outside_temp >= 23 else 15000 if outside_temp >= 15 else 20000 if outside_temp >= 5 else 24000 %}
+        {% set elevation_factor = 0.8 if elevation > 60 else 1 %}
+        {% set delta = (((azimuth - 100 + 180) % 360) - 180) | abs %}
+        {% set load = lux * ([0, 1 - (delta / 90)] | max) * elevation_factor %}
+        {{ is_state('sun.sun', 'above_horizon') and elevation > 8 and lux > 25000 and delta < 80 and load > temp_threshold + 4000 }}
+      attributes:
+        facade_azimuth: 100
+
+    - name: "Hitzeschutz Fassade Süd"
+      unique_id: hitzeschutz_fassade_sued
+      state: >-
+        {% set lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
+        {% set outside_temp = states('sensor.aussenbereich_wetterstation_temperatur') | float(0) %}
+        {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
+        {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
+        {% set temp_threshold = 10000 if outside_temp >= 23 else 15000 if outside_temp >= 15 else 20000 if outside_temp >= 5 else 24000 %}
+        {% set elevation_factor = 0.8 if elevation > 60 else 1 %}
+        {% set delta = (((azimuth - 180 + 180) % 360) - 180) | abs %}
+        {% set load = lux * ([0, 1 - (delta / 90)] | max) * elevation_factor %}
+        {{ is_state('sun.sun', 'above_horizon') and elevation > 8 and lux > 25000 and delta < 90 and load > temp_threshold + 3000 }}
+      attributes:
+        facade_azimuth: 180
+
+    - name: "Hitzeschutz Fassade Nord"
+      unique_id: hitzeschutz_fassade_nord
+      state: >-
+        {% set lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
+        {% set outside_temp = states('sensor.aussenbereich_wetterstation_temperatur') | float(0) %}
+        {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
+        {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
+        {% set temp_threshold = 10000 if outside_temp >= 23 else 15000 if outside_temp >= 15 else 20000 if outside_temp >= 5 else 24000 %}
+        {% set elevation_factor = 0.8 if elevation > 60 else 1 %}
+        {% set delta = (((azimuth - 0 + 180) % 360) - 180) | abs %}
+        {% set load = lux * ([0, 1 - (delta / 90)] | max) * elevation_factor %}
+        {{ is_state('sun.sun', 'above_horizon') and elevation > 8 and lux > 35000 and delta < 45 and load > temp_threshold + 10000 }}
+      attributes:
+        facade_azimuth: 0

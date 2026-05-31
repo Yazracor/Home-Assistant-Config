@@ -99,3 +99,72 @@
           milliseconds: 0
 
   mode: single
+- id: solar_heat_protection_blind_recommendation
+  alias: Hitzeschutz Jalousie Empfehlung
+  description: Benachrichtigt, wenn Jalousien für solaren Wärmeschutz anders stehen sollten.
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.hitzeschutz_fassade_west
+    - binary_sensor.hitzeschutz_fassade_ost
+    - binary_sensor.hitzeschutz_fassade_sud
+    - binary_sensor.hitzeschutz_fassade_nord
+    from: "off"
+    to: "on"
+    id: close
+  - trigger: state
+    entity_id:
+    - binary_sensor.hitzeschutz_fassade_west
+    - binary_sensor.hitzeschutz_fassade_ost
+    - binary_sensor.hitzeschutz_fassade_sud
+    - binary_sensor.hitzeschutz_fassade_nord
+    from: "on"
+    to: "off"
+    id: open
+  variables:
+    facade_group: >-
+      {% set mapping = {
+        'binary_sensor.hitzeschutz_fassade_west': 'group.fassade_west',
+        'binary_sensor.hitzeschutz_fassade_ost': 'group.fassade_ost',
+        'binary_sensor.hitzeschutz_fassade_sud': 'group.fassade_sued',
+        'binary_sensor.hitzeschutz_fassade_nord': 'group.fassade_nord'
+      } %}
+      {{ mapping.get(trigger.entity_id, '') }}
+    facade_name: >-
+      {{ state_attr(trigger.entity_id, 'friendly_name') | default('Hitzeschutz', true) | replace('Hitzeschutz ', '') }}
+    recommendation_message: >-
+      {% set lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
+      {% set outside_temp = states('sensor.aussenbereich_wetterstation_temperatur') | float(0) %}
+      {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
+      {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
+      {% set ns = namespace(targets=[]) %}
+      {% for cover in expand(facade_group) %}
+        {% set pos = cover.attributes.current_position if cover.attributes.current_position is defined else none %}
+        {% set current = ((pos | round(0) | int) ~ '%') if pos is number else cover.state %}
+        {% set too_open = (pos is number and pos > 25) or (pos is not number and cover.state in ['open', 'opening']) %}
+        {% set too_closed = (pos is number and pos < 80) or (pos is not number and cover.state in ['closed', 'closing']) %}
+        {% if trigger.id == 'close' and too_open %}
+          {% set ns.targets = ns.targets + [cover.name ~ ' (' ~ current ~ ')'] %}
+        {% elif trigger.id == 'open' and too_closed %}
+          {% set ns.targets = ns.targets + [cover.name ~ ' (' ~ current ~ ')'] %}
+        {% endif %}
+      {% endfor %}
+      {% if ns.targets %}
+      {{ 'Schließen' if trigger.id == 'close' else 'Öffnen' }} {{ facade_name }}: {{ ns.targets | join(', ') }}
+
+      Helligkeit: {{ lux | round(0) }} lx, außen: {{ outside_temp | round(1) }} °C, Sonne: {{ elevation | round(1) }}° / {{ azimuth | round(0) }}°.
+      {% endif %}
+  conditions:
+  - condition: template
+    value_template: "{{ recommendation_message | trim != '' }}"
+  actions:
+  - action: notify.mobile_app_torbens_iphone
+    metadata: {}
+    data:
+      title: "Jalousien: Hitzeschutz"
+      message: "{{ recommendation_message | trim }}"
+      data:
+        push:
+          sound:
+            name: default
+  mode: single

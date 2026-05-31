@@ -1,0 +1,36 @@
+# Fassaden-Zuordnung für Jalousie-Empfehlungen.
+
+fassade_west:
+  name: Fassade West
+  entities:
+    - cover.eg_wohnzimmer_balkon
+    - cover.eg_kueche_balkon
+    - cover.og_schlafzimmer_front
+    - cover.og_bad_panorama_aussen
+    - cover.kg_zimmer_sinja_jalousie
+    - cover.kg_zimmer_silas_jalousie
+
+fassade_ost:
+  name: Fassade Ost
+  entities:
+    - cover.og_treppe
+    - cover.eg_arbeitszimmer_vorgarten
+
+fassade_sued:
+  name: Fassade Süd
+  entities:
+    - cover.eg_wohnzimmer_panorama
+    - cover.eg_kueche_seite
+    - cover.eg_kueche_nebeneingang
+    - cover.og_schlafzimmer_panorama_aussen
+    - cover.og_flur_fenster
+    - cover.og_bad_balkon
+    - cover.eg_arbeitszimmer_garten
+    - cover.aussenbereich_balkon_sonnensegel
+
+fassade_nord:
+  name: Fassade Nord
+  entities:
+    - cover.og_ankleide_fenster
+    - cover.og_buro_fenster
+    - cover.og_wc_fenster
