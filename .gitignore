@@ -1,6 +1,14 @@
 __pycache__/
 *.py[cod]
 .knx-area-assignment.env
+.ssh/
+secrets.yaml
+known_devices.yaml
 
 # Editor backup/autosave files
 \#*\#
+
+# Home Assistant runtime files
+home-assistant.log*
+home-assistant_v2.db*
+.ha_run.lock
