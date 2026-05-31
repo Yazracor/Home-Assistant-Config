@@ -13,10 +13,7 @@
   active_state_address:
     - "5/0/2"
     - "5/0/5"
-  command_value_state_address: "5/0/7"
-  controller_modes:
-    - "auto"
-  default_controller_mode: "auto"
+  command_value_state_address: "5/0/9"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -28,10 +25,7 @@
   active_state_address:
     - "5/0/17"
     - "5/0/20"
-  command_value_state_address: "5/0/22"
-  controller_modes:
-    - "auto"
-  default_controller_mode: "auto"
+  command_value_state_address: "5/0/24"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -43,10 +37,7 @@
   active_state_address:
     - "5/0/32"
     - "5/0/35"
-  command_value_state_address: "5/0/37"
-  controller_modes:
-    - "auto"
-  default_controller_mode: "auto"
+  command_value_state_address: "5/0/39"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -58,10 +49,7 @@
   active_state_address:
     - "5/0/47"
     - "5/0/50"
-  command_value_state_address: "5/0/52"
-  controller_modes:
-    - "auto"
-  default_controller_mode: "auto"
+  command_value_state_address: "5/0/54"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -73,10 +61,7 @@
   active_state_address:
     - "5/0/62"
     - "5/0/65"
-  command_value_state_address: "5/0/67"
-  controller_modes:
-    - "auto"
-  default_controller_mode: "auto"
+  command_value_state_address: "5/0/69"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -89,10 +74,7 @@
   active_state_address:
     - "5/0/77"
     - "5/0/80"
-  command_value_state_address: "5/0/82"
-  controller_modes:
-    - "auto"
-  default_controller_mode: "auto"
+  command_value_state_address: "5/0/84"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -104,10 +86,7 @@
   active_state_address:
     - "5/0/92"
     - "5/0/95"
-  command_value_state_address: "5/0/97"
-  controller_modes:
-    - "auto"
-  default_controller_mode: "auto"
+  command_value_state_address: "5/0/99"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -119,10 +98,7 @@
   active_state_address:
     - "5/0/107"
     - "5/0/110"
-  command_value_state_address: "5/0/112"
-  controller_modes:
-    - "auto"
-  default_controller_mode: "auto"
+  command_value_state_address: "5/0/114"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -134,10 +110,7 @@
   active_state_address:
     - "5/0/122"
     - "5/0/125"
-  command_value_state_address: "5/0/127"
-  controller_modes:
-    - "auto"
-  default_controller_mode: "auto"
+  command_value_state_address: "5/0/129"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -149,10 +122,7 @@
   active_state_address:
     - "5/0/137"
     - "5/0/140"
-  command_value_state_address: "5/0/142"
-  controller_modes:
-    - "auto"
-  default_controller_mode: "auto"
+  command_value_state_address: "5/0/144"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -164,10 +134,7 @@
   active_state_address:
     - "5/0/152"
     - "5/0/155"
-  command_value_state_address: "5/0/157"
-  controller_modes:
-    - "auto"
-  default_controller_mode: "auto"
+  command_value_state_address: "5/0/159"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -179,10 +146,7 @@
   active_state_address:
     - "5/0/167"
     - "5/0/170"
-  command_value_state_address: "5/0/172"
-  controller_modes:
-    - "auto"
-  default_controller_mode: "auto"
+  command_value_state_address: "5/0/174"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -194,10 +158,7 @@
   active_state_address:
     - "5/0/182"
     - "5/0/185"
-  command_value_state_address: "5/0/187"
-  controller_modes:
-    - "auto"
-  default_controller_mode: "auto"
+  command_value_state_address: "5/0/189"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -209,10 +170,7 @@
   active_state_address:
     - "5/1/2"
     - "5/1/5"
-  command_value_state_address: "5/1/7"
-  controller_modes:
-    - "auto"
-  default_controller_mode: "auto"
+  command_value_state_address: "5/1/9"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -224,10 +182,7 @@
   active_state_address:
     - "5/1/17"
     - "5/1/20"
-  command_value_state_address: "5/1/22"
-  controller_modes:
-    - "auto"
-  default_controller_mode: "auto"
+  command_value_state_address: "5/1/24"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -239,10 +194,7 @@
   active_state_address:
     - "5/1/32"
     - "5/1/35"
-  command_value_state_address: "5/1/37"
-  controller_modes:
-    - "auto"
-  default_controller_mode: "auto"
+  command_value_state_address: "5/1/39"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -254,10 +206,7 @@
   active_state_address:
     - "5/1/47"
     - "5/1/50"
-  command_value_state_address: "5/1/52"
-  controller_modes:
-    - "auto"
-  default_controller_mode: "auto"
+  command_value_state_address: "5/1/54"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -269,9 +218,6 @@
   active_state_address:
     - "5/1/62"
     - "5/1/65"
-  command_value_state_address: "5/1/67"
-  controller_modes:
-    - "auto"
-  default_controller_mode: "auto"
+  command_value_state_address: "5/1/69"
   min_temp: 7.0
   max_temp: 32.0
