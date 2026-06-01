@@ -4,7 +4,8 @@
 
 # HINWEIS: Heizen/Kühlen-Umschaltung erfolgt zentral und wird hier nicht bedient.
 # HINWEIS: Gira Tastsensor 3 Plus: Meldung Heizen/Kühlen sind 1-Bit-Energieanforderungen (1 = Anforderung, 0 = keine).
-# HINWEIS: Betriebsmodiumschaltung wird je Thermostat gelesen, um die erfolgreiche Zentralumschaltung zu prüfen.
+# HINWEIS: Home Assistant liest den zentralen 1-Bit-Heizen/Kuehlen-Status als heat_cool_state_address.
+# HINWEIS: ETS-Betriebsmodiumschaltung ist nicht als HA controller_mode_state_address geeignet.
 
 # ETS: --1A1 OG Schlafz. Basis Sollwert
 - name: "Schlafzimmer Thermostat"
@@ -15,7 +16,7 @@
     - "5/0/2"
     - "5/0/5"
   command_value_state_address: "5/0/9"
-  controller_mode_state_address: "5/0/1"
+  heat_cool_state_address: "1/4/1"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -28,7 +29,7 @@
     - "5/0/17"
     - "5/0/20"
   command_value_state_address: "5/0/24"
-  controller_mode_state_address: "5/0/16"
+  heat_cool_state_address: "1/4/1"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -41,7 +42,7 @@
     - "5/0/32"
     - "5/0/35"
   command_value_state_address: "5/0/39"
-  controller_mode_state_address: "5/0/31"
+  heat_cool_state_address: "1/4/1"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -54,7 +55,7 @@
     - "5/0/47"
     - "5/0/50"
   command_value_state_address: "5/0/54"
-  controller_mode_state_address: "5/0/46"
+  heat_cool_state_address: "1/4/1"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -67,7 +68,7 @@
     - "5/0/62"
     - "5/0/65"
   command_value_state_address: "5/0/69"
-  controller_mode_state_address: "5/0/61"
+  heat_cool_state_address: "1/4/1"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -81,7 +82,7 @@
     - "5/0/77"
     - "5/0/80"
   command_value_state_address: "5/0/84"
-  controller_mode_state_address: "5/0/76"
+  heat_cool_state_address: "1/4/1"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -94,7 +95,7 @@
     - "5/0/92"
     - "5/0/95"
   command_value_state_address: "5/0/99"
-  controller_mode_state_address: "5/0/91"
+  heat_cool_state_address: "1/4/1"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -107,7 +108,7 @@
     - "5/0/107"
     - "5/0/110"
   command_value_state_address: "5/0/114"
-  controller_mode_state_address: "5/0/106"
+  heat_cool_state_address: "1/4/1"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -120,7 +121,7 @@
     - "5/0/122"
     - "5/0/125"
   command_value_state_address: "5/0/129"
-  controller_mode_state_address: "5/0/121"
+  heat_cool_state_address: "1/4/1"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -133,7 +134,7 @@
     - "5/0/137"
     - "5/0/140"
   command_value_state_address: "5/0/144"
-  controller_mode_state_address: "5/0/136"
+  heat_cool_state_address: "1/4/1"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -146,7 +147,7 @@
     - "5/0/152"
     - "5/0/155"
   command_value_state_address: "5/0/159"
-  controller_mode_state_address: "5/0/151"
+  heat_cool_state_address: "1/4/1"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -159,7 +160,7 @@
     - "5/0/167"
     - "5/0/170"
   command_value_state_address: "5/0/174"
-  controller_mode_state_address: "5/0/166"
+  heat_cool_state_address: "1/4/1"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -172,7 +173,7 @@
     - "5/0/182"
     - "5/0/185"
   command_value_state_address: "5/0/189"
-  controller_mode_state_address: "5/0/181"
+  heat_cool_state_address: "1/4/1"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -185,7 +186,7 @@
     - "5/1/2"
     - "5/1/5"
   command_value_state_address: "5/1/9"
-  controller_mode_state_address: "5/1/1"
+  heat_cool_state_address: "1/4/1"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -198,7 +199,7 @@
     - "5/1/17"
     - "5/1/20"
   command_value_state_address: "5/1/24"
-  controller_mode_state_address: "5/1/16"
+  heat_cool_state_address: "1/4/1"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -211,7 +212,7 @@
     - "5/1/32"
     - "5/1/35"
   command_value_state_address: "5/1/39"
-  controller_mode_state_address: "5/1/31"
+  heat_cool_state_address: "1/4/1"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -224,7 +225,7 @@
     - "5/1/47"
     - "5/1/50"
   command_value_state_address: "5/1/54"
-  controller_mode_state_address: "5/1/46"
+  heat_cool_state_address: "1/4/1"
   min_temp: 7.0
   max_temp: 32.0
 
@@ -237,6 +238,6 @@
     - "5/1/62"
     - "5/1/65"
   command_value_state_address: "5/1/69"
-  controller_mode_state_address: "5/1/61"
+  heat_cool_state_address: "1/4/1"
   min_temp: 7.0
   max_temp: 32.0
