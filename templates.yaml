@@ -119,6 +119,14 @@
         parent_id: "{{ trigger.event.context.parent_id }}"
 
 - binary_sensor:
+    - name: "Wetterstation Tag"
+      unique_id: wetterstation_tag
+      state: "{{ is_state('sun.sun', 'above_horizon') }}"
+      attributes:
+        source: sun.sun
+        helligkeit: "{{ states('sensor.aussenbereich_wetterstation_helligkeit') }}"
+        daemmerung: "{{ states('sensor.aussenbereich_wetterstation_daemmerung') }}"
+
     - name: "Person zuhause"
       unique_id: person_zuhause
       device_class: occupancy

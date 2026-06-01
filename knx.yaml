@@ -7,6 +7,13 @@ binary_sensor: !include knx/binary_sensors.yaml
 sensor: !include knx/sensors.yaml
 weather: !include knx/weather.yaml
 button: !include knx/buttons.yaml
+expose:
+  - type: binary
+    entity_id: binary_sensor.wetterstation_tag
+    address: "1/1/14"
+    default: false
+    periodic_send:
+      minutes: 5
 event:
   - address:
       - "2/0/*"
