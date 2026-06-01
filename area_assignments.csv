@@ -16,7 +16,7 @@ light,Wohnzimmer Decke Seiten,light.eg_wohnzimmer_decke_seiten,3/0/54,wohnzimmer
 light,Treppe EG/KG,light.eg_kg_treppe,2/0/14,treppe_eg_kg,Treppe EG/KG,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.treppe_eg_kg
 light,Arbeitszimmer Flur,light.eg_arbeitszimmer_flur,2/0/24,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.arbeitszimmer_flur;light.arbeitszimmer_eg_flur
 light,Flur EG Galerie,light.eg_flur_galerie,2/0/18,flur_eg,Flur EG,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.flur_eg_galerie
-light,Garderobe Schuhschrank,light.eg_garderobe_schuhschrank,2/0/10,garderobe,Garderobe,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.garderobe_schuhschrank;light.garderobe_eg_schuhschrank
+light,Garderobe Schuhschrank,light.eg_garderobe_schuhschrank,2/0/10,schuhschrank,Schuhschrank,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.garderobe_schuhschrank;light.garderobe_eg_schuhschrank
 light,Vorratsraum Decke,light.eg_vorratsraum_decke,2/0/20,vorratsraum,Vorratsraum,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.vorratsraum_decke;light.vorratsraum_eg_decke
 light,Flur EG Decke,light.eg_flur_decke,3/0/12,flur_eg,Flur EG,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.flur_eg_decke
 light,Decke,light.eg_arbeitszimmer_decke,3/0/60,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=light.buero_decke;light.arbeitszimmer_decke;light.arbeitszimmer_eg_decke
@@ -96,9 +96,9 @@ binary_sensor,Anforderung Kühlen,binary_sensor.eg_gaeste_wc_anforderung_kuhlen,
 climate,Garderobe Thermostat,climate.eg_garderobe_thermostat,5/0/139_5/0/141_5/0/135_None,garderobe,Garderobe,erdgeschoss,Erdgeschoss,KNX/ETS group address name,ETS schreibt Gaderobe.
 binary_sensor,Anforderung Heizen,binary_sensor.eg_garderobe_anforderung_heizen,5/0/137,garderobe,Garderobe,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.eg_garderobe_anforderung_kuhlen,5/0/140,garderobe,Garderobe,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
-climate,Technik Thermostat,climate.eg_technik_thermostat,5/0/154_5/0/156_5/0/150_None,technik,Technik,erdgeschoss,Erdgeschoss,KNX/ETS group address name,
-binary_sensor,Anforderung Heizen,binary_sensor.eg_technik_anforderung_heizen,5/0/152,technik,Technik,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
-binary_sensor,Anforderung Kühlen,binary_sensor.eg_technik_anforderung_kuhlen,5/0/155,technik,Technik,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
+climate,Technik Thermostat,climate.eg_technik_thermostat,5/0/154_5/0/156_5/0/150_None,schuhschrank,Schuhschrank,erdgeschoss,Erdgeschoss,KNX/ETS group address name,
+binary_sensor,Anforderung Heizen,binary_sensor.eg_technik_anforderung_heizen,5/0/152,schuhschrank,Schuhschrank,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
+binary_sensor,Anforderung Kühlen,binary_sensor.eg_technik_anforderung_kuhlen,5/0/155,schuhschrank,Schuhschrank,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 climate,Küche Thermostat,climate.eg_kueche_thermostat,5/0/169_5/0/171_5/0/165_None,kueche,Küche,erdgeschoss,Erdgeschoss,KNX/ETS group address name,
 binary_sensor,Anforderung Heizen,binary_sensor.eg_kueche_anforderung_heizen,5/0/167,kueche,Küche,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.eg_kueche_anforderung_kuhlen,5/0/170,kueche,Küche,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
@@ -130,7 +130,7 @@ sensor,Energieanforderung,sensor.eg_arbeitszimmer_flur_energieanforderung,eg_arb
 sensor,Energieanforderung,sensor.eg_gaestebad_energieanforderung,eg_gaestebad_energieanforderung,gaestebad,Gästebad,erdgeschoss,Erdgeschoss,virtual template,Virtueller Status aus Meldung Heizen/Kühlen. hidden_by=integration
 sensor,Energieanforderung,sensor.eg_gaeste_wc_energieanforderung,eg_gaeste_wc_energieanforderung,gaeste_wc,Gäste-WC,erdgeschoss,Erdgeschoss,virtual template,Virtueller Status aus Meldung Heizen/Kühlen. hidden_by=integration
 sensor,Energieanforderung,sensor.eg_garderobe_energieanforderung,eg_garderobe_energieanforderung,garderobe,Garderobe,erdgeschoss,Erdgeschoss,virtual template,Virtueller Status aus Meldung Heizen/Kühlen. hidden_by=integration
-sensor,Energieanforderung,sensor.eg_technik_energieanforderung,eg_technik_energieanforderung,technik,Technik,erdgeschoss,Erdgeschoss,virtual template,Virtueller Status aus Meldung Heizen/Kühlen. hidden_by=integration
+sensor,Energieanforderung,sensor.eg_technik_energieanforderung,eg_technik_energieanforderung,technik,Technik,,,virtual template,Virtueller Status aus Meldung Heizen/Kühlen. hidden_by=integration
 sensor,Energieanforderung,sensor.eg_kueche_energieanforderung,eg_kueche_energieanforderung,kueche,Küche,erdgeschoss,Erdgeschoss,virtual template,Virtueller Status aus Meldung Heizen/Kühlen. hidden_by=integration
 sensor,Energieanforderung,sensor.eg_wohnzimmer_energieanforderung,eg_wohnzimmer_energieanforderung,wohnzimmer,Wohnzimmer,erdgeschoss,Erdgeschoss,virtual template,Virtueller Status aus Meldung Heizen/Kühlen. hidden_by=integration
 sensor,Energieanforderung,sensor.kg_flur_energieanforderung,kg_flur_energieanforderung,flur_kg,Flur KG,kellergeschoss,Kellergeschoss,virtual template,Virtueller Status aus Meldung Heizen/Kühlen. hidden_by=integration
@@ -145,14 +145,14 @@ sensor,Wetterstation Helligkeit,sensor.aussenbereich_wetterstation_helligkeit,1/
 sensor,Wetterstation Temperatur,sensor.aussenbereich_wetterstation_temperatur,1/1/4,wetterstation,Wetterstation,aussenbereich,Außenbereich,KNX/ETS group address name,hidden_by=integration device_area=none
 binary_sensor,Wetterstation Niederschlag,binary_sensor.aussenbereich_wetterstation_niederschlag,1/1/12,wetterstation,Wetterstation,aussenbereich,Außenbereich,KNX/ETS group address name,hidden_by=integration device_area=none
 weather,Wetterstation,weather.aussenbereich_wetterstation,1/1/4,wetterstation,Wetterstation,aussenbereich,Außenbereich,KNX weather station,legacy_entity_ids=weather.wetterstation hidden_by=none
-binary_sensor,Präsenz,binary_sensor.praesenz,praesenz,technik,Technik,erdgeschoss,Erdgeschoss,virtual template,Hausweiter Präsenzstatus aus Personen Companion App WLAN/RADIUS und manueller Bedienung.
-binary_sensor,Person zuhause,binary_sensor.person_zuhause,person_zuhause,technik,Technik,erdgeschoss,Erdgeschoss,virtual template,Familien-Präsenz aus Home-Assistant-Personen.
-binary_sensor,Haushaltshilfe anwesend,binary_sensor.haushaltshilfe_anwesend,haushaltshilfe_anwesend,technik,Technik,erdgeschoss,Erdgeschoss,virtual template,WLAN/RADIUS-Präsenz der Haushaltshilfe.
-binary_sensor,Gast im Haus,binary_sensor.gast_im_haus,gast_im_haus,technik,Technik,erdgeschoss,Erdgeschoss,virtual template,WLAN/RADIUS-Präsenz unbekannter Accounts ohne Familie und Haushaltshilfe.
-binary_sensor,Manuelle Bedienung aktiv,binary_sensor.manuelle_bedienung_aktiv,manuelle_bedienung_aktiv,technik,Technik,erdgeschoss,Erdgeschoss,virtual template,Präsenzimpuls aus KNX-Tastern HomeKit oder HA-Bedienung mit dynamischem Nachlauf.
-sensor,KNX Schalter letzte Bedienung,sensor.knx_schalter_letzte_bedienung,knx_schalter_letzte_bedienung,technik,Technik,erdgeschoss,Erdgeschoss,virtual template,Letzte relevante KNX-Tasterbedienung für Präsenz. hidden_by=integration
-sensor,HA Bedienung letzte Bedienung,sensor.ha_bedienung_letzte_bedienung,ha_bedienung_letzte_bedienung,technik,Technik,erdgeschoss,Erdgeschoss,virtual template,Letzte relevante HomeKit- oder HA-Bedienung für Präsenz. hidden_by=integration
-sensor,KNX Präsenzkandidat letztes Telegramm,sensor.knx_praesenzkandidat_letztes_telegramm,knx_praesenzkandidat_letztes_telegramm,technik,Technik,erdgeschoss,Erdgeschoss,virtual template,Debug-Sensor für das letzte KNX-Telegramm auf präsenzrelevanten Gruppenadressen. hidden_by=integration
+binary_sensor,Präsenz,binary_sensor.praesenz,praesenz,technik,Technik,,,virtual template,Hausweiter Präsenzstatus aus Personen Companion App WLAN/RADIUS und manueller Bedienung.
+binary_sensor,Person zuhause,binary_sensor.person_zuhause,person_zuhause,technik,Technik,,,virtual template,Familien-Präsenz aus Home-Assistant-Personen.
+binary_sensor,Haushaltshilfe anwesend,binary_sensor.haushaltshilfe_anwesend,haushaltshilfe_anwesend,technik,Technik,,,virtual template,WLAN/RADIUS-Präsenz der Haushaltshilfe.
+binary_sensor,Gast im Haus,binary_sensor.gast_im_haus,gast_im_haus,technik,Technik,,,virtual template,WLAN/RADIUS-Präsenz unbekannter Accounts ohne Familie und Haushaltshilfe.
+binary_sensor,Manuelle Bedienung aktiv,binary_sensor.manuelle_bedienung_aktiv,manuelle_bedienung_aktiv,technik,Technik,,,virtual template,Präsenzimpuls aus KNX-Tastern HomeKit oder HA-Bedienung mit dynamischem Nachlauf.
+sensor,KNX Schalter letzte Bedienung,sensor.knx_schalter_letzte_bedienung,knx_schalter_letzte_bedienung,technik,Technik,,,virtual template,Letzte relevante KNX-Tasterbedienung für Präsenz. hidden_by=integration
+sensor,HA Bedienung letzte Bedienung,sensor.ha_bedienung_letzte_bedienung,ha_bedienung_letzte_bedienung,technik,Technik,,,virtual template,Letzte relevante HomeKit- oder HA-Bedienung für Präsenz. hidden_by=integration
+sensor,KNX Präsenzkandidat letztes Telegramm,sensor.knx_praesenzkandidat_letztes_telegramm,knx_praesenzkandidat_letztes_telegramm,technik,Technik,,,virtual template,Debug-Sensor für das letzte KNX-Telegramm auf präsenzrelevanten Gruppenadressen. hidden_by=integration
 binary_sensor,Hitzeschutz Fassade West,binary_sensor.hitzeschutz_fassade_west,hitzeschutz_fassade_west,fassade,Fassade,aussenbereich,Außenbereich,virtual template,Fassadenbezogene Hitzeschutz-Empfehlung aus Wetterstation und Sonnenstand.
 binary_sensor,Hitzeschutz Fassade Ost,binary_sensor.hitzeschutz_fassade_ost,hitzeschutz_fassade_ost,fassade,Fassade,aussenbereich,Außenbereich,virtual template,Fassadenbezogene Hitzeschutz-Empfehlung aus Wetterstation und Sonnenstand.
 binary_sensor,Hitzeschutz Fassade Süd,binary_sensor.hitzeschutz_fassade_sud,hitzeschutz_fassade_sued,fassade,Fassade,aussenbereich,Außenbereich,virtual template,Fassadenbezogene Hitzeschutz-Empfehlung aus Wetterstation und Sonnenstand.

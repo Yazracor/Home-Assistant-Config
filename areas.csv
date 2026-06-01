@@ -4,11 +4,12 @@ gaestebad,Gästebad,erdgeschoss,Buero.Bad;EG Gästebad
 flur_eg,Flur EG,erdgeschoss,EG_Flur;Diele;Galerie
 treppe_eg_kg,Treppe EG/KG,erdgeschoss,EG_UG_Treppe;EG/KG Treppe
 gaeste_wc,Gäste-WC,erdgeschoss,EG_GaesteWC;EG WC
-garderobe,Garderobe,erdgeschoss,EG_Garderobe;Schuhschrank
+garderobe,Garderobe,erdgeschoss,EG_Garderobe
+schuhschrank,Schuhschrank,erdgeschoss,EG_Schuhschrank;Schuhschrank
 kueche,Küche,erdgeschoss,Kueche;Kochen;EG Küche;Esszimmer
 wohnzimmer,Wohnzimmer,erdgeschoss,Wohnz;Wohnzimmer
 vorratsraum,Vorratsraum,erdgeschoss,EG_Vorratsraum;Vorrat
-technik,Technik,erdgeschoss,EG Technik;Technik
+technik,Technik,,EG Technik;Technik
 buero_og,Büro OG,obergeschoss,Buero_OG;OG Arbeiten;OG_Arbeiten
 flur_og,Flur OG,obergeschoss,OG_Flur
 treppe_og,Treppe OG,obergeschoss,OG_Treppe

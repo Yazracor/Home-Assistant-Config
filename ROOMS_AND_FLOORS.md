@@ -22,7 +22,8 @@ Wichtig: Die KNX-YAML selbst enthält keine Raum-/Stockwerkzuordnung. Home Assis
 | Erdgeschoss | Flur EG | `flur_eg` | 2 | EG_Flur;Diele;Galerie |
 | Erdgeschoss | Treppe EG/KG | `treppe_eg_kg` | 1 | EG_UG_Treppe;EG/KG Treppe |
 | Erdgeschoss | Gäste-WC | `gaeste_wc` | 1 | EG_GaesteWC;EG WC |
-| Erdgeschoss | Garderobe | `garderobe` | 2 | EG_Garderobe;Schuhschrank |
+| Erdgeschoss | Garderobe | `garderobe` | 1 | EG_Garderobe |
+| Erdgeschoss | Schuhschrank | `schuhschrank` | 2 | EG_Schuhschrank;Schuhschrank |
 | Erdgeschoss | Küche | `kueche` | 4 | Kueche;Kochen;EG Küche;Esszimmer |
 | Erdgeschoss | Wohnzimmer | `wohnzimmer` | 4 | Wohnz;Wohnzimmer |
 | Erdgeschoss | Vorratsraum | `vorratsraum` | 1 | EG_Vorratsraum;Vorrat |
