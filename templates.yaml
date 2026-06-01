@@ -70,12 +70,10 @@
           and source not in ignored_sources
           and address in indoor_addresses + cover_addresses
         }}
-  binary_sensor:
-    - name: "KNX Schalter letzte Stunde"
-      unique_id: knx_schalter_letzte_stunde
-      auto_off:
-        hours: 1
-      state: "true"
+  sensor:
+    - name: "KNX Schalter letzte Bedienung"
+      unique_id: knx_schalter_letzte_bedienung
+      state: "{{ now().isoformat() }}"
       attributes:
         last_address: "{{ trigger.event.data.destination }}"
         last_source: "{{ trigger.event.data.source }}"
@@ -99,12 +97,10 @@
             and data.domain in ['light', 'cover']
           }}
         {% endif %}
-  binary_sensor:
-    - name: "HA Bedienung letzte Stunde"
-      unique_id: ha_bedienung_letzte_stunde
-      auto_off:
-        hours: 1
-      state: "true"
+  sensor:
+    - name: "HA Bedienung letzte Bedienung"
+      unique_id: ha_bedienung_letzte_bedienung
+      state: "{{ now().isoformat() }}"
       attributes:
         event_type: "{{ trigger.event.event_type }}"
         entity_id: >-
@@ -147,15 +143,50 @@
           is_state('binary_sensor.person_zuhause', 'on')
           or is_state('binary_sensor.haushaltshilfe_anwesend', 'on')
           or is_state('binary_sensor.gast_im_haus', 'on')
-          or is_state('binary_sensor.knx_schalter_letzte_stunde', 'on')
-          or is_state('binary_sensor.ha_bedienung_letzte_stunde', 'on')
+          or is_state('binary_sensor.manuelle_bedienung_aktiv', 'on')
         }}
       attributes:
         person_zuhause: "{{ states('binary_sensor.person_zuhause') }}"
         haushaltshilfe: "{{ states('binary_sensor.haushaltshilfe_anwesend') }}"
         gast_im_haus: "{{ states('binary_sensor.gast_im_haus') }}"
-        knx_schalter_letzte_stunde: "{{ states('binary_sensor.knx_schalter_letzte_stunde') }}"
-        ha_bedienung_letzte_stunde: "{{ states('binary_sensor.ha_bedienung_letzte_stunde') }}"
+        manuelle_bedienung_aktiv: "{{ states('binary_sensor.manuelle_bedienung_aktiv') }}"
+
+    - name: "Manuelle Bedienung aktiv"
+      unique_id: manuelle_bedienung_aktiv
+      device_class: occupancy
+      state: >-
+        {% set values = [
+          states('sensor.knx_schalter_letzte_bedienung'),
+          states('sensor.ha_bedienung_letzte_bedienung')
+        ] %}
+        {% set ns = namespace(last=none) %}
+        {% for value in values %}
+          {% set dt = value | as_datetime %}
+          {% if dt is not none and (ns.last is none or dt > ns.last) %}
+            {% set ns.last = dt %}
+          {% endif %}
+        {% endfor %}
+        {% set hour = now().hour %}
+        {% set window_hours = 6 if hour >= 22 or hour < 7 else 2 %}
+        {{ ns.last is not none and now() - ns.last < timedelta(hours=window_hours) }}
+      attributes:
+        nachlauf_stunden: "{{ 6 if now().hour >= 22 or now().hour < 7 else 2 }}"
+        nachtmodus: "{{ now().hour >= 22 or now().hour < 7 }}"
+        letzte_knx_bedienung: "{{ states('sensor.knx_schalter_letzte_bedienung') }}"
+        letzte_ha_bedienung: "{{ states('sensor.ha_bedienung_letzte_bedienung') }}"
+        letzte_bedienung: >-
+          {% set values = [
+            states('sensor.knx_schalter_letzte_bedienung'),
+            states('sensor.ha_bedienung_letzte_bedienung')
+          ] %}
+          {% set ns = namespace(last=none) %}
+          {% for value in values %}
+            {% set dt = value | as_datetime %}
+            {% if dt is not none and (ns.last is none or dt > ns.last) %}
+              {% set ns.last = dt %}
+            {% endif %}
+          {% endfor %}
+          {{ ns.last.isoformat() if ns.last is not none else '' }}
 
     - name: "Gast im Haus"
       unique_id: gast_im_haus
