@@ -28,3 +28,95 @@
   state_address: "1/1/1"
   type: "wind_speed_ms"
   sync_state: true
+
+# ETS: Betriebsmodiumschaltung je Raum
+# HINWEIS: Rohwert DPT 20.105 HVAC Control Mode: 1 = Heizen, 3 = Kuehlen.
+- name: "OG Schlafzimmer Betriebsmodus"
+  state_address: "5/0/1"
+  type: "1byte_unsigned"
+  sync_state: true
+
+- name: "OG Bad Betriebsmodus"
+  state_address: "5/0/16"
+  type: "1byte_unsigned"
+  sync_state: true
+
+- name: "OG Buro Betriebsmodus"
+  state_address: "5/0/31"
+  type: "1byte_unsigned"
+  sync_state: true
+
+- name: "OG Ankleide Betriebsmodus"
+  state_address: "5/0/46"
+  type: "1byte_unsigned"
+  sync_state: true
+
+- name: "EG Flur Betriebsmodus"
+  state_address: "5/0/61"
+  type: "1byte_unsigned"
+  sync_state: true
+
+- name: "EG Arbeitszimmer Betriebsmodus"
+  state_address: "5/0/76"
+  type: "1byte_unsigned"
+  sync_state: true
+
+- name: "EG Arbeitszimmer Flur Betriebsmodus"
+  state_address: "5/0/91"
+  type: "1byte_unsigned"
+  sync_state: true
+
+- name: "EG Gaestebad Betriebsmodus"
+  state_address: "5/0/106"
+  type: "1byte_unsigned"
+  sync_state: true
+
+- name: "EG Gaeste WC Betriebsmodus"
+  state_address: "5/0/121"
+  type: "1byte_unsigned"
+  sync_state: true
+
+- name: "EG Garderobe Betriebsmodus"
+  state_address: "5/0/136"
+  type: "1byte_unsigned"
+  sync_state: true
+
+- name: "EG Technik Betriebsmodus"
+  state_address: "5/0/151"
+  type: "1byte_unsigned"
+  sync_state: true
+
+- name: "EG Kueche Betriebsmodus"
+  state_address: "5/0/166"
+  type: "1byte_unsigned"
+  sync_state: true
+
+- name: "EG Wohnzimmer Betriebsmodus"
+  state_address: "5/0/181"
+  type: "1byte_unsigned"
+  sync_state: true
+
+- name: "KG Flur Betriebsmodus"
+  state_address: "5/1/1"
+  type: "1byte_unsigned"
+  sync_state: true
+
+- name: "KG Gast Hobby Betriebsmodus"
+  state_address: "5/1/16"
+  type: "1byte_unsigned"
+  sync_state: true
+
+- name: "KG Kinderbad Betriebsmodus"
+  state_address: "5/1/31"
+  type: "1byte_unsigned"
+  sync_state: true
+
+- name: "KG Zimmer Sinja Betriebsmodus"
+  state_address: "5/1/46"
+  type: "1byte_unsigned"
+  sync_state: true
+
+- name: "KG Zimmer Silas Betriebsmodus"
+  state_address: "5/1/61"
+  type: "1byte_unsigned"
+  sync_state: true
