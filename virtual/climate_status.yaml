@@ -449,3 +449,78 @@ template:
           {% else %}
             mdi:thermostat
           {% endif %}
+
+  - binary_sensor:
+      - name: "Thermostate Zentralumschaltung OK"
+        unique_id: thermostate_zentralumschaltung_ok
+        availability: "{{ states('binary_sensor.heizen_kuehlen_rueckmeldung') in ['on', 'off'] }}"
+        state: >-
+          {% set expected = 'heat' if is_state('binary_sensor.heizen_kuehlen_rueckmeldung', 'on') else 'cool' %}
+          {% set thermostats = [
+            'climate.og_schlafzimmer_thermostat',
+            'climate.og_bad_thermostat',
+            'climate.og_buro_thermostat',
+            'climate.og_ankleide_thermostat',
+            'climate.eg_flur_thermostat',
+            'climate.eg_arbeitszimmer_thermostat',
+            'climate.eg_arbeitszimmer_flur_thermostat',
+            'climate.eg_gaestebad_thermostat',
+            'climate.eg_gaeste_wc_thermostat',
+            'climate.eg_garderobe_thermostat',
+            'climate.eg_technik_thermostat',
+            'climate.eg_kueche_thermostat',
+            'climate.eg_wohnzimmer_thermostat',
+            'climate.kg_flur_thermostat',
+            'climate.kg_gast_hobby_thermostat',
+            'climate.kg_kinderbad_thermostat',
+            'climate.kg_zimmer_sinja_thermostat',
+            'climate.kg_zimmer_silas_thermostat'
+          ] %}
+          {{ expand(thermostats) | rejectattr('state', 'eq', expected) | list | count == 0 }}
+        attributes:
+          erwarteter_modus: >-
+            {% if is_state('binary_sensor.heizen_kuehlen_rueckmeldung', 'on') %}
+              heizen
+            {% elif is_state('binary_sensor.heizen_kuehlen_rueckmeldung', 'off') %}
+              kuehlen
+            {% else %}
+              unbekannt
+            {% endif %}
+          abweichende_thermostate: >-
+            {% set expected = 'heat' if is_state('binary_sensor.heizen_kuehlen_rueckmeldung', 'on') else 'cool' %}
+            {% set labels = {
+              'heat': 'heizen',
+              'cool': 'kuehlen',
+              'auto': 'auto',
+              'off': 'aus',
+              'unknown': 'unbekannt',
+              'unavailable': 'nicht verfuegbar'
+            } %}
+            {% set thermostats = [
+              'climate.og_schlafzimmer_thermostat',
+              'climate.og_bad_thermostat',
+              'climate.og_buro_thermostat',
+              'climate.og_ankleide_thermostat',
+              'climate.eg_flur_thermostat',
+              'climate.eg_arbeitszimmer_thermostat',
+              'climate.eg_arbeitszimmer_flur_thermostat',
+              'climate.eg_gaestebad_thermostat',
+              'climate.eg_gaeste_wc_thermostat',
+              'climate.eg_garderobe_thermostat',
+              'climate.eg_technik_thermostat',
+              'climate.eg_kueche_thermostat',
+              'climate.eg_wohnzimmer_thermostat',
+              'climate.kg_flur_thermostat',
+              'climate.kg_gast_hobby_thermostat',
+              'climate.kg_kinderbad_thermostat',
+              'climate.kg_zimmer_sinja_thermostat',
+              'climate.kg_zimmer_silas_thermostat'
+            ] %}
+            {% set ns = namespace(items=[]) %}
+            {% for thermostat in expand(thermostats) %}
+              {% if thermostat.state != expected %}
+                {% set mode = labels.get(thermostat.state, thermostat.state) %}
+                {% set ns.items = ns.items + [thermostat.name ~ ' (' ~ mode ~ ')'] %}
+              {% endif %}
+            {% endfor %}
+            {{ ns.items }}
