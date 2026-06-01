@@ -6,11 +6,13 @@
 # HINWEIS: Gira Tastsensor 3 Plus: Meldung Heizen/Kühlen sind 1-Bit-Energieanforderungen (1 = Anforderung, 0 = keine).
 # HINWEIS: Home Assistant liest den zentralen 1-Bit-Heizen/Kuehlen-Status als heat_cool_state_address.
 # HINWEIS: ETS-Betriebsmodiumschaltung ist nicht als HA controller_mode_state_address geeignet.
+# HINWEIS: Gira Solltemperaturvorgabe erfolgt über das Soll-Temp-Objekt des aktiven Betriebsmodus,
+# nicht über den Basis-Sollwert.
 
 # ETS: --1A1 OG Schlafz. Basis Sollwert
 - name: "Schlafzimmer Thermostat"
   temperature_address: "5/0/4"
-  target_temperature_address: "5/0/0"
+  target_temperature_address: "5/0/6"
   target_temperature_state_address: "5/0/6"
   active_state_address:
     - "5/0/2"
@@ -23,7 +25,7 @@
 # ETS: --1A2 OG Bad Basis Sollwert
 - name: "Bad OG Thermostat"
   temperature_address: "5/0/19"
-  target_temperature_address: "5/0/15"
+  target_temperature_address: "5/0/21"
   target_temperature_state_address: "5/0/21"
   active_state_address:
     - "5/0/17"
@@ -36,7 +38,7 @@
 # ETS: --1A3 OG Arbeiten/Flur Basis Sollwert
 - name: "Büro OG Thermostat"
   temperature_address: "5/0/34"
-  target_temperature_address: "5/0/30"
+  target_temperature_address: "5/0/36"
   target_temperature_state_address: "5/0/36"
   active_state_address:
     - "5/0/32"
@@ -49,7 +51,7 @@
 # ETS: --1A4 OG Ankleide Basis Sollwert
 - name: "Ankleide Thermostat"
   temperature_address: "5/0/49"
-  target_temperature_address: "5/0/45"
+  target_temperature_address: "5/0/51"
   target_temperature_state_address: "5/0/51"
   active_state_address:
     - "5/0/47"
@@ -62,7 +64,7 @@
 # ETS: --1A5 EG Diele Basis Sollwert
 - name: "Flur EG Thermostat"
   temperature_address: "5/0/64"
-  target_temperature_address: "5/0/60"
+  target_temperature_address: "5/0/66"
   target_temperature_state_address: "5/0/66"
   active_state_address:
     - "5/0/62"
@@ -76,7 +78,7 @@
 # ETS: --1A6 EG Gast Basis Sollwert
 - name: "Arbeitszimmer Thermostat"
   temperature_address: "5/0/79"
-  target_temperature_address: "5/0/75"
+  target_temperature_address: "5/0/81"
   target_temperature_state_address: "5/0/81"
   active_state_address:
     - "5/0/77"
@@ -89,7 +91,7 @@
 # ETS: --2A1 EG Flur Gast Basis Sollwert
 - name: "Arbeitszimmer Flur Thermostat"
   temperature_address: "5/0/94"
-  target_temperature_address: "5/0/90"
+  target_temperature_address: "5/0/96"
   target_temperature_state_address: "5/0/96"
   active_state_address:
     - "5/0/92"
@@ -102,7 +104,7 @@
 # ETS: --2A2 EG Bad Gast Basis Sollwert
 - name: "Gästebad Thermostat"
   temperature_address: "5/0/109"
-  target_temperature_address: "5/0/105"
+  target_temperature_address: "5/0/111"
   target_temperature_state_address: "5/0/111"
   active_state_address:
     - "5/0/107"
@@ -115,7 +117,7 @@
 # ETS: --2A3 EG WC Basis Sollwert
 - name: "Gäste-WC Thermostat"
   temperature_address: "5/0/124"
-  target_temperature_address: "5/0/120"
+  target_temperature_address: "5/0/126"
   target_temperature_state_address: "5/0/126"
   active_state_address:
     - "5/0/122"
@@ -128,7 +130,7 @@
 # ETS: --2A4 EG Gaderobe Basis Sollwert
 - name: "Garderobe Thermostat"
   temperature_address: "5/0/139"
-  target_temperature_address: "5/0/135"
+  target_temperature_address: "5/0/141"
   target_temperature_state_address: "5/0/141"
   active_state_address:
     - "5/0/137"
@@ -141,7 +143,7 @@
 # ETS: --2A5 EG Technik Basis Sollwert
 - name: "Technik Thermostat"
   temperature_address: "5/0/154"
-  target_temperature_address: "5/0/150"
+  target_temperature_address: "5/0/156"
   target_temperature_state_address: "5/0/156"
   active_state_address:
     - "5/0/152"
@@ -154,7 +156,7 @@
 # ETS: --2A6 EG Küche Basis Sollwert
 - name: "Küche Thermostat"
   temperature_address: "5/0/169"
-  target_temperature_address: "5/0/165"
+  target_temperature_address: "5/0/171"
   target_temperature_state_address: "5/0/171"
   active_state_address:
     - "5/0/167"
@@ -167,7 +169,7 @@
 # ETS: --3A1 EG Wohnz. Basis Sollwert
 - name: "Wohnzimmer Thermostat"
   temperature_address: "5/0/184"
-  target_temperature_address: "5/0/180"
+  target_temperature_address: "5/0/186"
   target_temperature_state_address: "5/0/186"
   active_state_address:
     - "5/0/182"
@@ -180,7 +182,7 @@
 # ETS: --4A1 Flur Basissollwert
 - name: "Flur KG Thermostat"
   temperature_address: "5/1/4"
-  target_temperature_address: "5/1/0"
+  target_temperature_address: "5/1/6"
   target_temperature_state_address: "5/1/6"
   active_state_address:
     - "5/1/2"
@@ -193,7 +195,7 @@
 # ETS: --4A2 Gast Basissollwert
 - name: "Gast/Hobby Thermostat"
   temperature_address: "5/1/19"
-  target_temperature_address: "5/1/15"
+  target_temperature_address: "5/1/21"
   target_temperature_state_address: "5/1/21"
   active_state_address:
     - "5/1/17"
@@ -206,7 +208,7 @@
 # ETS: --4A3 Bad Basissollwert
 - name: "Kinderbad Thermostat"
   temperature_address: "5/1/34"
-  target_temperature_address: "5/1/30"
+  target_temperature_address: "5/1/36"
   target_temperature_state_address: "5/1/36"
   active_state_address:
     - "5/1/32"
@@ -219,7 +221,7 @@
 # ETS: --4A4 Kind 1 links Basissollwert
 - name: "Zimmer Sinja Thermostat"
   temperature_address: "5/1/49"
-  target_temperature_address: "5/1/45"
+  target_temperature_address: "5/1/51"
   target_temperature_state_address: "5/1/51"
   active_state_address:
     - "5/1/47"
@@ -232,7 +234,7 @@
 # ETS: --4A5 Kind 2 rechts Basissollwert
 - name: "Zimmer Silas Thermostat"
   temperature_address: "5/1/64"
-  target_temperature_address: "5/1/60"
+  target_temperature_address: "5/1/66"
   target_temperature_state_address: "5/1/66"
   active_state_address:
     - "5/1/62"
