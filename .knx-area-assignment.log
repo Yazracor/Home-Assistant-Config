@@ -41719,3 +41719,54 @@ Entities: Area geändert=0, Entity-ID geändert=0, Name geändert=0, Sichtbarkei
 Devices: Area geändert=0
 Starting Home Assistant Core...
 {"result":"ok","data":{}}KNX area assignments applied.
+2026-06-01T22:35:22Z runner scheduled after 10s: /homeassistant/devscripts/apply-pending-knx-area-assignments.sh
+2026-06-01T22:35:32Z runner starting: /homeassistant/devscripts/apply-pending-knx-area-assignments.sh
+Using Python: /usr/bin/python3
+Stopping Home Assistant Core for first registry patch...
+Command completed successfully.
+Floors: erstellt=0, aktualisiert=0
+Areas: erstellt=0, aktualisiert=0
+Obsolete Areas: entfernt=0, Entity-Zuordnungen geändert=0, Device-Zuordnungen geändert=0
+Entities: Area geändert=5, Entity-ID geändert=2, Name geändert=5, Sichtbarkeit geändert=1, Unique-ID geändert=0, Duplikate entfernt=0, nicht gefunden=3
+Devices: Area geändert=0
+
+Nicht zugeordnete erwartete Entitäten:
+  - binary_sensor.Manuelle Bedienung aktiv / unique_id=manuelle_bedienung_aktiv / expected=binary_sensor.manuelle_bedienung_aktiv
+  - sensor.KNX Schalter letzte Bedienung / unique_id=knx_schalter_letzte_bedienung / expected=sensor.knx_schalter_letzte_bedienung
+  - sensor.HA Bedienung letzte Bedienung / unique_id=ha_bedienung_letzte_bedienung / expected=sensor.ha_bedienung_letzte_bedienung
+
+Das ist normal, wenn Home Assistant nach dem YAML-Import noch nicht neu gestartet wurde oder wenn Entity-IDs manuell geändert wurden. Unique-IDs werden bevorzugt; geänderte Entity-IDs sind daher meist unkritisch.
+Starting Home Assistant Core so YAML entity changes are written to the registry...
+Command completed successfully.
+Stopping Home Assistant Core for second registry patch...
+Command completed successfully.
+Floors: erstellt=0, aktualisiert=0
+Areas: erstellt=0, aktualisiert=0
+Obsolete Areas: entfernt=0, Entity-Zuordnungen geändert=0, Device-Zuordnungen geändert=0
+Entities: Area geändert=3, Entity-ID geändert=0, Name geändert=3, Sichtbarkeit geändert=2, Unique-ID geändert=0, Duplikate entfernt=0, nicht gefunden=0
+Devices: Area geändert=0
+Starting Home Assistant Core...
+Command completed successfully.
+KNX area assignments applied.
+2026-06-01T22:41:00Z runner scheduled after 10s: /homeassistant/devscripts/apply-pending-knx-area-assignments.sh
+2026-06-01T22:41:10Z runner starting: /homeassistant/devscripts/apply-pending-knx-area-assignments.sh
+Using Python: /usr/bin/python3
+Stopping Home Assistant Core for first registry patch...
+Command completed successfully.
+Floors: erstellt=0, aktualisiert=0
+Areas: erstellt=0, aktualisiert=0
+Obsolete Areas: entfernt=0, Entity-Zuordnungen geändert=0, Device-Zuordnungen geändert=0
+Entities: Area geändert=0, Entity-ID geändert=0, Name geändert=0, Sichtbarkeit geändert=0, Unique-ID geändert=0, Duplikate entfernt=0, nicht gefunden=0
+Devices: Area geändert=0
+Starting Home Assistant Core so YAML entity changes are written to the registry...
+Command completed successfully.
+Stopping Home Assistant Core for second registry patch...
+Command completed successfully.
+Floors: erstellt=0, aktualisiert=0
+Areas: erstellt=0, aktualisiert=0
+Obsolete Areas: entfernt=0, Entity-Zuordnungen geändert=0, Device-Zuordnungen geändert=0
+Entities: Area geändert=0, Entity-ID geändert=0, Name geändert=0, Sichtbarkeit geändert=0, Unique-ID geändert=0, Duplikate entfernt=0, nicht gefunden=0
+Devices: Area geändert=0
+Starting Home Assistant Core...
+Command completed successfully.
+KNX area assignments applied.
