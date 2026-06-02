@@ -4,11 +4,15 @@
 from __future__ import annotations
 
 import argparse
-import asyncio
+import base64
 from datetime import datetime
+import hashlib
 import json
 import os
 import signal
+import socket
+import ssl
+import struct
 import sys
 from urllib.parse import urlparse, urlunparse
 
@@ -92,33 +96,141 @@ def normalize_event(event: dict) -> dict:
     }
 
 
-async def subscribe(ws) -> None:
-    auth_required = await ws.receive_json()
+class WebSocket:
+    """Small blocking WebSocket client for Home Assistant's JSON API."""
+
+    def __init__(self, url: str) -> None:
+        self._url = url
+        self._socket = self._connect(url)
+
+    def close(self) -> None:
+        self._socket.close()
+
+    def send_json(self, data: dict) -> None:
+        self._send_frame(json.dumps(data, separators=(",", ":")).encode(), opcode=0x1)
+
+    def receive_json(self) -> dict:
+        while True:
+            opcode, payload = self._receive_frame()
+            if opcode == 0x1:
+                return json.loads(payload.decode())
+            if opcode == 0x8:
+                raise RuntimeError("WebSocket closed by server")
+            if opcode == 0x9:
+                self._send_frame(payload, opcode=0xA)
+
+    @staticmethod
+    def _connect(url: str):
+        parsed = urlparse(url)
+        if parsed.scheme not in {"ws", "wss"}:
+            raise ValueError(f"Unsupported WebSocket scheme: {parsed.scheme}")
+
+        host = parsed.hostname
+        if host is None:
+            raise ValueError(f"Invalid WebSocket URL: {url}")
+        port = parsed.port or (443 if parsed.scheme == "wss" else 80)
+        path = parsed.path or "/"
+        if parsed.query:
+            path += f"?{parsed.query}"
+
+        raw_socket = socket.create_connection((host, port), timeout=20)
+        if parsed.scheme == "wss":
+            context = ssl.create_default_context()
+            sock = context.wrap_socket(raw_socket, server_hostname=host)
+        else:
+            sock = raw_socket
+
+        key = base64.b64encode(os.urandom(16)).decode()
+        request = (
+            f"GET {path} HTTP/1.1\r\n"
+            f"Host: {host}:{port}\r\n"
+            "Upgrade: websocket\r\n"
+            "Connection: Upgrade\r\n"
+            f"Sec-WebSocket-Key: {key}\r\n"
+            "Sec-WebSocket-Version: 13\r\n"
+            "\r\n"
+        )
+        sock.sendall(request.encode())
+
+        response = b""
+        while b"\r\n\r\n" not in response:
+            chunk = sock.recv(4096)
+            if not chunk:
+                raise RuntimeError("No WebSocket handshake response")
+            response += chunk
+
+        header = response.split(b"\r\n", 1)[0]
+        if b" 101 " not in header:
+            raise RuntimeError(f"WebSocket handshake failed: {header.decode(errors='replace')}")
+
+        accept = base64.b64encode(
+            hashlib.sha1((key + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11").encode()).digest()
+        ).decode()
+        if f"Sec-WebSocket-Accept: {accept}".lower() not in response.decode(
+            errors="ignore"
+        ).lower():
+            raise RuntimeError("WebSocket handshake accept header did not match")
+
+        return sock
+
+    def _send_frame(self, payload: bytes, opcode: int) -> None:
+        first = 0x80 | opcode
+        mask_bit = 0x80
+        length = len(payload)
+        if length < 126:
+            header = struct.pack("!BB", first, mask_bit | length)
+        elif length < 65536:
+            header = struct.pack("!BBH", first, mask_bit | 126, length)
+        else:
+            header = struct.pack("!BBQ", first, mask_bit | 127, length)
+
+        mask = os.urandom(4)
+        masked = bytes(byte ^ mask[index % 4] for index, byte in enumerate(payload))
+        self._socket.sendall(header + mask + masked)
+
+    def _receive_frame(self) -> tuple[int, bytes]:
+        first, second = self._read_exact(2)
+        opcode = first & 0x0F
+        masked = bool(second & 0x80)
+        length = second & 0x7F
+        if length == 126:
+            length = struct.unpack("!H", self._read_exact(2))[0]
+        elif length == 127:
+            length = struct.unpack("!Q", self._read_exact(8))[0]
+
+        mask = self._read_exact(4) if masked else None
+        payload = self._read_exact(length)
+        if mask is not None:
+            payload = bytes(byte ^ mask[index % 4] for index, byte in enumerate(payload))
+        return opcode, payload
+
+    def _read_exact(self, length: int) -> bytes:
+        chunks = bytearray()
+        while len(chunks) < length:
+            chunk = self._socket.recv(length - len(chunks))
+            if not chunk:
+                raise RuntimeError("WebSocket connection closed")
+            chunks.extend(chunk)
+        return bytes(chunks)
+
+
+def subscribe(ws: WebSocket, token: str) -> None:
+    auth_required = ws.receive_json()
     if auth_required.get("type") != "auth_required":
         raise RuntimeError(f"Unexpected websocket greeting: {auth_required}")
 
-    await ws.send_json({"type": "auth", "access_token": subscribe.token})
-    auth_response = await ws.receive_json()
+    ws.send_json({"type": "auth", "access_token": token})
+    auth_response = ws.receive_json()
     if auth_response.get("type") != "auth_ok":
         raise RuntimeError(f"Authentication failed: {auth_response}")
 
-    await ws.send_json({"id": 1, "type": "subscribe_events", "event_type": "knx_event"})
-    subscribe_response = await ws.receive_json()
+    ws.send_json({"id": 1, "type": "subscribe_events", "event_type": "knx_event"})
+    subscribe_response = ws.receive_json()
     if not subscribe_response.get("success"):
         raise RuntimeError(f"Subscription failed: {subscribe_response}")
 
 
-subscribe.token = ""
-
-
-async def run(args: argparse.Namespace) -> None:
-    try:
-        import aiohttp
-    except ImportError as err:
-        print("Missing Python package: aiohttp", file=sys.stderr)
-        print("Run this on the Home Assistant host or in an environment with aiohttp.", file=sys.stderr)
-        raise SystemExit(2) from err
-
+def run(args: argparse.Namespace) -> None:
     token = args.token
     if not token and args.token_file:
         try:
@@ -129,17 +241,16 @@ async def run(args: argparse.Namespace) -> None:
     if not token:
         raise SystemExit("Set HA_TOKEN to a Home Assistant long-lived access token.")
 
-    subscribe.token = token
     addresses = set(args.addresses or DEFAULT_ADDRESSES)
     output_path = args.output
-    stop_event = asyncio.Event()
+    stopping = False
 
     def stop(*_):
-        stop_event.set()
+        nonlocal stopping
+        stopping = True
 
-    loop = asyncio.get_running_loop()
-    for sig in (signal.SIGINT, signal.SIGTERM):
-        loop.add_signal_handler(sig, stop)
+    signal.signal(signal.SIGINT, stop)
+    signal.signal(signal.SIGTERM, stop)
 
     url = websocket_url(args.url)
     print(f"Connecting to {url}", file=sys.stderr)
@@ -147,38 +258,32 @@ async def run(args: argparse.Namespace) -> None:
         print(f"Logging addresses: {', '.join(sorted(addresses))}", file=sys.stderr)
     print(f"Writing JSONL to {output_path}", file=sys.stderr)
 
-    async with aiohttp.ClientSession() as session:
-        async with session.ws_connect(url, heartbeat=30) as ws:
-            await subscribe(ws)
-            with open(output_path, "a", encoding="utf-8") as log_file:
-                while not stop_event.is_set():
-                    msg = await ws.receive(timeout=1)
-                    if msg.type == aiohttp.WSMsgType.TIMEOUT:
-                        continue
-                    if msg.type in (aiohttp.WSMsgType.CLOSED, aiohttp.WSMsgType.ERROR):
-                        break
-                    if msg.type != aiohttp.WSMsgType.TEXT:
-                        continue
+    ws = WebSocket(url)
+    try:
+        subscribe(ws, token)
+        with open(output_path, "a", encoding="utf-8") as log_file:
+            while not stopping:
+                packet = ws.receive_json()
+                if packet.get("type") != "event":
+                    continue
+                event = packet.get("event", {})
+                event_data = event.get("data", {})
+                destination = str(event_data.get("destination"))
+                if not args.all and destination not in addresses:
+                    continue
 
-                    packet = json.loads(msg.data)
-                    if packet.get("type") != "event":
-                        continue
-                    event = packet.get("event", {})
-                    event_data = event.get("data", {})
-                    destination = str(event_data.get("destination"))
-                    if not args.all and destination not in addresses:
-                        continue
-
-                    entry = normalize_event(event)
-                    line = json.dumps(entry, ensure_ascii=False, separators=(",", ":"))
-                    log_file.write(line + "\n")
-                    log_file.flush()
-                    if args.print_events:
-                        print(line)
+                entry = normalize_event(event)
+                line = json.dumps(entry, ensure_ascii=False, separators=(",", ":"))
+                log_file.write(line + "\n")
+                log_file.flush()
+                if args.print_events:
+                    print(line)
+    finally:
+        ws.close()
 
 
 def main() -> None:
-    asyncio.run(run(parse_args()))
+    run(parse_args())
 
 
 if __name__ == "__main__":
