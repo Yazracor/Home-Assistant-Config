@@ -41968,3 +41968,4 @@ Devices: Area geändert=0
 Starting Home Assistant Core...
 Command completed successfully.
 KNX area assignments applied.
+2026-06-02T22:04:09Z runner scheduled after 10s: /homeassistant/devscripts/apply-pending-knx-area-assignments.sh
