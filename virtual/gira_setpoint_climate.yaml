@@ -6,6 +6,6 @@ gira_setpoint_climate:
       target_temperature_entity: sensor.eg_arbeitszimmer_thermostat_soll_temp
       heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
       base_setpoint_address: "5/0/75"
-      cooling_setpoint_offset: 1.0
+      cooling_setpoint_offset: 2.4
       heat_state: "on"
       cool_state: "off"

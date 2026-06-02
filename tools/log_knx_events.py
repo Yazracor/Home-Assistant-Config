@@ -171,6 +171,7 @@ class WebSocket:
         ).lower():
             raise RuntimeError("WebSocket handshake accept header did not match")
 
+        sock.settimeout(None)
         return sock
 
     def _send_frame(self, payload: bytes, opcode: int) -> None:
