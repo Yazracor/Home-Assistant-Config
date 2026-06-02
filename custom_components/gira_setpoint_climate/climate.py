@@ -13,6 +13,7 @@ from . import (
     CONF_BASE_SETPOINT_ADDRESS,
     CONF_CLIMATES,
     CONF_COOL_STATE,
+    CONF_COOLING_SETPOINT_OFFSET,
     CONF_DEAD_BAND,
     CONF_HEAT_COOL_ENTITY,
     CONF_HEAT_STATE,
@@ -43,7 +44,9 @@ class GiraSetpointClimate(ClimateEntity, RestoreEntity):
         self._source_climate = config[CONF_SOURCE_CLIMATE]
         self._heat_cool_entity = config[CONF_HEAT_COOL_ENTITY]
         self._base_setpoint_address = config[CONF_BASE_SETPOINT_ADDRESS]
-        self._dead_band = config[CONF_DEAD_BAND]
+        self._cooling_setpoint_offset = config.get(
+            CONF_COOLING_SETPOINT_OFFSET, config[CONF_DEAD_BAND]
+        )
         self._heat_state = config[CONF_HEAT_STATE].lower()
         self._cool_state = config[CONF_COOL_STATE].lower()
         self._optimistic_target_temperature: float | None = None
@@ -69,7 +72,11 @@ class GiraSetpointClimate(ClimateEntity, RestoreEntity):
         """Update Home Assistant when the source entities change."""
         source_state = self.hass.states.get(self._source_climate)
         source_target = _float_attr(source_state, "temperature")
-        if source_target is not None:
+        if (
+            source_target is not None
+            and self._optimistic_target_temperature is not None
+            and abs(source_target - self._optimistic_target_temperature) < 0.05
+        ):
             self._optimistic_target_temperature = None
         self.async_write_ha_state()
 
@@ -81,6 +88,8 @@ class GiraSetpointClimate(ClimateEntity, RestoreEntity):
     @property
     def target_temperature(self) -> float | None:
         """Return the active Gira target temperature."""
+        if self._optimistic_target_temperature is not None:
+            return self._optimistic_target_temperature
         source_target = _float_attr(self.hass.states.get(self._source_climate), "temperature")
         if source_target is not None:
             return source_target
@@ -124,7 +133,7 @@ class GiraSetpointClimate(ClimateEntity, RestoreEntity):
             return
 
         requested = float(temperature)
-        base_setpoint = requested - self._dead_band if self._is_cooling() else requested
+        base_setpoint = requested - self._cooling_setpoint_offset if self._is_cooling() else requested
         self._optimistic_target_temperature = requested
 
         await self.hass.services.async_call(

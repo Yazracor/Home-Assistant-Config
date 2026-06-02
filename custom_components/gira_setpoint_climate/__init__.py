@@ -13,6 +13,7 @@ CONF_SOURCE_CLIMATE = "source_climate"
 CONF_HEAT_COOL_ENTITY = "heat_cool_entity"
 CONF_BASE_SETPOINT_ADDRESS = "base_setpoint_address"
 CONF_DEAD_BAND = "dead_band"
+CONF_COOLING_SETPOINT_OFFSET = "cooling_setpoint_offset"
 CONF_HEAT_STATE = "heat_state"
 CONF_COOL_STATE = "cool_state"
 
@@ -26,6 +27,7 @@ CLIMATE_SCHEMA = vol.Schema(
         vol.Required(CONF_BASE_SETPOINT_ADDRESS): cv.string,
         vol.Required(CONF_HEAT_COOL_ENTITY): cv.entity_id,
         vol.Optional(CONF_UNIQUE_ID): cv.string,
+        vol.Optional(CONF_COOLING_SETPOINT_OFFSET): vol.Coerce(float),
         vol.Optional(CONF_DEAD_BAND, default=2.0): vol.Coerce(float),
         vol.Optional(CONF_HEAT_STATE, default=DEFAULT_HEAT_STATE): cv.string,
         vol.Optional(CONF_COOL_STATE, default=DEFAULT_COOL_STATE): cv.string,
