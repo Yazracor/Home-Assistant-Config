@@ -41969,3 +41969,13 @@ Starting Home Assistant Core...
 Command completed successfully.
 KNX area assignments applied.
 2026-06-02T22:04:09Z runner scheduled after 10s: /homeassistant/devscripts/apply-pending-knx-area-assignments.sh
+2026-06-02T22:04:19Z runner starting: /homeassistant/devscripts/apply-pending-knx-area-assignments.sh
+Using Python: /usr/bin/python3
+Stopping Home Assistant Core for first registry patch...
+Command completed successfully.
+Floors: erstellt=0, aktualisiert=0
+Areas: erstellt=0, aktualisiert=0
+Obsolete Areas: entfernt=0, Entity-Zuordnungen geändert=0, Device-Zuordnungen geändert=0
+Entities: Area geändert=0, Entity-ID geändert=0, Name geändert=0, Sichtbarkeit geändert=0, Unique-ID geändert=0, Duplikate entfernt=0, nicht gefunden=0
+Devices: Area geändert=0
+Starting Home Assistant Core so YAML entity changes are written to the registry...
