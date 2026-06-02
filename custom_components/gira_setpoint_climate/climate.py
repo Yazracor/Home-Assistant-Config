@@ -7,7 +7,6 @@ from homeassistant.components.climate.const import ClimateEntityFeature, HVACAct
 from homeassistant.const import CONF_NAME, CONF_UNIQUE_ID, UnitOfTemperature
 from homeassistant.core import Event, HomeAssistant, callback
 from homeassistant.helpers.event import async_track_state_change_event
-from homeassistant.helpers.restore_state import RestoreEntity
 
 from . import (
     CONF_BASE_SETPOINT_ADDRESS,
@@ -28,7 +27,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     async_add_entities(GiraSetpointClimate(hass, climate_config) for climate_config in climates)
 
 
-class GiraSetpointClimate(ClimateEntity, RestoreEntity):
+class GiraSetpointClimate(ClimateEntity):
     """Proxy a KNX climate and compensate writes to the Gira base setpoint."""
 
     _attr_has_entity_name = False
@@ -49,17 +48,10 @@ class GiraSetpointClimate(ClimateEntity, RestoreEntity):
         )
         self._heat_state = config[CONF_HEAT_STATE].lower()
         self._cool_state = config[CONF_COOL_STATE].lower()
-        self._optimistic_target_temperature: float | None = None
 
     async def async_added_to_hass(self) -> None:
         """Register state listeners."""
         await super().async_added_to_hass()
-        last_state = await self.async_get_last_state()
-        if last_state is not None:
-            restored = last_state.attributes.get("temperature")
-            if isinstance(restored, (int, float)):
-                self._optimistic_target_temperature = float(restored)
-
         remove_listener = async_track_state_change_event(
             self.hass,
             [self._source_climate, self._heat_cool_entity],
@@ -70,14 +62,6 @@ class GiraSetpointClimate(ClimateEntity, RestoreEntity):
     @callback
     def _async_state_changed(self, event: Event) -> None:
         """Update Home Assistant when the source entities change."""
-        source_state = self.hass.states.get(self._source_climate)
-        source_target = _float_attr(source_state, "temperature")
-        if (
-            source_target is not None
-            and self._optimistic_target_temperature is not None
-            and abs(source_target - self._optimistic_target_temperature) < 0.05
-        ):
-            self._optimistic_target_temperature = None
         self.async_write_ha_state()
 
     @property
@@ -88,12 +72,10 @@ class GiraSetpointClimate(ClimateEntity, RestoreEntity):
     @property
     def target_temperature(self) -> float | None:
         """Return the active Gira target temperature."""
-        if self._optimistic_target_temperature is not None:
-            return self._optimistic_target_temperature
         source_target = _float_attr(self.hass.states.get(self._source_climate), "temperature")
         if source_target is not None:
             return source_target
-        return self._optimistic_target_temperature
+        return None
 
     @property
     def min_temp(self) -> float:
@@ -133,8 +115,9 @@ class GiraSetpointClimate(ClimateEntity, RestoreEntity):
             return
 
         requested = float(temperature)
-        base_setpoint = requested - self._cooling_setpoint_offset if self._is_cooling() else requested
-        self._optimistic_target_temperature = requested
+        base_setpoint = (
+            requested - self._cooling_setpoint_offset if self._is_cooling() else requested
+        )
 
         await self.hass.services.async_call(
             "knx",
