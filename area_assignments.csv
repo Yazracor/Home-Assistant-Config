@@ -67,57 +67,93 @@ cover,Bad OG innen,cover.og_bad_innen,4/2/2_None,bad_og,Bad OG,obergeschoss,Ober
 cover,Bad OG Balkon,cover.og_bad_balkon,4/2/8_None,bad_og,Bad OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=cover.bad_og_balkon;cover.jalousie_og_bad_aussen_balkon
 cover,Bad OG Panorama außen,cover.og_bad_panorama_aussen,4/0/12_None,bad_og,Bad OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=cover.bad_og_panorama_aussen;cover.jalousie_og_bad_aussen_panorama
 climate,Schlafzimmer Thermostat,climate.og_schlafzimmer_thermostat,5/0/4_5/0/6_5/0/0_None,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,KNX/ETS group address name,
+sensor,Thermostat Ist-Temp,sensor.og_schlafzimmer_thermostat_ist_temp,5/0/4,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
+sensor,Thermostat Soll-Temp,sensor.og_schlafzimmer_thermostat_soll_temp,5/0/6,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
 binary_sensor,Anforderung Heizen,binary_sensor.og_schlafzimmer_anforderung_heizen,5/0/2,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.og_schlafzimmer_anforderung_kuhlen,5/0/5,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,KNX/ETS group address name,hidden_by=integration
 climate,Bad OG Thermostat,climate.og_bad_thermostat,5/0/19_5/0/21_5/0/15_None,bad_og,Bad OG,obergeschoss,Obergeschoss,KNX/ETS group address name,
+sensor,Thermostat Ist-Temp,sensor.og_bad_thermostat_ist_temp,5/0/19,bad_og,Bad OG,obergeschoss,Obergeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
+sensor,Thermostat Soll-Temp,sensor.og_bad_thermostat_soll_temp,5/0/21,bad_og,Bad OG,obergeschoss,Obergeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
 binary_sensor,Anforderung Heizen,binary_sensor.og_bad_anforderung_heizen,5/0/17,bad_og,Bad OG,obergeschoss,Obergeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.og_bad_anforderung_kuhlen,5/0/20,bad_og,Bad OG,obergeschoss,Obergeschoss,KNX/ETS group address name,hidden_by=integration
 climate,Büro OG Thermostat,climate.og_buro_thermostat,5/0/34_5/0/36_5/0/30_None,buero_og,Büro OG,obergeschoss,Obergeschoss,KNX/ETS group address name,ETS nennt OG Arbeiten/Flur; bestehende Zuordnungen und Alias OG Arbeiten zeigen auf Büro OG.
+sensor,Thermostat Ist-Temp,sensor.og_buro_thermostat_ist_temp,5/0/34,buero_og,Büro OG,obergeschoss,Obergeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
+sensor,Thermostat Soll-Temp,sensor.og_buro_thermostat_soll_temp,5/0/36,buero_og,Büro OG,obergeschoss,Obergeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
 binary_sensor,Anforderung Heizen,binary_sensor.og_buro_anforderung_heizen,5/0/32,buero_og,Büro OG,obergeschoss,Obergeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.og_buro_anforderung_kuhlen,5/0/35,buero_og,Büro OG,obergeschoss,Obergeschoss,KNX/ETS group address name,hidden_by=integration
 climate,Ankleide Thermostat,climate.og_ankleide_thermostat,5/0/49_5/0/51_5/0/45_None,ankleide,Ankleide,obergeschoss,Obergeschoss,KNX/ETS group address name,
+sensor,Thermostat Ist-Temp,sensor.og_ankleide_thermostat_ist_temp,5/0/49,ankleide,Ankleide,obergeschoss,Obergeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
+sensor,Thermostat Soll-Temp,sensor.og_ankleide_thermostat_soll_temp,5/0/51,ankleide,Ankleide,obergeschoss,Obergeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
 binary_sensor,Anforderung Heizen,binary_sensor.og_ankleide_anforderung_heizen,5/0/47,ankleide,Ankleide,obergeschoss,Obergeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.og_ankleide_anforderung_kuhlen,5/0/50,ankleide,Ankleide,obergeschoss,Obergeschoss,KNX/ETS group address name,hidden_by=integration
 climate,Flur EG Thermostat,climate.eg_flur_thermostat,5/0/64_5/0/66_5/0/60_None,flur_eg,Flur EG,erdgeschoss,Erdgeschoss,KNX/ETS group address name,ETS nennt EG Diele.
+sensor,Thermostat Ist-Temp,sensor.eg_flur_thermostat_ist_temp,5/0/64,flur_eg,Flur EG,erdgeschoss,Erdgeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
+sensor,Thermostat Soll-Temp,sensor.eg_flur_thermostat_soll_temp,5/0/66,flur_eg,Flur EG,erdgeschoss,Erdgeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
 binary_sensor,Anforderung Heizen,binary_sensor.eg_flur_anforderung_heizen,5/0/62,flur_eg,Flur EG,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.eg_flur_anforderung_kuhlen,5/0/65,flur_eg,Flur EG,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 climate,Arbeitszimmer Thermostat,climate.eg_arbeitszimmer_thermostat,5/0/79_5/0/81_5/0/75_None,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=climate.th_eg_buero_2;climate.th_eg_buero;climate.arbeitszimmer_thermostat;climate.arbeitszimmer_eg_thermostat
+sensor,Thermostat Ist-Temp,sensor.eg_arbeitszimmer_thermostat_ist_temp,5/0/79,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
+sensor,Thermostat Soll-Temp,sensor.eg_arbeitszimmer_thermostat_soll_temp,5/0/81,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
 binary_sensor,Anforderung Heizen,binary_sensor.eg_arbeitszimmer_anforderung_heizen,5/0/77,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=binary_sensor.arbeitszimmer_anforderung_heizen;binary_sensor.arbeitszimmer_eg_anforderung_heizen hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.eg_arbeitszimmer_anforderung_kuhlen,5/0/80,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=binary_sensor.arbeitszimmer_anforderung_kuhlen;binary_sensor.arbeitszimmer_eg_anforderung_kuhlen hidden_by=integration
 climate,Arbeitszimmer Flur Thermostat,climate.eg_arbeitszimmer_flur_thermostat,5/0/94_5/0/96_5/0/90_None,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,KNX/ETS group address name,ETS nennt EG Flur Gast; vorhandene Lichtzuordnung EG Flur Gast liegt im Arbeitszimmer.
+sensor,Thermostat Ist-Temp,sensor.eg_arbeitszimmer_flur_thermostat_ist_temp,5/0/94,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
+sensor,Thermostat Soll-Temp,sensor.eg_arbeitszimmer_flur_thermostat_soll_temp,5/0/96,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
 binary_sensor,Anforderung Heizen,binary_sensor.eg_arbeitszimmer_flur_anforderung_heizen,5/0/92,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.eg_arbeitszimmer_flur_anforderung_kuhlen,5/0/95,arbeitszimmer,Arbeitszimmer,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 climate,Gästebad Thermostat,climate.eg_gaestebad_thermostat,5/0/109_5/0/111_5/0/105_None,gaestebad,Gästebad,erdgeschoss,Erdgeschoss,KNX/ETS group address name,ETS nennt EG Bad Gast.
+sensor,Thermostat Ist-Temp,sensor.eg_gaestebad_thermostat_ist_temp,5/0/109,gaestebad,Gästebad,erdgeschoss,Erdgeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
+sensor,Thermostat Soll-Temp,sensor.eg_gaestebad_thermostat_soll_temp,5/0/111,gaestebad,Gästebad,erdgeschoss,Erdgeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
 binary_sensor,Anforderung Heizen,binary_sensor.eg_gaestebad_anforderung_heizen,5/0/107,gaestebad,Gästebad,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.eg_gaestebad_anforderung_kuhlen,5/0/110,gaestebad,Gästebad,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 climate,Gäste-WC Thermostat,climate.eg_gaeste_wc_thermostat,5/0/124_5/0/126_5/0/120_None,gaeste_wc,Gäste-WC,erdgeschoss,Erdgeschoss,KNX/ETS group address name,
+sensor,Thermostat Ist-Temp,sensor.eg_gaeste_wc_thermostat_ist_temp,5/0/124,gaeste_wc,Gäste-WC,erdgeschoss,Erdgeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
+sensor,Thermostat Soll-Temp,sensor.eg_gaeste_wc_thermostat_soll_temp,5/0/126,gaeste_wc,Gäste-WC,erdgeschoss,Erdgeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
 binary_sensor,Anforderung Heizen,binary_sensor.eg_gaeste_wc_anforderung_heizen,5/0/122,gaeste_wc,Gäste-WC,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.eg_gaeste_wc_anforderung_kuhlen,5/0/125,gaeste_wc,Gäste-WC,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 climate,Garderobe Thermostat,climate.eg_garderobe_thermostat,5/0/139_5/0/141_5/0/135_None,garderobe,Garderobe,erdgeschoss,Erdgeschoss,KNX/ETS group address name,ETS schreibt Gaderobe.
+sensor,Thermostat Ist-Temp,sensor.eg_garderobe_thermostat_ist_temp,5/0/139,garderobe,Garderobe,erdgeschoss,Erdgeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
+sensor,Thermostat Soll-Temp,sensor.eg_garderobe_thermostat_soll_temp,5/0/141,garderobe,Garderobe,erdgeschoss,Erdgeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
 binary_sensor,Anforderung Heizen,binary_sensor.eg_garderobe_anforderung_heizen,5/0/137,garderobe,Garderobe,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.eg_garderobe_anforderung_kuhlen,5/0/140,garderobe,Garderobe,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 climate,Technik Thermostat,climate.eg_technik_thermostat,5/0/154_5/0/156_5/0/150_None,schuhschrank,Schuhschrank,erdgeschoss,Erdgeschoss,KNX/ETS group address name,
+sensor,Thermostat Ist-Temp,sensor.eg_technik_thermostat_ist_temp,5/0/154,schuhschrank,Schuhschrank,erdgeschoss,Erdgeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
+sensor,Thermostat Soll-Temp,sensor.eg_technik_thermostat_soll_temp,5/0/156,schuhschrank,Schuhschrank,erdgeschoss,Erdgeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
 binary_sensor,Anforderung Heizen,binary_sensor.eg_technik_anforderung_heizen,5/0/152,schuhschrank,Schuhschrank,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.eg_technik_anforderung_kuhlen,5/0/155,schuhschrank,Schuhschrank,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 climate,Küche Thermostat,climate.eg_kueche_thermostat,5/0/169_5/0/171_5/0/165_None,kueche,Küche,erdgeschoss,Erdgeschoss,KNX/ETS group address name,
+sensor,Thermostat Ist-Temp,sensor.eg_kueche_thermostat_ist_temp,5/0/169,kueche,Küche,erdgeschoss,Erdgeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
+sensor,Thermostat Soll-Temp,sensor.eg_kueche_thermostat_soll_temp,5/0/171,kueche,Küche,erdgeschoss,Erdgeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
 binary_sensor,Anforderung Heizen,binary_sensor.eg_kueche_anforderung_heizen,5/0/167,kueche,Küche,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.eg_kueche_anforderung_kuhlen,5/0/170,kueche,Küche,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 climate,Wohnzimmer Thermostat,climate.eg_wohnzimmer_thermostat,5/0/184_5/0/186_5/0/180_None,wohnzimmer,Wohnzimmer,erdgeschoss,Erdgeschoss,KNX/ETS group address name,
+sensor,Thermostat Ist-Temp,sensor.eg_wohnzimmer_thermostat_ist_temp,5/0/184,wohnzimmer,Wohnzimmer,erdgeschoss,Erdgeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
+sensor,Thermostat Soll-Temp,sensor.eg_wohnzimmer_thermostat_soll_temp,5/0/186,wohnzimmer,Wohnzimmer,erdgeschoss,Erdgeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
 binary_sensor,Anforderung Heizen,binary_sensor.eg_wohnzimmer_anforderung_heizen,5/0/182,wohnzimmer,Wohnzimmer,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.eg_wohnzimmer_anforderung_kuhlen,5/0/185,wohnzimmer,Wohnzimmer,erdgeschoss,Erdgeschoss,KNX/ETS group address name,hidden_by=integration
 climate,Flur KG Thermostat,climate.kg_flur_thermostat,5/1/4_5/1/6_5/1/0_None,flur_kg,Flur KG,kellergeschoss,Kellergeschoss,KNX/ETS group address name,
+sensor,Thermostat Ist-Temp,sensor.kg_flur_thermostat_ist_temp,5/1/4,flur_kg,Flur KG,kellergeschoss,Kellergeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
+sensor,Thermostat Soll-Temp,sensor.kg_flur_thermostat_soll_temp,5/1/6,flur_kg,Flur KG,kellergeschoss,Kellergeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
 binary_sensor,Anforderung Heizen,binary_sensor.kg_flur_anforderung_heizen,5/1/2,flur_kg,Flur KG,kellergeschoss,Kellergeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.kg_flur_anforderung_kuhlen,5/1/5,flur_kg,Flur KG,kellergeschoss,Kellergeschoss,KNX/ETS group address name,hidden_by=integration
 climate,Gast/Hobby Thermostat,climate.kg_gast_hobby_thermostat,5/1/19_5/1/21_5/1/15_None,gast_hobby,Gast/Hobby,kellergeschoss,Kellergeschoss,KNX/ETS group address name,
+sensor,Thermostat Ist-Temp,sensor.kg_gast_hobby_thermostat_ist_temp,5/1/19,gast_hobby,Gast/Hobby,kellergeschoss,Kellergeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
+sensor,Thermostat Soll-Temp,sensor.kg_gast_hobby_thermostat_soll_temp,5/1/21,gast_hobby,Gast/Hobby,kellergeschoss,Kellergeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
 binary_sensor,Anforderung Heizen,binary_sensor.kg_gast_hobby_anforderung_heizen,5/1/17,gast_hobby,Gast/Hobby,kellergeschoss,Kellergeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.kg_gast_hobby_anforderung_kuhlen,5/1/20,gast_hobby,Gast/Hobby,kellergeschoss,Kellergeschoss,KNX/ETS group address name,hidden_by=integration
 climate,Kinderbad Thermostat,climate.kg_kinderbad_thermostat,5/1/34_5/1/36_5/1/30_None,kinderbad,Kinderbad,kellergeschoss,Kellergeschoss,KNX/ETS group address name,
+sensor,Thermostat Ist-Temp,sensor.kg_kinderbad_thermostat_ist_temp,5/1/34,kinderbad,Kinderbad,kellergeschoss,Kellergeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
+sensor,Thermostat Soll-Temp,sensor.kg_kinderbad_thermostat_soll_temp,5/1/36,kinderbad,Kinderbad,kellergeschoss,Kellergeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
 binary_sensor,Anforderung Heizen,binary_sensor.kg_kinderbad_anforderung_heizen,5/1/32,kinderbad,Kinderbad,kellergeschoss,Kellergeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.kg_kinderbad_anforderung_kuhlen,5/1/35,kinderbad,Kinderbad,kellergeschoss,Kellergeschoss,KNX/ETS group address name,hidden_by=integration
 climate,Zimmer Sinja Thermostat,climate.kg_zimmer_sinja_thermostat,5/1/49_5/1/51_5/1/45_None,zimmer_sinja,Zimmer Sinja,kellergeschoss,Kellergeschoss,KNX/ETS group address name,ETS nennt Kind 1 links.
+sensor,Thermostat Ist-Temp,sensor.kg_zimmer_sinja_thermostat_ist_temp,5/1/49,zimmer_sinja,Zimmer Sinja,kellergeschoss,Kellergeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
+sensor,Thermostat Soll-Temp,sensor.kg_zimmer_sinja_thermostat_soll_temp,5/1/51,zimmer_sinja,Zimmer Sinja,kellergeschoss,Kellergeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
 binary_sensor,Anforderung Heizen,binary_sensor.kg_zimmer_sinja_anforderung_heizen,5/1/47,zimmer_sinja,Zimmer Sinja,kellergeschoss,Kellergeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.kg_zimmer_sinja_anforderung_kuhlen,5/1/50,zimmer_sinja,Zimmer Sinja,kellergeschoss,Kellergeschoss,KNX/ETS group address name,hidden_by=integration
 climate,Zimmer Silas Thermostat,climate.kg_zimmer_silas_thermostat,5/1/64_5/1/66_5/1/60_None,zimmer_silas,Zimmer Silas,kellergeschoss,Kellergeschoss,KNX/ETS group address name,ETS nennt Kind 2 rechts.
+sensor,Thermostat Ist-Temp,sensor.kg_zimmer_silas_thermostat_ist_temp,5/1/64,zimmer_silas,Zimmer Silas,kellergeschoss,Kellergeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
+sensor,Thermostat Soll-Temp,sensor.kg_zimmer_silas_thermostat_soll_temp,5/1/66,zimmer_silas,Zimmer Silas,kellergeschoss,Kellergeschoss,KNX/ETS group address name,Proxy-Hilfssensor fuer Gira-Thermostat. hidden_by=integration
 binary_sensor,Anforderung Heizen,binary_sensor.kg_zimmer_silas_anforderung_heizen,5/1/62,zimmer_silas,Zimmer Silas,kellergeschoss,Kellergeschoss,KNX/ETS group address name,hidden_by=integration
 binary_sensor,Anforderung Kühlen,binary_sensor.kg_zimmer_silas_anforderung_kuhlen,5/1/65,zimmer_silas,Zimmer Silas,kellergeschoss,Kellergeschoss,KNX/ETS group address name,hidden_by=integration
 sensor,Energieanforderung,sensor.og_schlafzimmer_energieanforderung,og_schlafzimmer_energieanforderung,schlafzimmer,Schlafzimmer,obergeschoss,Obergeschoss,virtual template,Virtueller Status aus Meldung Heizen/Kühlen. hidden_by=integration
