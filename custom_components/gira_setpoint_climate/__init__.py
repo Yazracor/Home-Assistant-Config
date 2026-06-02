@@ -10,6 +10,8 @@ from homeassistant.helpers import config_validation as cv, discovery
 DOMAIN = "gira_setpoint_climate"
 CONF_CLIMATES = "climates"
 CONF_SOURCE_CLIMATE = "source_climate"
+CONF_CURRENT_TEMPERATURE_ENTITY = "current_temperature_entity"
+CONF_TARGET_TEMPERATURE_ENTITY = "target_temperature_entity"
 CONF_HEAT_COOL_ENTITY = "heat_cool_entity"
 CONF_BASE_SETPOINT_ADDRESS = "base_setpoint_address"
 CONF_DEAD_BAND = "dead_band"
@@ -23,9 +25,11 @@ DEFAULT_COOL_STATE = "off"
 CLIMATE_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_NAME): cv.string,
-        vol.Required(CONF_SOURCE_CLIMATE): cv.entity_id,
         vol.Required(CONF_BASE_SETPOINT_ADDRESS): cv.string,
         vol.Required(CONF_HEAT_COOL_ENTITY): cv.entity_id,
+        vol.Optional(CONF_SOURCE_CLIMATE): cv.entity_id,
+        vol.Optional(CONF_CURRENT_TEMPERATURE_ENTITY): cv.entity_id,
+        vol.Optional(CONF_TARGET_TEMPERATURE_ENTITY): cv.entity_id,
         vol.Optional(CONF_UNIQUE_ID): cv.string,
         vol.Optional(CONF_COOLING_SETPOINT_OFFSET): vol.Coerce(float),
         vol.Optional(CONF_DEAD_BAND, default=2.0): vol.Coerce(float),

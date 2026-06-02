@@ -61,6 +61,22 @@
   type: "1byte_unsigned"
   sync_state: true
 
+# ETS: EG Gast Ist-Temp
+# Reiner Datenpunkt fuer den Gira-Setpoint-Proxy; nicht direkt bedienen.
+- name: "EG Arbeitszimmer Thermostat Ist-Temp"
+  state_address: "5/0/79"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+# ETS: EG Gast Soll-Temp
+# Reiner Datenpunkt fuer den Gira-Setpoint-Proxy; nicht direkt bedienen.
+- name: "EG Arbeitszimmer Thermostat Soll-Temp"
+  state_address: "5/0/81"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
 - name: "EG Arbeitszimmer Flur Betriebsmodus"
   state_address: "5/0/91"
   type: "1byte_unsigned"

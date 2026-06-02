@@ -13,10 +13,12 @@ from . import (
     CONF_CLIMATES,
     CONF_COOL_STATE,
     CONF_COOLING_SETPOINT_OFFSET,
+    CONF_CURRENT_TEMPERATURE_ENTITY,
     CONF_DEAD_BAND,
     CONF_HEAT_COOL_ENTITY,
     CONF_HEAT_STATE,
     CONF_SOURCE_CLIMATE,
+    CONF_TARGET_TEMPERATURE_ENTITY,
     DOMAIN,
 )
 
@@ -40,7 +42,9 @@ class GiraSetpointClimate(ClimateEntity):
         self.hass = hass
         self._attr_name = config[CONF_NAME]
         self._attr_unique_id = config.get(CONF_UNIQUE_ID)
-        self._source_climate = config[CONF_SOURCE_CLIMATE]
+        self._source_climate = config.get(CONF_SOURCE_CLIMATE)
+        self._current_temperature_entity = config.get(CONF_CURRENT_TEMPERATURE_ENTITY)
+        self._target_temperature_entity = config.get(CONF_TARGET_TEMPERATURE_ENTITY)
         self._heat_cool_entity = config[CONF_HEAT_COOL_ENTITY]
         self._base_setpoint_address = config[CONF_BASE_SETPOINT_ADDRESS]
         self._cooling_setpoint_offset = config.get(
@@ -52,9 +56,19 @@ class GiraSetpointClimate(ClimateEntity):
     async def async_added_to_hass(self) -> None:
         """Register state listeners."""
         await super().async_added_to_hass()
+        watched_entities = [
+            entity
+            for entity in (
+                self._source_climate,
+                self._current_temperature_entity,
+                self._target_temperature_entity,
+                self._heat_cool_entity,
+            )
+            if entity is not None
+        ]
         remove_listener = async_track_state_change_event(
             self.hass,
-            [self._source_climate, self._heat_cool_entity],
+            watched_entities,
             self._async_state_changed,
         )
         self.async_on_remove(remove_listener)
@@ -67,11 +81,19 @@ class GiraSetpointClimate(ClimateEntity):
     @property
     def current_temperature(self) -> float | None:
         """Return the current room temperature."""
+        if self._current_temperature_entity is not None:
+            return _float_state(self.hass.states.get(self._current_temperature_entity))
+        if self._source_climate is None:
+            return None
         return _float_attr(self.hass.states.get(self._source_climate), "current_temperature")
 
     @property
     def target_temperature(self) -> float | None:
         """Return the active Gira target temperature."""
+        if self._target_temperature_entity is not None:
+            return _float_state(self.hass.states.get(self._target_temperature_entity))
+        if self._source_climate is None:
+            return None
         source_target = _float_attr(self.hass.states.get(self._source_climate), "temperature")
         if source_target is not None:
             return source_target
@@ -80,11 +102,15 @@ class GiraSetpointClimate(ClimateEntity):
     @property
     def min_temp(self) -> float:
         """Return the minimum setpoint."""
+        if self._source_climate is None:
+            return 7.0
         return _float_attr(self.hass.states.get(self._source_climate), "min_temp") or 7.0
 
     @property
     def max_temp(self) -> float:
         """Return the maximum setpoint."""
+        if self._source_climate is None:
+            return 32.0
         return _float_attr(self.hass.states.get(self._source_climate), "max_temp") or 32.0
 
     @property
@@ -100,6 +126,8 @@ class GiraSetpointClimate(ClimateEntity):
     @property
     def hvac_action(self) -> HVACAction | None:
         """Return the source HVAC action when available."""
+        if self._source_climate is None:
+            return None
         action = self.hass.states.get(self._source_climate)
         if action is None:
             return None
@@ -148,5 +176,15 @@ def _float_attr(state, attribute: str) -> float | None:
         return None
     try:
         return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _float_state(state) -> float | None:
+    """Read a numeric entity state."""
+    if state is None:
+        return None
+    try:
+        return float(state.state)
     except (TypeError, ValueError):
         return None

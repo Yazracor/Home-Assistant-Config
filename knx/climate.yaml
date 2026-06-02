@@ -75,20 +75,6 @@
   min_temp: 7.0
   max_temp: 32.0
 
-# FHEM: TH_EG_Buero
-# ETS: --1A6 EG Gast Basis Sollwert
-- name: "Arbeitszimmer Thermostat"
-  temperature_address: "5/0/79"
-  target_temperature_address: "5/0/75"
-  target_temperature_state_address: "5/0/81"
-  active_state_address:
-    - "5/0/77"
-    - "5/0/80"
-  command_value_state_address: "5/0/84"
-  heat_cool_state_address: "1/4/1"
-  min_temp: 7.0
-  max_temp: 32.0
-
 # ETS: --2A1 EG Flur Gast Basis Sollwert
 - name: "Arbeitszimmer Flur Thermostat"
   temperature_address: "5/0/94"
