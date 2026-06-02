@@ -1,0 +1,10 @@
+gira_setpoint_climate:
+  climates:
+    - name: "Arbeitszimmer Thermostat Sollwert"
+      unique_id: gira_setpoint_arbeitszimmer_thermostat
+      source_climate: climate.arbeitszimmer_thermostat
+      heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
+      base_setpoint_address: "5/0/75"
+      dead_band: 2.0
+      heat_state: "on"
+      cool_state: "off"
