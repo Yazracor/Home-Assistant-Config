@@ -61,22 +61,6 @@
   type: "1byte_unsigned"
   sync_state: true
 
-# ETS: EG Gast Ist-Temp
-# Reiner Datenpunkt fuer den Gira-Setpoint-Proxy; nicht direkt bedienen.
-- name: "EG Arbeitszimmer Thermostat Ist-Temp"
-  state_address: "5/0/79"
-  type: "temperature"
-  sync_state: true
-  entity_category: "diagnostic"
-
-# ETS: EG Gast Soll-Temp
-# Reiner Datenpunkt fuer den Gira-Setpoint-Proxy; nicht direkt bedienen.
-- name: "EG Arbeitszimmer Thermostat Soll-Temp"
-  state_address: "5/0/81"
-  type: "temperature"
-  sync_state: true
-  entity_category: "diagnostic"
-
 - name: "EG Arbeitszimmer Flur Betriebsmodus"
   state_address: "5/0/91"
   type: "1byte_unsigned"
@@ -136,3 +120,221 @@
   state_address: "5/1/61"
   type: "1byte_unsigned"
   sync_state: true
+
+# Gira-Thermostat Datenpunkte fuer die Setpoint-Proxy-Climates.
+# HINWEIS: Diagnostic Sensoren; Bedienung erfolgt ueber die Climate-Entities.
+- name: "OG Schlafzimmer Thermostat Ist-Temp"
+  state_address: "5/0/4"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "OG Schlafzimmer Thermostat Soll-Temp"
+  state_address: "5/0/6"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "OG Bad Thermostat Ist-Temp"
+  state_address: "5/0/19"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "OG Bad Thermostat Soll-Temp"
+  state_address: "5/0/21"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "OG Buro Thermostat Ist-Temp"
+  state_address: "5/0/34"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "OG Buro Thermostat Soll-Temp"
+  state_address: "5/0/36"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "OG Ankleide Thermostat Ist-Temp"
+  state_address: "5/0/49"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "OG Ankleide Thermostat Soll-Temp"
+  state_address: "5/0/51"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "EG Flur Thermostat Ist-Temp"
+  state_address: "5/0/64"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "EG Flur Thermostat Soll-Temp"
+  state_address: "5/0/66"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "EG Arbeitszimmer Thermostat Ist-Temp"
+  state_address: "5/0/79"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "EG Arbeitszimmer Thermostat Soll-Temp"
+  state_address: "5/0/81"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "EG Arbeitszimmer Flur Thermostat Ist-Temp"
+  state_address: "5/0/94"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "EG Arbeitszimmer Flur Thermostat Soll-Temp"
+  state_address: "5/0/96"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "EG Gaestebad Thermostat Ist-Temp"
+  state_address: "5/0/109"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "EG Gaestebad Thermostat Soll-Temp"
+  state_address: "5/0/111"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "EG Gaeste WC Thermostat Ist-Temp"
+  state_address: "5/0/124"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "EG Gaeste WC Thermostat Soll-Temp"
+  state_address: "5/0/126"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "EG Garderobe Thermostat Ist-Temp"
+  state_address: "5/0/139"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "EG Garderobe Thermostat Soll-Temp"
+  state_address: "5/0/141"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "EG Technik Thermostat Ist-Temp"
+  state_address: "5/0/154"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "EG Technik Thermostat Soll-Temp"
+  state_address: "5/0/156"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "EG Kueche Thermostat Ist-Temp"
+  state_address: "5/0/169"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "EG Kueche Thermostat Soll-Temp"
+  state_address: "5/0/171"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "EG Wohnzimmer Thermostat Ist-Temp"
+  state_address: "5/0/184"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "EG Wohnzimmer Thermostat Soll-Temp"
+  state_address: "5/0/186"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "KG Flur Thermostat Ist-Temp"
+  state_address: "5/1/4"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "KG Flur Thermostat Soll-Temp"
+  state_address: "5/1/6"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "KG Gast Hobby Thermostat Ist-Temp"
+  state_address: "5/1/19"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "KG Gast Hobby Thermostat Soll-Temp"
+  state_address: "5/1/21"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "KG Kinderbad Thermostat Ist-Temp"
+  state_address: "5/1/34"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "KG Kinderbad Thermostat Soll-Temp"
+  state_address: "5/1/36"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "KG Zimmer Sinja Thermostat Ist-Temp"
+  state_address: "5/1/49"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "KG Zimmer Sinja Thermostat Soll-Temp"
+  state_address: "5/1/51"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "KG Zimmer Silas Thermostat Ist-Temp"
+  state_address: "5/1/64"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"
+
+- name: "KG Zimmer Silas Thermostat Soll-Temp"
+  state_address: "5/1/66"
+  type: "temperature"
+  sync_state: true
+  entity_category: "diagnostic"

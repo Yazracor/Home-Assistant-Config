@@ -1,11 +1,164 @@
 gira_setpoint_climate:
   climates:
-    - name: "Arbeitszimmer Thermostat Sollwert"
-      unique_id: gira_setpoint_arbeitszimmer_thermostat
+    - name: "Schlafzimmer Thermostat"
+      unique_id: "5/0/4_5/0/6_5/0/0_None"
+      current_temperature_entity: sensor.og_schlafzimmer_thermostat_ist_temp
+      target_temperature_entity: sensor.og_schlafzimmer_thermostat_soll_temp
+      heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
+      base_setpoint_address: "5/0/0"
+      cooling_setpoint_offset: 2.4
+      heat_state: "on"
+      cool_state: "off"
+    - name: "Bad OG Thermostat"
+      unique_id: "5/0/19_5/0/21_5/0/15_None"
+      current_temperature_entity: sensor.og_bad_thermostat_ist_temp
+      target_temperature_entity: sensor.og_bad_thermostat_soll_temp
+      heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
+      base_setpoint_address: "5/0/15"
+      cooling_setpoint_offset: 2.4
+      heat_state: "on"
+      cool_state: "off"
+    - name: "Büro OG Thermostat"
+      unique_id: "5/0/34_5/0/36_5/0/30_None"
+      current_temperature_entity: sensor.og_buro_thermostat_ist_temp
+      target_temperature_entity: sensor.og_buro_thermostat_soll_temp
+      heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
+      base_setpoint_address: "5/0/30"
+      cooling_setpoint_offset: 2.4
+      heat_state: "on"
+      cool_state: "off"
+    - name: "Ankleide Thermostat"
+      unique_id: "5/0/49_5/0/51_5/0/45_None"
+      current_temperature_entity: sensor.og_ankleide_thermostat_ist_temp
+      target_temperature_entity: sensor.og_ankleide_thermostat_soll_temp
+      heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
+      base_setpoint_address: "5/0/45"
+      cooling_setpoint_offset: 2.4
+      heat_state: "on"
+      cool_state: "off"
+    - name: "Flur EG Thermostat"
+      unique_id: "5/0/64_5/0/66_5/0/60_None"
+      current_temperature_entity: sensor.eg_flur_thermostat_ist_temp
+      target_temperature_entity: sensor.eg_flur_thermostat_soll_temp
+      heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
+      base_setpoint_address: "5/0/60"
+      cooling_setpoint_offset: 2.4
+      heat_state: "on"
+      cool_state: "off"
+    - name: "Arbeitszimmer Thermostat"
+      unique_id: "5/0/79_5/0/81_5/0/75_None"
       current_temperature_entity: sensor.eg_arbeitszimmer_thermostat_ist_temp
       target_temperature_entity: sensor.eg_arbeitszimmer_thermostat_soll_temp
       heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
       base_setpoint_address: "5/0/75"
+      cooling_setpoint_offset: 2.4
+      heat_state: "on"
+      cool_state: "off"
+    - name: "Arbeitszimmer Flur Thermostat"
+      unique_id: "5/0/94_5/0/96_5/0/90_None"
+      current_temperature_entity: sensor.eg_arbeitszimmer_flur_thermostat_ist_temp
+      target_temperature_entity: sensor.eg_arbeitszimmer_flur_thermostat_soll_temp
+      heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
+      base_setpoint_address: "5/0/90"
+      cooling_setpoint_offset: 2.4
+      heat_state: "on"
+      cool_state: "off"
+    - name: "Gästebad Thermostat"
+      unique_id: "5/0/109_5/0/111_5/0/105_None"
+      current_temperature_entity: sensor.eg_gaestebad_thermostat_ist_temp
+      target_temperature_entity: sensor.eg_gaestebad_thermostat_soll_temp
+      heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
+      base_setpoint_address: "5/0/105"
+      cooling_setpoint_offset: 2.4
+      heat_state: "on"
+      cool_state: "off"
+    - name: "Gäste-WC Thermostat"
+      unique_id: "5/0/124_5/0/126_5/0/120_None"
+      current_temperature_entity: sensor.eg_gaeste_wc_thermostat_ist_temp
+      target_temperature_entity: sensor.eg_gaeste_wc_thermostat_soll_temp
+      heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
+      base_setpoint_address: "5/0/120"
+      cooling_setpoint_offset: 2.4
+      heat_state: "on"
+      cool_state: "off"
+    - name: "Garderobe Thermostat"
+      unique_id: "5/0/139_5/0/141_5/0/135_None"
+      current_temperature_entity: sensor.eg_garderobe_thermostat_ist_temp
+      target_temperature_entity: sensor.eg_garderobe_thermostat_soll_temp
+      heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
+      base_setpoint_address: "5/0/135"
+      cooling_setpoint_offset: 2.4
+      heat_state: "on"
+      cool_state: "off"
+    - name: "Technik Thermostat"
+      unique_id: "5/0/154_5/0/156_5/0/150_None"
+      current_temperature_entity: sensor.eg_technik_thermostat_ist_temp
+      target_temperature_entity: sensor.eg_technik_thermostat_soll_temp
+      heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
+      base_setpoint_address: "5/0/150"
+      cooling_setpoint_offset: 2.4
+      heat_state: "on"
+      cool_state: "off"
+    - name: "Küche Thermostat"
+      unique_id: "5/0/169_5/0/171_5/0/165_None"
+      current_temperature_entity: sensor.eg_kueche_thermostat_ist_temp
+      target_temperature_entity: sensor.eg_kueche_thermostat_soll_temp
+      heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
+      base_setpoint_address: "5/0/165"
+      cooling_setpoint_offset: 2.4
+      heat_state: "on"
+      cool_state: "off"
+    - name: "Wohnzimmer Thermostat"
+      unique_id: "5/0/184_5/0/186_5/0/180_None"
+      current_temperature_entity: sensor.eg_wohnzimmer_thermostat_ist_temp
+      target_temperature_entity: sensor.eg_wohnzimmer_thermostat_soll_temp
+      heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
+      base_setpoint_address: "5/0/180"
+      cooling_setpoint_offset: 2.4
+      heat_state: "on"
+      cool_state: "off"
+    - name: "Flur KG Thermostat"
+      unique_id: "5/1/4_5/1/6_5/1/0_None"
+      current_temperature_entity: sensor.kg_flur_thermostat_ist_temp
+      target_temperature_entity: sensor.kg_flur_thermostat_soll_temp
+      heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
+      base_setpoint_address: "5/1/0"
+      cooling_setpoint_offset: 2.4
+      heat_state: "on"
+      cool_state: "off"
+    - name: "Gast/Hobby Thermostat"
+      unique_id: "5/1/19_5/1/21_5/1/15_None"
+      current_temperature_entity: sensor.kg_gast_hobby_thermostat_ist_temp
+      target_temperature_entity: sensor.kg_gast_hobby_thermostat_soll_temp
+      heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
+      base_setpoint_address: "5/1/15"
+      cooling_setpoint_offset: 2.4
+      heat_state: "on"
+      cool_state: "off"
+    - name: "Kinderbad Thermostat"
+      unique_id: "5/1/34_5/1/36_5/1/30_None"
+      current_temperature_entity: sensor.kg_kinderbad_thermostat_ist_temp
+      target_temperature_entity: sensor.kg_kinderbad_thermostat_soll_temp
+      heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
+      base_setpoint_address: "5/1/30"
+      cooling_setpoint_offset: 2.4
+      heat_state: "on"
+      cool_state: "off"
+    - name: "Zimmer Sinja Thermostat"
+      unique_id: "5/1/49_5/1/51_5/1/45_None"
+      current_temperature_entity: sensor.kg_zimmer_sinja_thermostat_ist_temp
+      target_temperature_entity: sensor.kg_zimmer_sinja_thermostat_soll_temp
+      heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
+      base_setpoint_address: "5/1/45"
+      cooling_setpoint_offset: 2.4
+      heat_state: "on"
+      cool_state: "off"
+    - name: "Zimmer Silas Thermostat"
+      unique_id: "5/1/64_5/1/66_5/1/60_None"
+      current_temperature_entity: sensor.kg_zimmer_silas_thermostat_ist_temp
+      target_temperature_entity: sensor.kg_zimmer_silas_thermostat_soll_temp
+      heat_cool_entity: binary_sensor.heizen_kuehlen_rueckmeldung
+      base_setpoint_address: "5/1/60"
       cooling_setpoint_offset: 2.4
       heat_state: "on"
       cool_state: "off"
