@@ -96,12 +96,6 @@
   type: "1byte_unsigned"
   sync_state: true
 
-# Testobjekt: Basis-Sollwert lesen, um Gira-Offset gegen Soll-Temp berechnen zu koennen.
-- name: "EG Wohnzimmer Basis Sollwert"
-  state_address: "5/0/180"
-  type: "temperature"
-  sync_state: true
-
 - name: "KG Flur Betriebsmodus"
   state_address: "5/1/1"
   type: "1byte_unsigned"

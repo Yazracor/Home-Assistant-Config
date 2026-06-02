@@ -1,0 +1,8 @@
+{
+  "domain": "gira_setpoint_climate",
+  "name": "Gira Setpoint Climate",
+  "codeowners": [],
+  "documentation": "https://partner.gira.de/data3/10523410.pdf",
+  "iot_class": "local_push",
+  "version": "0.1.0"
+}
