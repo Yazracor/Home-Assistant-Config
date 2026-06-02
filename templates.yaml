@@ -36,11 +36,21 @@
         direction: "{{ trigger.event.data.direction }}"
 
 - trigger:
+    - platform: homeassistant
+      event: start
+      id: init
+    - platform: event
+      event_type: event_template_reloaded
+      id: init
     - platform: event
       event_type: knx_event
+      id: knx
   condition:
     - condition: template
       value_template: >-
+        {% if trigger.id == 'init' %}
+          {{ true }}
+        {% else %}
         {% set address = trigger.event.data.destination | string %}
         {% set source = trigger.event.data.source | string %}
         {% set direction = trigger.event.data.direction | string %}
@@ -70,23 +80,39 @@
           and source not in ignored_sources
           and address in indoor_addresses + cover_addresses
         }}
+        {% endif %}
   sensor:
     - name: "KNX Schalter letzte Bedienung"
       unique_id: knx_schalter_letzte_bedienung
-      state: "{{ now().isoformat() }}"
+      state: >-
+        {{ '1970-01-01T00:00:00+00:00' if trigger.id == 'init' else now().isoformat() }}
       attributes:
-        last_address: "{{ trigger.event.data.destination }}"
-        last_source: "{{ trigger.event.data.source }}"
-        last_payload: "{{ trigger.event.data.data }}"
+        last_address: >-
+          {{ '' if trigger.id == 'init' else trigger.event.data.destination }}
+        last_source: >-
+          {{ '' if trigger.id == 'init' else trigger.event.data.source }}
+        last_payload: >-
+          {{ '' if trigger.id == 'init' else trigger.event.data.data }}
 
 - trigger:
+    - platform: homeassistant
+      event: start
+      id: init
+    - platform: event
+      event_type: event_template_reloaded
+      id: init
     - platform: event
       event_type: homekit_state_change
+      id: homekit
     - platform: event
       event_type: call_service
+      id: service
   condition:
     - condition: template
       value_template: >-
+        {% if trigger.id == 'init' %}
+          {{ true }}
+        {% else %}
         {% set event_type = trigger.event.event_type %}
         {% set data = trigger.event.data %}
         {% if event_type == 'homekit_state_change' %}
@@ -97,26 +123,32 @@
             and data.domain in ['light', 'cover']
           }}
         {% endif %}
+        {% endif %}
   sensor:
     - name: "HA Bedienung letzte Bedienung"
       unique_id: ha_bedienung_letzte_bedienung
-      state: "{{ now().isoformat() }}"
+      state: >-
+        {{ '1970-01-01T00:00:00+00:00' if trigger.id == 'init' else now().isoformat() }}
       attributes:
-        event_type: "{{ trigger.event.event_type }}"
+        event_type: "{{ '' if trigger.id == 'init' else trigger.event.event_type }}"
         entity_id: >-
-          {% if trigger.event.event_type == 'homekit_state_change' %}
+          {% if trigger.id == 'init' %}
+            {{ '' }}
+          {% elif trigger.event.event_type == 'homekit_state_change' %}
             {{ trigger.event.data.entity_id }}
           {% else %}
             {{ trigger.event.data.service_data.entity_id | default('', true) }}
           {% endif %}
         service: >-
-          {% if trigger.event.event_type == 'homekit_state_change' %}
+          {% if trigger.id == 'init' %}
+            {{ '' }}
+          {% elif trigger.event.event_type == 'homekit_state_change' %}
             {{ trigger.event.data.service }}
           {% else %}
             {{ trigger.event.data.domain }}.{{ trigger.event.data.service }}
           {% endif %}
-        user_id: "{{ trigger.event.context.user_id }}"
-        parent_id: "{{ trigger.event.context.parent_id }}"
+        user_id: "{{ '' if trigger.id == 'init' else trigger.event.context.user_id }}"
+        parent_id: "{{ '' if trigger.id == 'init' else trigger.event.context.parent_id }}"
 
 - binary_sensor:
     - name: "Wetterstation Tag"
@@ -163,20 +195,21 @@
       unique_id: manuelle_bedienung_aktiv
       device_class: occupancy
       state: >-
+        {% set current_ts = now() | as_timestamp %}
         {% set values = [
           states('sensor.knx_schalter_letzte_bedienung'),
           states('sensor.ha_bedienung_letzte_bedienung')
         ] %}
-        {% set ns = namespace(last=none) %}
+        {% set ns = namespace(last_ts=0) %}
         {% for value in values %}
-          {% set dt = value | as_datetime %}
-          {% if dt is not none and (ns.last is none or dt > ns.last) %}
-            {% set ns.last = dt %}
+          {% set ts = value | as_timestamp(0) %}
+          {% if ts > ns.last_ts %}
+            {% set ns.last_ts = ts %}
           {% endif %}
         {% endfor %}
         {% set hour = now().hour %}
         {% set window_hours = 6 if hour >= 22 or hour < 7 else 2 %}
-        {{ ns.last is not none and now() - ns.last < timedelta(hours=window_hours) }}
+        {{ ns.last_ts > 0 and current_ts - ns.last_ts < window_hours * 3600 }}
       attributes:
         nachlauf_stunden: "{{ 6 if now().hour >= 22 or now().hour < 7 else 2 }}"
         nachtmodus: "{{ now().hour >= 22 or now().hour < 7 }}"
