@@ -1,6 +1,8 @@
 __pycache__/
 *.py[cod]
 .knx-area-assignment.env
+.knx-events*.log
+.ha-token
 .pending_knx_area_assignment
 .ssh/
 secrets.yaml
