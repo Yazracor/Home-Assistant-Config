@@ -13,10 +13,13 @@ from . import (
     CONF_CLIMATES,
     CONF_COOL_STATE,
     CONF_COOLING_SETPOINT_OFFSET,
+    CONF_CORRECTION_TIMEOUT,
+    CONF_CORRECTION_TOLERANCE,
     CONF_CURRENT_TEMPERATURE_ENTITY,
     CONF_DEAD_BAND,
     CONF_HEAT_COOL_ENTITY,
     CONF_HEAT_STATE,
+    CONF_MAX_CORRECTIONS,
     CONF_SOURCE_CLIMATE,
     CONF_TARGET_TEMPERATURE_ENTITY,
     DOMAIN,
@@ -52,6 +55,13 @@ class GiraSetpointClimate(ClimateEntity):
         )
         self._heat_state = config[CONF_HEAT_STATE].lower()
         self._cool_state = config[CONF_COOL_STATE].lower()
+        self._correction_tolerance = config[CONF_CORRECTION_TOLERANCE]
+        self._max_corrections = config[CONF_MAX_CORRECTIONS]
+        self._correction_timeout = config[CONF_CORRECTION_TIMEOUT]
+        self._pending_target: float | None = None
+        self._pending_until: float | None = None
+        self._last_base_setpoint: float | None = None
+        self._correction_count = 0
 
     async def async_added_to_hass(self) -> None:
         """Register state listeners."""
@@ -76,6 +86,11 @@ class GiraSetpointClimate(ClimateEntity):
     @callback
     def _async_state_changed(self, event: Event) -> None:
         """Update Home Assistant when the source entities change."""
+        entity_id = event.data.get("entity_id")
+        if entity_id == self._heat_cool_entity:
+            self._clear_pending_correction()
+        elif entity_id == self._target_temperature_entity and self._pending_target is not None:
+            self.hass.async_create_task(self._async_maybe_correct_setpoint())
         self.async_write_ha_state()
 
     @property
@@ -143,21 +158,68 @@ class GiraSetpointClimate(ClimateEntity):
             return
 
         requested = float(temperature)
-        base_setpoint = (
-            requested - self._cooling_setpoint_offset if self._is_cooling() else requested
-        )
+        self._pending_target = requested
+        self._pending_until = self.hass.loop.time() + self._correction_timeout
+        self._correction_count = 0
+        initial_offset = self._current_offset()
+        await self._async_write_base_setpoint(requested - initial_offset)
+        self.async_write_ha_state()
 
+    async def _async_maybe_correct_setpoint(self) -> None:
+        """Correct the base setpoint after the Gira button reports the active target."""
+        if self._pending_target is None:
+            return
+        if self._pending_until is None or self.hass.loop.time() > self._pending_until:
+            self._clear_pending_correction()
+            return
+        active_target = self.target_temperature
+        if active_target is None:
+            return
+
+        error = self._pending_target - active_target
+        if abs(error) <= self._correction_tolerance:
+            self._clear_pending_correction()
+            return
+
+        if self._correction_count >= self._max_corrections:
+            self._clear_pending_correction()
+            return
+
+        if self._last_base_setpoint is None:
+            return
+
+        self._correction_count += 1
+        self._pending_until = self.hass.loop.time() + self._correction_timeout
+        await self._async_write_base_setpoint(self._last_base_setpoint + error)
+        self.async_write_ha_state()
+
+    async def _async_write_base_setpoint(self, value: float) -> None:
+        """Write a base setpoint to KNX and remember it for later correction."""
+        self._last_base_setpoint = round(value, 1)
         await self.hass.services.async_call(
             "knx",
             "send",
             {
                 "address": self._base_setpoint_address,
                 "type": "temperature",
-                "payload": round(base_setpoint, 1),
+                "payload": self._last_base_setpoint,
             },
             blocking=True,
         )
-        self.async_write_ha_state()
+
+    def _current_offset(self) -> float:
+        """Return the best known active target minus base setpoint offset."""
+        if self._last_base_setpoint is not None:
+            active_target = self.target_temperature
+            if active_target is not None:
+                return active_target - self._last_base_setpoint
+        return self._cooling_setpoint_offset if self._is_cooling() else 0.0
+
+    def _clear_pending_correction(self) -> None:
+        """Stop correcting a previous set_temperature command."""
+        self._pending_target = None
+        self._pending_until = None
+        self._correction_count = 0
 
     def _is_cooling(self) -> bool:
         """Return true when the central heat/cool feedback indicates cooling."""

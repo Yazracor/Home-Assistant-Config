@@ -18,6 +18,9 @@ CONF_DEAD_BAND = "dead_band"
 CONF_COOLING_SETPOINT_OFFSET = "cooling_setpoint_offset"
 CONF_HEAT_STATE = "heat_state"
 CONF_COOL_STATE = "cool_state"
+CONF_CORRECTION_TOLERANCE = "correction_tolerance"
+CONF_MAX_CORRECTIONS = "max_corrections"
+CONF_CORRECTION_TIMEOUT = "correction_timeout"
 
 DEFAULT_HEAT_STATE = "on"
 DEFAULT_COOL_STATE = "off"
@@ -35,6 +38,9 @@ CLIMATE_SCHEMA = vol.Schema(
         vol.Optional(CONF_DEAD_BAND, default=2.0): vol.Coerce(float),
         vol.Optional(CONF_HEAT_STATE, default=DEFAULT_HEAT_STATE): cv.string,
         vol.Optional(CONF_COOL_STATE, default=DEFAULT_COOL_STATE): cv.string,
+        vol.Optional(CONF_CORRECTION_TOLERANCE, default=0.15): vol.Coerce(float),
+        vol.Optional(CONF_MAX_CORRECTIONS, default=2): vol.Coerce(int),
+        vol.Optional(CONF_CORRECTION_TIMEOUT, default=6): vol.Coerce(float),
     }
 )
 

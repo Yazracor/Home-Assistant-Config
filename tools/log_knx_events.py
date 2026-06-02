@@ -51,6 +51,11 @@ def parse_args() -> argparse.Namespace:
         help="Log all knx_event events instead of only the selected addresses.",
     )
     parser.add_argument(
+        "--service-events",
+        action="store_true",
+        help="Also log Home Assistant call_service events for climate.set_temperature.",
+    )
+    parser.add_argument(
         "--output",
         default=DEFAULT_OUTPUT,
         help=f"JSONL output path. Default: {DEFAULT_OUTPUT}",
@@ -215,7 +220,7 @@ class WebSocket:
         return bytes(chunks)
 
 
-def subscribe(ws: WebSocket, token: str) -> None:
+def authenticate(ws: WebSocket, token: str) -> None:
     auth_required = ws.receive_json()
     if auth_required.get("type") != "auth_required":
         raise RuntimeError(f"Unexpected websocket greeting: {auth_required}")
@@ -225,7 +230,9 @@ def subscribe(ws: WebSocket, token: str) -> None:
     if auth_response.get("type") != "auth_ok":
         raise RuntimeError(f"Authentication failed: {auth_response}")
 
-    ws.send_json({"id": 1, "type": "subscribe_events", "event_type": "knx_event"})
+
+def subscribe(ws: WebSocket, event_type: str, subscription_id: int) -> None:
+    ws.send_json({"id": subscription_id, "type": "subscribe_events", "event_type": event_type})
     subscribe_response = ws.receive_json()
     if not subscribe_response.get("success"):
         raise RuntimeError(f"Subscription failed: {subscribe_response}")
@@ -261,7 +268,10 @@ def run(args: argparse.Namespace) -> None:
 
     ws = WebSocket(url)
     try:
-        subscribe(ws, token)
+        authenticate(ws, token)
+        subscribe(ws, "knx_event", 1)
+        if args.service_events:
+            subscribe(ws, "call_service", 2)
         with open(output_path, "a", encoding="utf-8") as log_file:
             while not stopping:
                 packet = ws.receive_json()
@@ -269,11 +279,33 @@ def run(args: argparse.Namespace) -> None:
                     continue
                 event = packet.get("event", {})
                 event_data = event.get("data", {})
+                if event.get("event_type") == "call_service":
+                    if event_data.get("domain") != "climate":
+                        continue
+                    if event_data.get("service") != "set_temperature":
+                        continue
+                    entry = {
+                        "logged_at": datetime.now().isoformat(timespec="milliseconds"),
+                        "time_fired": event.get("time_fired"),
+                        "event_type": "call_service",
+                        "domain": event_data.get("domain"),
+                        "service": event_data.get("service"),
+                        "service_data": event_data.get("service_data"),
+                        "context": event.get("context"),
+                    }
+                    line = json.dumps(entry, ensure_ascii=False, separators=(",", ":"))
+                    log_file.write(line + "\n")
+                    log_file.flush()
+                    if args.print_events:
+                        print(line)
+                    continue
+
                 destination = str(event_data.get("destination"))
                 if not args.all and destination not in addresses:
                     continue
 
                 entry = normalize_event(event)
+                entry["event_type"] = "knx_event"
                 line = json.dumps(entry, ensure_ascii=False, separators=(",", ":"))
                 log_file.write(line + "\n")
                 log_file.flush()
