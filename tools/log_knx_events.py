@@ -14,15 +14,66 @@ import socket
 import ssl
 import struct
 import sys
+from collections.abc import Iterable
 from urllib.parse import urlparse, urlunparse
 
 DEFAULT_ADDRESSES = ("5/0/75", "5/0/79", "5/0/81", "1/4/1")
 DEFAULT_OUTPUT = ".knx-events.log"
 
 
+def address_values(values: list[str] | None) -> list[str]:
+    if not values:
+        return []
+    addresses = []
+    for value in values:
+        addresses.extend(address.strip() for address in value.split(",") if address.strip())
+    return addresses
+
+
+def normalize_address(value) -> str | None:
+    if value is None:
+        return None
+    address = str(value).strip()
+    return address or None
+
+
+def event_addresses(data: dict) -> set[str]:
+    keys = (
+        "destination",
+        "destination_address",
+        "group_address",
+        "address",
+    )
+    addresses = set()
+    for key in keys:
+        value = data.get(key)
+        if isinstance(value, str):
+            address = normalize_address(value)
+            if address:
+                addresses.add(address)
+        elif isinstance(value, Iterable):
+            for item in value:
+                address = normalize_address(item)
+                if address:
+                    addresses.add(address)
+        else:
+            address = normalize_address(value)
+            if address:
+                addresses.add(address)
+    return addresses
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Subscribe to Home Assistant knx_event events and append them as JSONL."
+    )
+    parser.add_argument(
+        "address",
+        nargs="*",
+        help=(
+            "Group address to log. Can be passed multiple times or comma-separated, "
+            "for example: 2/3/0 2/3/10 or 2/3/0,2/3/10."
+        ),
     )
     parser.add_argument(
         "--url",
@@ -41,9 +92,15 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--address",
+        "--addresses",
         action="append",
-        dest="addresses",
-        help="Group address to log. Can be passed multiple times.",
+        dest="address_options",
+        help="Group address to log. Can be passed multiple times. Positional addresses also work.",
+    )
+    parser.add_argument(
+        "--default-addresses",
+        action="store_true",
+        help=f"Log the legacy default addresses: {', '.join(DEFAULT_ADDRESSES)}.",
     )
     parser.add_argument(
         "--all",
@@ -65,6 +122,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         dest="print_events",
         help="Also print matching events to stdout.",
+    )
+    parser.add_argument(
+        "--print-unmatched",
+        action="store_true",
+        help="Print filtered-out knx_event addresses to stderr for troubleshooting.",
     )
     return parser.parse_args()
 
@@ -109,6 +171,10 @@ class WebSocket:
         self._socket = self._connect(url)
 
     def close(self) -> None:
+        try:
+            self._socket.shutdown(socket.SHUT_RDWR)
+        except OSError:
+            pass
         self._socket.close()
 
     def send_json(self, data: dict) -> None:
@@ -249,13 +315,23 @@ def run(args: argparse.Namespace) -> None:
     if not token:
         raise SystemExit("Set HA_TOKEN to a Home Assistant long-lived access token.")
 
-    addresses = set(args.addresses or DEFAULT_ADDRESSES)
+    selected_addresses = address_values(args.address) + address_values(args.address_options)
+    if args.default_addresses:
+        selected_addresses.extend(DEFAULT_ADDRESSES)
+    if not selected_addresses and not args.all:
+        raise SystemExit(
+            "Pass at least one group address, use --all, or use --default-addresses."
+        )
+    addresses = set(selected_addresses)
     output_path = args.output
     stopping = False
+    ws = None
 
     def stop(*_):
         nonlocal stopping
         stopping = True
+        if ws is not None:
+            ws.close()
 
     signal.signal(signal.SIGINT, stop)
     signal.signal(signal.SIGTERM, stop)
@@ -274,7 +350,12 @@ def run(args: argparse.Namespace) -> None:
             subscribe(ws, "call_service", 2)
         with open(output_path, "a", encoding="utf-8") as log_file:
             while not stopping:
-                packet = ws.receive_json()
+                try:
+                    packet = ws.receive_json()
+                except (OSError, RuntimeError):
+                    if stopping:
+                        break
+                    raise
                 if packet.get("type") != "event":
                     continue
                 event = packet.get("event", {})
@@ -300,8 +381,13 @@ def run(args: argparse.Namespace) -> None:
                         print(line)
                     continue
 
-                destination = str(event_data.get("destination"))
-                if not args.all and destination not in addresses:
+                packet_addresses = event_addresses(event_data)
+                if not args.all and not packet_addresses.intersection(addresses):
+                    if args.print_unmatched and packet_addresses:
+                        print(
+                            f"Ignored knx_event addresses: {', '.join(sorted(packet_addresses))}",
+                            file=sys.stderr,
+                        )
                     continue
 
                 entry = normalize_event(event)
@@ -312,7 +398,8 @@ def run(args: argparse.Namespace) -> None:
                 if args.print_events:
                     print(line)
     finally:
-        ws.close()
+        if ws is not None:
+            ws.close()
 
 
 def main() -> None:
