@@ -156,7 +156,7 @@
   - action: switch.turn_on
     metadata: {}
     target:
-      entity_id: switch.licht
+      entity_id: switch.ttr_57_entfeuchter
     data: {}
   mode: single
 - id: garage_ttr_entfeuchter_boost_aus
@@ -182,7 +182,7 @@
   - action: switch.turn_off
     metadata: {}
     target:
-      entity_id: switch.licht
+      entity_id: switch.ttr_57_entfeuchter
     data: {}
   mode: single
 - id: garage_entfeuchter_ohne_leistung_warnung
@@ -203,8 +203,8 @@
   - trigger: template
     value_template: >-
       {{
-        is_state('switch.licht', 'on')
-        and states('sensor.licht_power') | float(0) < 20
+        is_state('switch.ttr_57_entfeuchter', 'on')
+        and states('sensor.ttr_57_entfeuchter_leistung') | float(0) < 20
       }}
     for:
       hours: 0
