@@ -273,9 +273,9 @@
     - name: "Hitzeschutz Fassade West"
       unique_id: hitzeschutz_fassade_west
       delay_on:
-        minutes: 10
+        minutes: 5
       delay_off:
-        minutes: 20
+        minutes: 5
       state: >-
         {% set lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
         {% set outside_temp = states('sensor.aussenbereich_wetterstation_temperatur') | float(0) %}
@@ -292,9 +292,9 @@
     - name: "Hitzeschutz Fassade Ost"
       unique_id: hitzeschutz_fassade_ost
       delay_on:
-        minutes: 10
+        minutes: 5
       delay_off:
-        minutes: 20
+        minutes: 5
       state: >-
         {% set lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
         {% set outside_temp = states('sensor.aussenbereich_wetterstation_temperatur') | float(0) %}
@@ -311,9 +311,9 @@
     - name: "Hitzeschutz Fassade Süd"
       unique_id: hitzeschutz_fassade_sued
       delay_on:
-        minutes: 10
+        minutes: 5
       delay_off:
-        minutes: 20
+        minutes: 5
       state: >-
         {% set lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
         {% set outside_temp = states('sensor.aussenbereich_wetterstation_temperatur') | float(0) %}
@@ -330,9 +330,9 @@
     - name: "Hitzeschutz Fassade Nord"
       unique_id: hitzeschutz_fassade_nord
       delay_on:
-        minutes: 10
+        minutes: 5
       delay_off:
-        minutes: 20
+        minutes: 5
       state: >-
         {% set lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
         {% set outside_temp = states('sensor.aussenbereich_wetterstation_temperatur') | float(0) %}
