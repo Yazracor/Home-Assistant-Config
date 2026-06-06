@@ -28,7 +28,7 @@
     entity_id: 40beacf828453f91eabae791ad7f8989
     domain: sensor
     trigger: device
-    above: 65
+    above: 60
   conditions: []
   actions:
   - action: switch.turn_on
@@ -46,10 +46,10 @@
     entity_id: 40beacf828453f91eabae791ad7f8989
     domain: sensor
     trigger: device
-    below: 60
+    below: 55
     for:
       hours: 0
-      minutes: 0
+      minutes: 30
       seconds: 0
   conditions: []
   actions:
