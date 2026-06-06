@@ -20,8 +20,8 @@
           stdout: {{ git_snapshot.stdout | default('') }}
   mode: single
 - id: '1780071059264'
-  alias: Entfeuchter an
-  description: ''
+  alias: Garage TTK Entfeuchter an
+  description: Schaltet den TTK 75 Eco bei hoher Garagenfeuchte ein, solange es warm genug ist.
   triggers:
   - type: humidity
     device_id: 93c766f0890f4945e595ada307cdd6be
@@ -29,7 +29,24 @@
     domain: sensor
     trigger: device
     above: 60
-  conditions: []
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+  - trigger: numeric_state
+    entity_id: sensor.wifi_smart_switch_temperature
+    above: 5.5
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+  conditions:
+  - condition: numeric_state
+    entity_id: sensor.wifi_smart_switch_humidity
+    above: 60
+  - condition: numeric_state
+    entity_id: sensor.wifi_smart_switch_temperature
+    above: 5.5
   actions:
   - action: switch.turn_on
     metadata: {}
@@ -38,8 +55,8 @@
     data: {}
   mode: single
 - id: '1780071226885'
-  alias: Entfeuchter aus
-  description: ''
+  alias: Garage TTK Entfeuchter aus
+  description: Schaltet den TTK 75 Eco bei Ziel-Feuchte oder unter 5 Grad ab.
   triggers:
   - type: humidity
     device_id: 93c766f0890f4945e595ada307cdd6be
@@ -51,6 +68,13 @@
       hours: 0
       minutes: 30
       seconds: 0
+  - trigger: numeric_state
+    entity_id: sensor.wifi_smart_switch_temperature
+    below: 5
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
   conditions: []
   actions:
   - action: switch.turn_off
@@ -58,6 +82,152 @@
     target:
       entity_id: switch.entfeuchter
     data: {}
+  mode: single
+- id: garage_ttr_entfeuchter_boost_an
+  alias: Garage TTR Entfeuchter Boost an
+  description: Schaltet den TTR 57 zu, wenn der TTK in kalter Garage die Feuchte nicht schnell genug senkt.
+  triggers:
+  - trigger: state
+    entity_id: switch.entfeuchter
+    to: "on"
+    for:
+      hours: 0
+      minutes: 45
+      seconds: 0
+  - trigger: numeric_state
+    entity_id: sensor.entfeuchter_power
+    below: 100
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+  - trigger: numeric_state
+    entity_id: sensor.wifi_smart_switch_humidity
+    above: 65
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 0
+  - trigger: numeric_state
+    entity_id: sensor.wifi_smart_switch_temperature
+    below: 5
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  - trigger: time_pattern
+    minutes: "/15"
+  conditions:
+  - condition: numeric_state
+    entity_id: sensor.wifi_smart_switch_humidity
+    above: 63
+  - condition: numeric_state
+    entity_id: sensor.wifi_smart_switch_temperature
+    below: 12
+  - condition: or
+    conditions:
+    - condition: numeric_state
+      entity_id: sensor.wifi_smart_switch_temperature
+      below: 5
+    - condition: and
+      conditions:
+      - condition: state
+        entity_id: switch.entfeuchter
+        state: "on"
+        for:
+          hours: 0
+          minutes: 45
+          seconds: 0
+      - condition: numeric_state
+        entity_id: sensor.wifi_smart_switch_humidity
+        above: 63
+    - condition: and
+      conditions:
+      - condition: state
+        entity_id: switch.entfeuchter
+        state: "on"
+      - condition: template
+        value_template: >-
+          {{
+            states('sensor.entfeuchter_power') | float(999) < 100
+            and now() - states.sensor.entfeuchter_power.last_changed > timedelta(minutes=10)
+          }}
+  actions:
+  - action: switch.turn_on
+    metadata: {}
+    target:
+      entity_id: switch.licht
+    data: {}
+  mode: single
+- id: garage_ttr_entfeuchter_boost_aus
+  alias: Garage TTR Entfeuchter Boost aus
+  description: Schaltet den TTR 57 mit Hysterese ab, wenn die Feuchte wieder passt oder der TTK allein sinnvoller ist.
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.wifi_smart_switch_humidity
+    below: 58
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 0
+  - trigger: numeric_state
+    entity_id: sensor.wifi_smart_switch_temperature
+    above: 13
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 0
+  conditions: []
+  actions:
+  - action: switch.turn_off
+    metadata: {}
+    target:
+      entity_id: switch.licht
+    data: {}
+  mode: single
+- id: garage_entfeuchter_ohne_leistung_warnung
+  alias: Garage Entfeuchter ohne Leistung Warnung
+  description: Meldet, wenn ein Entfeuchter eingeschaltet ist, aber keine relevante Leistung zieht.
+  triggers:
+  - trigger: template
+    value_template: >-
+      {{
+        is_state('switch.entfeuchter', 'on')
+        and states('sensor.entfeuchter_power') | float(0) < 20
+      }}
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+    id: ttk
+  - trigger: template
+    value_template: >-
+      {{
+        is_state('switch.licht', 'on')
+        and states('sensor.licht_power') | float(0) < 20
+      }}
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+    id: ttr
+  actions:
+  - action: notify.mobile_app_torbens_iphone
+    metadata: {}
+    data:
+      title: Entfeuchter ohne Leistung
+      message: >-
+        {% if trigger.id == 'ttk' %}
+          TTK 75 Eco ist eingeschaltet, zieht aber keine Leistung.
+        {% else %}
+          TTR 57 ist eingeschaltet, zieht aber keine Leistung.
+        {% endif %}
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
   mode: single
 - id: '1780073742923'
   alias: Garagenwarnung

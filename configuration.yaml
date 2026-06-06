@@ -4,6 +4,23 @@ default_config:
 
 homeassistant:
   packages: !include_dir_named virtual
+  customize:
+    switch.licht:
+      friendly_name: TTR 57 Entfeuchter
+    sensor.licht_power:
+      friendly_name: TTR 57 Entfeuchter Leistung
+    sensor.licht_energy:
+      friendly_name: TTR 57 Entfeuchter Energie
+    sensor.licht_energy_returned:
+      friendly_name: TTR 57 Entfeuchter Rueckgespeiste Energie
+    binary_sensor.licht_overheating:
+      friendly_name: TTR 57 Entfeuchter Ueberhitzung
+    binary_sensor.licht_overpowering:
+      friendly_name: TTR 57 Entfeuchter Ueberleistung
+    binary_sensor.licht_overvoltage:
+      friendly_name: TTR 57 Entfeuchter Ueberspannung
+    binary_sensor.licht_overcurrent:
+      friendly_name: TTR 57 Entfeuchter Ueberstrom
 
 # Load frontend themes from the themes folder
 frontend:
