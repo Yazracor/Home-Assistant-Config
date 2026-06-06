@@ -1,36 +1,36 @@
-area_id,name,floor_id,aliases,temperature_entity_id
-arbeitszimmer,Arbeitszimmer,erdgeschoss,Buero;Büro EG;EG Büro;Gastzimmer;EG Gast,sensor.eg_arbeitszimmer_thermostat_ist_temp
-gaestebad,Gästebad,erdgeschoss,Buero.Bad;EG Gästebad,sensor.eg_gaestebad_thermostat_ist_temp
-flur_eg,Flur EG,erdgeschoss,EG_Flur;Diele;Galerie,sensor.eg_flur_thermostat_ist_temp
-treppe_eg_kg,Treppe EG/KG,erdgeschoss,EG_UG_Treppe;EG/KG Treppe,
-gaeste_wc,Gäste-WC,erdgeschoss,EG_GaesteWC;EG WC,sensor.eg_gaeste_wc_thermostat_ist_temp
-garderobe,Garderobe,erdgeschoss,EG_Garderobe,sensor.eg_garderobe_thermostat_ist_temp
-schuhschrank,Schuhschrank,erdgeschoss,EG_Schuhschrank;Schuhschrank,sensor.eg_technik_thermostat_ist_temp
-kueche,Küche,erdgeschoss,Kueche;Kochen;EG Küche;Esszimmer,sensor.eg_kueche_thermostat_ist_temp
-wohnzimmer,Wohnzimmer,erdgeschoss,Wohnz;Wohnzimmer,sensor.eg_wohnzimmer_thermostat_ist_temp
-vorratsraum,Vorratsraum,erdgeschoss,EG_Vorratsraum;Vorrat,
-technik,Technik,,EG Technik;Technik,
-buero_og,Büro OG,obergeschoss,Buero_OG;OG Arbeiten;OG_Arbeiten,sensor.og_buro_thermostat_ist_temp
-flur_og,Flur OG,obergeschoss,OG_Flur,
-treppe_og,Treppe OG,obergeschoss,OG_Treppe,
-schlafzimmer,Schlafzimmer,obergeschoss,Schlafzimmer_hidden;OG Schlafzimmer,sensor.og_schlafzimmer_thermostat_ist_temp
-ankleide,Ankleide,obergeschoss,Ankleide;Umkleide;OG_Umkleide,sensor.og_ankleide_thermostat_ist_temp
-bad_og,Bad OG,obergeschoss,OG_Bad;OG Bad;Waschen,sensor.og_bad_thermostat_ist_temp
-wc_og,WC OG,obergeschoss,OG_WC;OG WC,
-sauna,Sauna,kellergeschoss,KG_Sauna,
-gast_hobby,Gast/Hobby,kellergeschoss,KG_Gast;Gast;Hobby,sensor.kg_gast_hobby_thermostat_ist_temp
-zimmer_sinja,Zimmer Sinja,kellergeschoss,KG_Sinja;Kind 1,sensor.kg_zimmer_sinja_thermostat_ist_temp
-zimmer_silas,Zimmer Silas,kellergeschoss,KG_Silas;Kind 2,sensor.kg_zimmer_silas_thermostat_ist_temp
-flur_kg,Flur KG,kellergeschoss,KG_Flur,sensor.kg_flur_thermostat_ist_temp
-kinderbad,Kinderbad,kellergeschoss,KG_Kinderbad;Bad Kinder,sensor.kg_kinderbad_thermostat_ist_temp
-waschkueche,Waschküche,kellergeschoss,KG_Waschkueche;Waschküche,
-keller,Keller,kellergeschoss,KG_Keller;UV-Raum;Keller klein;Keller vorn;Keller hinten,
-balkon,Balkon,aussenbereich,Sonnensegel;Balkon;Terrasse EG,
-balkon_obergeschoss,Balkon Obergeschoss,aussenbereich,Aussenbeleuchtung OG;Balkon Obergeschoss,
-terrasse,Terrasse,aussenbereich,Terrasse;Terrasse KG,
-garage,Garage,aussenbereich,Garagentuer;Garagentor;Garage Innen,
-eingangsbereich,Eingangsbereich,aussenbereich,Eingang;Vorgarten;Eingang Vordach;Treppe und Garage;Hof Bega Baumstrahler,
-teich,Teich,aussenbereich,Teich;Licht Teich;Unterwasserstrahler,
-garten,Garten,aussenbereich,Garten;Aussenleuchten links;Aussenleuchten rechts;Wegebeleuchtung nach oben;Wegebeleuchtung nach unten,
-wetterstation,Wetterstation,aussenbereich,Wetter;Windwächter;Windwaechter,
+area_id,name,floor_id,aliases,temperature_entity_id,humidity_entity_id
+arbeitszimmer,Arbeitszimmer,erdgeschoss,Buero;Büro EG;EG Büro;Gastzimmer;EG Gast,sensor.eg_arbeitszimmer_thermostat_ist_temp,
+gaestebad,Gästebad,erdgeschoss,Buero.Bad;EG Gästebad,sensor.eg_gaestebad_thermostat_ist_temp,
+flur_eg,Flur EG,erdgeschoss,EG_Flur;Diele;Galerie,sensor.eg_flur_thermostat_ist_temp,
+treppe_eg_kg,Treppe EG/KG,erdgeschoss,EG_UG_Treppe;EG/KG Treppe,,
+gaeste_wc,Gäste-WC,erdgeschoss,EG_GaesteWC;EG WC,sensor.eg_gaeste_wc_thermostat_ist_temp,
+garderobe,Garderobe,erdgeschoss,EG_Garderobe,sensor.eg_garderobe_thermostat_ist_temp,
+schuhschrank,Schuhschrank,erdgeschoss,EG_Schuhschrank;Schuhschrank,sensor.eg_technik_thermostat_ist_temp,
+kueche,Küche,erdgeschoss,Kueche;Kochen;EG Küche;Esszimmer,sensor.eg_kueche_thermostat_ist_temp,
+wohnzimmer,Wohnzimmer,erdgeschoss,Wohnz;Wohnzimmer,sensor.eg_wohnzimmer_thermostat_ist_temp,
+vorratsraum,Vorratsraum,erdgeschoss,EG_Vorratsraum;Vorrat,,
+technik,Technik,,EG Technik;Technik,,
+buero_og,Büro OG,obergeschoss,Buero_OG;OG Arbeiten;OG_Arbeiten,sensor.og_buro_thermostat_ist_temp,
+flur_og,Flur OG,obergeschoss,OG_Flur,,
+treppe_og,Treppe OG,obergeschoss,OG_Treppe,,
+schlafzimmer,Schlafzimmer,obergeschoss,Schlafzimmer_hidden;OG Schlafzimmer,sensor.og_schlafzimmer_thermostat_ist_temp,
+ankleide,Ankleide,obergeschoss,Ankleide;Umkleide;OG_Umkleide,sensor.og_ankleide_thermostat_ist_temp,
+bad_og,Bad OG,obergeschoss,OG_Bad;OG Bad;Waschen,sensor.og_bad_thermostat_ist_temp,
+wc_og,WC OG,obergeschoss,OG_WC;OG WC,,
+sauna,Sauna,kellergeschoss,KG_Sauna,,
+gast_hobby,Gast/Hobby,kellergeschoss,KG_Gast;Gast;Hobby,sensor.kg_gast_hobby_thermostat_ist_temp,
+zimmer_sinja,Zimmer Sinja,kellergeschoss,KG_Sinja;Kind 1,sensor.kg_zimmer_sinja_thermostat_ist_temp,
+zimmer_silas,Zimmer Silas,kellergeschoss,KG_Silas;Kind 2,sensor.kg_zimmer_silas_thermostat_ist_temp,
+flur_kg,Flur KG,kellergeschoss,KG_Flur,sensor.kg_flur_thermostat_ist_temp,
+kinderbad,Kinderbad,kellergeschoss,KG_Kinderbad;Bad Kinder,sensor.kg_kinderbad_thermostat_ist_temp,
+waschkueche,Waschküche,kellergeschoss,KG_Waschkueche;Waschküche,,
+keller,Keller,kellergeschoss,KG_Keller;UV-Raum;Keller klein;Keller vorn;Keller hinten,,
+balkon,Balkon,aussenbereich,Sonnensegel;Balkon;Terrasse EG,,
+balkon_obergeschoss,Balkon Obergeschoss,aussenbereich,Aussenbeleuchtung OG;Balkon Obergeschoss,,
+terrasse,Terrasse,aussenbereich,Terrasse;Terrasse KG,,
+garage,Garage,aussenbereich,Garagentuer;Garagentor;Garage Innen,sensor.wifi_smart_switch_temperature,sensor.wifi_smart_switch_humidity
+eingangsbereich,Eingangsbereich,aussenbereich,Eingang;Vorgarten;Eingang Vordach;Treppe und Garage;Hof Bega Baumstrahler,,
+teich,Teich,aussenbereich,Teich;Licht Teich;Unterwasserstrahler,,
+garten,Garten,aussenbereich,Garten;Aussenleuchten links;Aussenleuchten rechts;Wegebeleuchtung nach oben;Wegebeleuchtung nach unten,,
+wetterstation,Wetterstation,aussenbereich,Wetter;Windwächter;Windwaechter,,
 fassade,Fassade,aussenbereich,Fassaden;Hitzeschutz;Verschattung,

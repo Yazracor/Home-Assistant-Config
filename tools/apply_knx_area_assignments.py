@@ -54,6 +54,26 @@ def note_value(row: dict[str, str], key: str) -> str | None:
     return None
 
 
+def optional_csv_value(row: dict[str, str], key: str) -> tuple[bool, str | None]:
+    if key not in row:
+        return False, None
+    raw = (row.get(key) or '').strip()
+    if not raw:
+        return False, None
+    if raw == 'none':
+        return True, None
+    return True, raw
+
+
+def optional_csv_list(row: dict[str, str], key: str) -> tuple[bool, list[str]]:
+    should_set, raw = optional_csv_value(row, key)
+    if not should_set:
+        return False, []
+    if raw is None:
+        return True, []
+    return True, [a for a in raw.split(';') if a]
+
+
 def desired_device_area(row: dict[str, str]) -> str | None:
     value = note_value(row, 'device_area')
     if value is not None:
@@ -137,22 +157,26 @@ def upsert_areas(storage: Path, areas_csv: Path, dry_run: bool) -> tuple[int, in
     created = updated = 0
     t = now_iso()
     for r in rows:
-        aliases = [a for a in r.get('aliases','').split(';') if a]
-        floor_id = r.get('floor_id') or None
-        temperature_entity_id = r.get('temperature_entity_id') or None
+        aliases_set, aliases = optional_csv_list(r, 'aliases')
+        floor_set, floor_id = optional_csv_value(r, 'floor_id')
+        temperature_set, temperature_entity_id = optional_csv_value(r, 'temperature_entity_id')
+        humidity_set, humidity_entity_id = optional_csv_value(r, 'humidity_entity_id')
         if r['area_id'] in by_id:
             a = by_id[r['area_id']]
             before = dict(a)
             a.setdefault('humidity_entity_id', None)
             a.setdefault('picture', None)
             a.setdefault('labels', [])
-            a.update({
-                'aliases': aliases,
-                'floor_id': floor_id,
-                'icon': a.get('icon'),
-                'name': r['name'],
-                'temperature_entity_id': temperature_entity_id,
-            })
+            a['icon'] = a.get('icon')
+            a['name'] = r['name']
+            if aliases_set:
+                a['aliases'] = aliases
+            if floor_set:
+                a['floor_id'] = floor_id
+            if temperature_set:
+                a['temperature_entity_id'] = temperature_entity_id
+            if humidity_set:
+                a['humidity_entity_id'] = humidity_entity_id
             if a != before:
                 a['modified_at'] = t
                 updated += 1
@@ -160,7 +184,7 @@ def upsert_areas(storage: Path, areas_csv: Path, dry_run: bool) -> tuple[int, in
             store['data']['areas'].append({
                 'aliases': aliases,
                 'floor_id': floor_id,
-                'humidity_entity_id': None,
+                'humidity_entity_id': humidity_entity_id,
                 'icon': None,
                 'id': r['area_id'],
                 'labels': [],
