@@ -100,8 +100,8 @@
 
   mode: single
 - id: solar_heat_protection_blind_recommendation
-  alias: Hitzeschutz Jalousie Empfehlung
-  description: Benachrichtigt, wenn Jalousien für solaren Wärmeschutz anders stehen sollten.
+  alias: Hitzeschutz Jalousie OG Automatik und Empfehlung
+  description: Fährt tagsüber OG-Jalousien für solaren Wärmeschutz und meldet EG/KG nur als Empfehlung.
   triggers:
   - trigger: state
     entity_id:
@@ -136,32 +136,84 @@
       {{ mapping.get(trigger.entity_id, '') }}
     facade_name: >-
       {{ state_attr(trigger.entity_id, 'friendly_name') | default('Hitzeschutz', true) | replace('Hitzeschutz ', '') }}
+    og_cover_entity_ids:
+      - cover.og_schlafzimmer_front
+      - cover.og_bad_panorama_aussen
+      - cover.og_treppe
+      - cover.og_schlafzimmer_panorama_aussen
+      - cover.og_flur_fenster
+      - cover.og_bad_balkon
+      - cover.og_ankleide_fenster
+      - cover.og_buro_fenster
+      - cover.og_wc_fenster
     recommendation_message: >-
       {% set lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
       {% set outside_temp = states('sensor.aussenbereich_wetterstation_temperatur') | float(0) %}
       {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
       {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
-      {% set ns = namespace(targets=[]) %}
+      {% set ns = namespace(og_targets=[], recommendation_targets=[]) %}
       {% for cover in expand(facade_group) %}
         {% set pos = cover.attributes.current_position if cover.attributes.current_position is defined else none %}
         {% set current = ((pos | round(0) | int) ~ '%') if pos is number else cover.state %}
         {% set too_open = (pos is number and pos > 25) or (pos is not number and cover.state in ['open', 'opening']) %}
         {% set too_closed = (pos is number and pos < 80) or (pos is not number and cover.state in ['closed', 'closing']) %}
-        {% if trigger.id == 'close' and too_open %}
-          {% set ns.targets = ns.targets + [cover.name ~ ' (' ~ current ~ ')'] %}
-        {% elif trigger.id == 'open' and too_closed %}
-          {% set ns.targets = ns.targets + [cover.name ~ ' (' ~ current ~ ')'] %}
+        {% set needs_change = (trigger.id == 'close' and too_open) or (trigger.id == 'open' and too_closed) %}
+        {% if needs_change and cover.entity_id in og_cover_entity_ids %}
+          {% set ns.og_targets = ns.og_targets + [cover.name ~ ' (' ~ current ~ ')'] %}
+        {% elif needs_change %}
+          {% set ns.recommendation_targets = ns.recommendation_targets + [cover.name ~ ' (' ~ current ~ ')'] %}
         {% endif %}
       {% endfor %}
-      {% if ns.targets %}
-      {{ 'Schließen' if trigger.id == 'close' else 'Öffnen' }} {{ facade_name }}: {{ ns.targets | join(', ') }}
+      {% if ns.og_targets or ns.recommendation_targets %}
+      {% set verb = 'Schließen' if trigger.id == 'close' else 'Öffnen' %}
+      {% if ns.og_targets %}
+      {% if is_state('switch.hitzeschutz_og_automatik', 'on') %}
+      {{ verb }} automatisch OG {{ facade_name }}: {{ ns.og_targets | join(', ') }}
+      {% else %}
+      {{ verb }} Empfehlung OG {{ facade_name }}: {{ ns.og_targets | join(', ') }} (Automatik aus)
+      {% endif %}
+      {% endif %}
+      {% if ns.recommendation_targets %}
+      {{ verb }} Empfehlung EG/KG {{ facade_name }}: {{ ns.recommendation_targets | join(', ') }}
+      {% endif %}
 
       Helligkeit: {{ lux | round(0) }} lx, außen: {{ outside_temp | round(1) }} °C, Sonne: {{ elevation | round(1) }}° / {{ azimuth | round(0) }}°.
       {% endif %}
+    og_action_entity_ids: >-
+      {% set ns = namespace(targets=[]) %}
+      {% for cover in expand(facade_group) %}
+        {% if cover.entity_id in og_cover_entity_ids %}
+          {% set pos = cover.attributes.current_position if cover.attributes.current_position is defined else none %}
+          {% set too_open = (pos is number and pos > 25) or (pos is not number and cover.state in ['open', 'opening']) %}
+          {% set too_closed = (pos is number and pos < 80) or (pos is not number and cover.state in ['closed', 'closing']) %}
+          {% if trigger.id == 'close' and too_open %}
+            {% set ns.targets = ns.targets + [cover.entity_id] %}
+          {% elif trigger.id == 'open' and too_closed %}
+            {% set ns.targets = ns.targets + [cover.entity_id] %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+      {{ ns.targets }}
   conditions:
+  - condition: state
+    entity_id: sun.sun
+    state: above_horizon
   - condition: template
     value_template: "{{ recommendation_message | trim != '' }}"
   actions:
+  - if:
+    - condition: state
+      entity_id: switch.hitzeschutz_og_automatik
+      state: "on"
+    - condition: template
+      value_template: "{{ og_action_entity_ids | count > 0 }}"
+    then:
+    - repeat:
+        for_each: "{{ og_action_entity_ids }}"
+        sequence:
+        - action: "cover.{{ 'close_cover' if trigger.id == 'close' else 'open_cover' }}"
+          target:
+            entity_id: "{{ repeat.item }}"
   - action: notify.mobile_app_torbens_iphone
     metadata: {}
     data:

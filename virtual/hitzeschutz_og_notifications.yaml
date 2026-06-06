@@ -1,0 +1,20 @@
+input_boolean:
+  hitzeschutz_og_automatik_aktiv:
+    name: "Hitzeschutz OG Automatik aktiv"
+    icon: mdi:blinds
+    initial: true
+
+template:
+  - switch:
+      - name: "Hitzeschutz OG Automatik"
+        unique_id: hitzeschutz_og_automatik_homekit_switch
+        icon: mdi:blinds
+        state: "{{ is_state('input_boolean.hitzeschutz_og_automatik_aktiv', 'on') }}"
+        turn_on:
+          - action: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.hitzeschutz_og_automatik_aktiv
+        turn_off:
+          - action: input_boolean.turn_off
+            target:
+              entity_id: input_boolean.hitzeschutz_og_automatik_aktiv
