@@ -11,7 +11,7 @@ Vorgehen:
 Das Skript erzeugt Sicherungskopien der geänderten .storage-Dateien.
 """
 from __future__ import annotations
-import argparse, csv, json, shutil, sys
+import argparse, csv, json, shlex, shutil, sys
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -31,34 +31,40 @@ def load_csv(path: Path) -> list[dict[str, str]]:
 
 
 def legacy_entity_ids(row: dict[str, str]) -> list[str]:
-    notes = row.get('notes') or ''
-    marker = 'legacy_entity_ids='
-    if marker not in notes:
+    raw = note_value(row, 'legacy_entity_ids')
+    if raw is None:
         return []
-    raw = notes.split(marker, 1)[1].split()[0]
     return [item for item in raw.split(';') if item]
 
 
 def desired_hidden_by(row: dict[str, str]) -> str | None:
-    notes = row.get('notes') or ''
-    marker = 'hidden_by='
-    if marker not in notes:
+    value = note_value(row, 'hidden_by')
+    if value is None:
         return None
-    value = notes.split(marker, 1)[1].split()[0]
     if value == 'none':
         return ''
     return value
 
 
+def note_value(row: dict[str, str], key: str) -> str | None:
+    prefix = f'{key}='
+    for token in shlex.split(row.get('notes') or ''):
+        if token.startswith(prefix):
+            return token[len(prefix):]
+    return None
+
+
 def desired_device_area(row: dict[str, str]) -> str | None:
-    notes = row.get('notes') or ''
-    marker = 'device_area='
-    if marker in notes:
-        value = notes.split(marker, 1)[1].split()[0]
+    value = note_value(row, 'device_area')
+    if value is not None:
         if value == 'none':
             return None
         return value
     return row['area_id']
+
+
+def desired_device_name(row: dict[str, str]) -> str | None:
+    return note_value(row, 'device_name')
 
 
 def backup(path: Path) -> None:
@@ -252,11 +258,11 @@ def set_unique_id(entity: dict, new_unique_id: str, by_uid: dict[str, list[dict]
     return True
 
 
-def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> tuple[int, int, int, int, int, int, int, list[str], dict[str, str | None]]:
+def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> tuple[int, int, int, int, int, int, int, list[str], dict[str, str | None], dict[str, str]]:
     assignments = [r for r in load_csv(assignments_csv) if r.get('area_id')]
     path = storage / 'core.entity_registry'
     if not path.exists():
-        return 0, 0, 0, 0, 0, 0, len(assignments), ['core.entity_registry nicht gefunden; KNX-Entitäten zuerst einmal von HA anlegen lassen.'], {}
+        return 0, 0, 0, 0, 0, 0, len(assignments), ['core.entity_registry nicht gefunden; KNX-Entitäten zuerst einmal von HA anlegen lassen.'], {}, {}
     with path.open(encoding='utf-8') as f:
         store = json.load(f)
     entities = store.get('data', {}).get('entities', [])
@@ -277,6 +283,7 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
     duplicates_removed = 0
     unmatched: list[str] = []
     device_area: dict[str, str | None] = {}
+    device_name: dict[str, str] = {}
     t = now_iso()
     for a in assignments:
         desired_unique_id = a.get('unique_id')
@@ -327,36 +334,45 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
                 hidden_changed += 1
         if e.get('device_id'):
             device_area[e['device_id']] = desired_device_area(a)
+            name = desired_device_name(a)
+            if name:
+                device_name[e['device_id']] = name
     if (changed or renamed or name_changed or hidden_changed or unique_changed or duplicates_removed) and not dry_run:
         write_store(path, store, dry_run=False)
     elif dry_run:
         # no write
         pass
-    return changed, renamed, name_changed, hidden_changed, unique_changed, duplicates_removed, len(unmatched), unmatched, device_area
+    return changed, renamed, name_changed, hidden_changed, unique_changed, duplicates_removed, len(unmatched), unmatched, device_area, device_name
 
 
-def apply_device_areas(storage: Path, device_area: dict[str, str | None], dry_run: bool) -> int:
-    if not device_area:
-        return 0
+def apply_devices(storage: Path, device_area: dict[str, str | None], device_name: dict[str, str], dry_run: bool) -> tuple[int, int]:
+    if not device_area and not device_name:
+        return 0, 0
     path = storage / 'core.device_registry'
     if not path.exists():
         return 0
     with path.open(encoding='utf-8') as f:
         store = json.load(f)
-    changed = 0
+    area_changed = 0
+    name_changed = 0
     t = now_iso()
     for d in store.get('data', {}).get('devices', []):
         device_id = d.get('id')
-        if device_id not in device_area:
+        if device_id not in device_area and device_id not in device_name:
             continue
-        area = device_area[device_id]
-        if d.get('area_id') != area:
+        area = device_area.get(device_id)
+        if device_id in device_area and d.get('area_id') != area:
             d['area_id'] = area
             d['modified_at'] = t
-            changed += 1
-    if changed and not dry_run:
+            area_changed += 1
+        name = device_name.get(device_id)
+        if name and d.get('name_by_user') != name:
+            d['name_by_user'] = name
+            d['modified_at'] = t
+            name_changed += 1
+    if (area_changed or name_changed) and not dry_run:
         write_store(path, store, dry_run=False)
-    return changed
+    return area_changed, name_changed
 
 
 def main() -> int:
@@ -382,14 +398,14 @@ def main() -> int:
     fc, fu = upsert_floors(storage, floors_csv, args.dry_run)
     ac, au = upsert_areas(storage, areas_csv, args.dry_run)
     ar, ae, ad = remove_obsolete_areas(storage, obsolete_areas_csv, args.dry_run)
-    ec, er, en, eh, eu, ed, missing, unmatched, device_area = apply_entity_areas(storage, assignments_csv, args.dry_run)
-    dc = apply_device_areas(storage, device_area, args.dry_run)
+    ec, er, en, eh, eu, ed, missing, unmatched, device_area, device_name = apply_entity_areas(storage, assignments_csv, args.dry_run)
+    dc, dn = apply_devices(storage, device_area, device_name, args.dry_run)
 
     print(f'Floors: erstellt={fc}, aktualisiert={fu}')
     print(f'Areas: erstellt={ac}, aktualisiert={au}')
     print(f'Obsolete Areas: entfernt={ar}, Entity-Zuordnungen geändert={ae}, Device-Zuordnungen geändert={ad}')
     print(f'Entities: Area geändert={ec}, Entity-ID geändert={er}, Name geändert={en}, Sichtbarkeit geändert={eh}, Unique-ID geändert={eu}, Duplikate entfernt={ed}, nicht gefunden={missing}')
-    print(f'Devices: Area geändert={dc}')
+    print(f'Devices: Area geändert={dc}, Name geändert={dn}')
     if unmatched:
         print('\nNicht zugeordnete erwartete Entitäten:')
         for item in unmatched:
