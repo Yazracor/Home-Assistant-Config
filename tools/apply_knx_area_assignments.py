@@ -133,14 +133,20 @@ def upsert_areas(storage: Path, areas_csv: Path, dry_run: bool) -> tuple[int, in
     for r in rows:
         aliases = [a for a in r.get('aliases','').split(';') if a]
         floor_id = r.get('floor_id') or None
+        temperature_entity_id = r.get('temperature_entity_id') or None
         if r['area_id'] in by_id:
             a = by_id[r['area_id']]
             before = dict(a)
             a.setdefault('humidity_entity_id', None)
             a.setdefault('picture', None)
-            a.setdefault('temperature_entity_id', None)
             a.setdefault('labels', [])
-            a.update({'aliases': aliases, 'floor_id': floor_id, 'icon': a.get('icon'), 'name': r['name']})
+            a.update({
+                'aliases': aliases,
+                'floor_id': floor_id,
+                'icon': a.get('icon'),
+                'name': r['name'],
+                'temperature_entity_id': temperature_entity_id,
+            })
             if a != before:
                 a['modified_at'] = t
                 updated += 1
@@ -154,7 +160,7 @@ def upsert_areas(storage: Path, areas_csv: Path, dry_run: bool) -> tuple[int, in
                 'labels': [],
                 'name': r['name'],
                 'picture': None,
-                'temperature_entity_id': None,
+                'temperature_entity_id': temperature_entity_id,
                 'created_at': t,
                 'modified_at': t,
             })
