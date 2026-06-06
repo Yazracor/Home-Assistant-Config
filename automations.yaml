@@ -58,16 +58,9 @@
   alias: Garage TTK Entfeuchter aus
   description: Schaltet den TTK 75 Eco bei Ziel-Feuchte oder unter 5 Grad ab.
   triggers:
-  - type: humidity
-    device_id: 93c766f0890f4945e595ada307cdd6be
-    entity_id: 40beacf828453f91eabae791ad7f8989
-    domain: sensor
-    trigger: device
+  - trigger: numeric_state
+    entity_id: sensor.wifi_smart_switch_humidity
     below: 55
-    for:
-      hours: 0
-      minutes: 30
-      seconds: 0
   - trigger: numeric_state
     entity_id: sensor.wifi_smart_switch_temperature
     below: 5
@@ -75,7 +68,20 @@
       hours: 0
       minutes: 5
       seconds: 0
-  conditions: []
+  - trigger: time_pattern
+    minutes: "/5"
+  conditions:
+  - condition: state
+    entity_id: switch.entfeuchter
+    state: "on"
+  - condition: or
+    conditions:
+    - condition: numeric_state
+      entity_id: sensor.wifi_smart_switch_humidity
+      below: 55
+    - condition: numeric_state
+      entity_id: sensor.wifi_smart_switch_temperature
+      below: 5
   actions:
   - action: switch.turn_off
     metadata: {}
