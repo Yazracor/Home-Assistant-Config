@@ -114,6 +114,11 @@ hitzeschutz_jalousie_fassade_pruefen:
       required: true
       selector:
         object:
+    allow_automation:
+      required: false
+      default: true
+      selector:
+        boolean:
   sequence:
     - variables:
         action_text: "{{ 'Schliessen' if action_id == 'close' else 'Oeffnen' }}"
@@ -148,7 +153,7 @@ hitzeschutz_jalousie_fassade_pruefen:
           - variables:
               needs_change: "{{ (action_id == 'close' and too_open) or (action_id == 'open' and too_closed) }}"
               automatik_marked: "{{ repeat.item in automatik_entity_ids }}"
-              automatik_enabled: "{{ is_state('switch.hitzeschutz_og_automatik', 'on') }}"
+              automatik_enabled: "{{ allow_automation | default(true) and is_state('switch.hitzeschutz_og_automatik', 'on') }}"
               bedroom_open_blocked: "{{ action_id == 'open' and now().hour < 10 and repeat.item in bedroom_entity_ids }}"
           - variables:
               target_type: "{{ 'OG' if automatik_marked else 'EG/KG' }}"
@@ -156,6 +161,8 @@ hitzeschutz_jalousie_fassade_pruefen:
               reason: >-
                 {% if automatik_marked and bedroom_open_blocked %}
                 Schlafzimmer vor 10:00 nicht automatisch
+                {% elif automatik_marked and not (allow_automation | default(true)) %}
+                periodischer Nachcheck, keine Automatik
                 {% elif automatik_marked and not automatik_enabled %}
                 Automatik aus
                 {% elif not automatik_marked %}
