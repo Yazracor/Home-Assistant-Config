@@ -441,3 +441,59 @@
         cover_entities: "{{ expand('group.fassade_nord') | map(attribute='entity_id') | list }}"
         allow_automation: false
   mode: single
+- id: solar_heat_protection_blind_open_notification_hourly
+  alias: Hitzeschutz Jalousie Öffnen Empfehlung
+  description: Meldet tagsüber stündlich geschlossene Jalousien an inaktiven Hitzeschutz-Fassaden, fährt aber nichts automatisch.
+  triggers:
+  - trigger: time_pattern
+    minutes: "0"
+  conditions:
+  - condition: state
+    entity_id: sun.sun
+    state: above_horizon
+  actions:
+  - if:
+    - condition: state
+      entity_id: binary_sensor.hitzeschutz_fassade_west
+      state: "off"
+    then:
+    - action: script.hitzeschutz_jalousie_fassade_pruefen
+      data:
+        facade_name: Fassade West
+        action_id: open
+        cover_entities: "{{ expand('group.fassade_west') | map(attribute='entity_id') | list }}"
+        allow_automation: false
+  - if:
+    - condition: state
+      entity_id: binary_sensor.hitzeschutz_fassade_ost
+      state: "off"
+    then:
+    - action: script.hitzeschutz_jalousie_fassade_pruefen
+      data:
+        facade_name: Fassade Ost
+        action_id: open
+        cover_entities: "{{ expand('group.fassade_ost') | map(attribute='entity_id') | list }}"
+        allow_automation: false
+  - if:
+    - condition: state
+      entity_id: binary_sensor.hitzeschutz_fassade_sud
+      state: "off"
+    then:
+    - action: script.hitzeschutz_jalousie_fassade_pruefen
+      data:
+        facade_name: Fassade Sued
+        action_id: open
+        cover_entities: "{{ expand('group.fassade_sued') | map(attribute='entity_id') | list }}"
+        allow_automation: false
+  - if:
+    - condition: state
+      entity_id: binary_sensor.hitzeschutz_fassade_nord
+      state: "off"
+    then:
+    - action: script.hitzeschutz_jalousie_fassade_pruefen
+      data:
+        facade_name: Fassade Nord
+        action_id: open
+        cover_entities: "{{ expand('group.fassade_nord') | map(attribute='entity_id') | list }}"
+        allow_automation: false
+  mode: single
