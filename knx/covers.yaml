@@ -128,9 +128,12 @@
 # HINWEIS: position_state_address aus Sicherheitsgründen weggelassen: ETS-Name zu 4/2/2 lautet 'OG Bad 3x innen LZ', nicht R JP.
 # AUSKOMMENTIERT position_address: "4/2/3"  # FHEM alias ziel; ETS: OG Bad 3x innen KZ 
 # AUSKOMMENTIERT position_state_address: "4/2/2"  # FHEM alias status; ETS: OG Bad 3x innen LZ
+# Bus-Log: Rueckmeldungen nach 4/2/0 kommen gekoppelt auf 4/1/10, 4/1/14, 4/1/18.
+# Verwendet wird die mittlere Rueckmeldung als repraesentativer Status.
 - name: "Jalousie_OG_Schlafzimmer_Innen_Front"
   move_long_address: "4/2/0"
   move_short_address: "4/2/1"
+  position_state_address: "4/1/14"
   travelling_time_down: 27
   travelling_time_up: 27
 # FHEM: Jalousie_OG_Schlafzimmer_Innen_Panorama
@@ -149,9 +152,12 @@
 # FHEM room: KNX,Schlafzimmer_hidden
 # move_long_address: 4/2/6 -> OG Schlafz. 3x aussen Front LZ | Jalousien > Gruppen
 # move_short_address: 4/2/7 -> OG Schlafz. 3x aussen Front KZ | Jalousien > Gruppen
+# Bus-Log: Rueckmeldungen nach 4/2/6 kommen gekoppelt auf 4/0/38, 4/0/42, 4/0/46.
+# Verwendet wird die mittlere Rueckmeldung als repraesentativer Status.
 - name: "OG_Schlafzimmer_Front"
   move_long_address: "4/2/6"
   move_short_address: "4/2/7"
+  position_state_address: "4/0/42"
   travelling_time_down: 27
   travelling_time_up: 27
 # FHEM: Jalousie_OG_Schlafzimmer_Aussen_Panorama

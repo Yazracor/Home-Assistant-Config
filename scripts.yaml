@@ -177,6 +177,15 @@ hitzeschutz_jalousie_fassade_pruefen:
                     data:
                       title: "Hitzeschutz: Jalousie nicht pruefbar"
                       message: "{{ cover_entity }} ist {{ cover_state }} und wurde fuer {{ action_text }} {{ facade_name }} uebersprungen."
+                  - action: script.hitzeschutz_jalousie_benachrichtigen
+                    data:
+                      facade_name: "{{ facade_name }}"
+                      action_id: "{{ action_id }}"
+                      cover_name: "{{ cover_name }}"
+                      current_text: "{{ cover_state }}"
+                      target_type: "{{ target_type }}"
+                      mode_text: "nicht pruefbar"
+                      reason: "Status {{ cover_state }}, keine Automatik ausgefuehrt"
               - conditions:
                   - condition: template
                     value_template: "{{ needs_change and automatik_marked and automatik_enabled and not bedroom_open_blocked }}"

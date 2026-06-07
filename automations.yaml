@@ -390,7 +390,7 @@
   description: Meldet tagsüber regelmäßig geöffnete Jalousien an aktiven Hitzeschutz-Fassaden, fährt aber nichts automatisch.
   triggers:
   - trigger: time_pattern
-    minutes: "/10"
+    minutes: "/2"
   conditions:
   - condition: state
     entity_id: sun.sun
