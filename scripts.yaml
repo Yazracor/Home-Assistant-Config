@@ -1,0 +1,202 @@
+hitzeschutz_jalousie_automatisieren:
+  alias: Hitzeschutz Jalousie automatisieren
+  mode: parallel
+  fields:
+    cover_entity:
+      required: true
+      selector:
+        entity:
+          domain: cover
+    action_id:
+      required: true
+      selector:
+        select:
+          options:
+            - close
+            - open
+  sequence:
+    - choose:
+        - conditions:
+            - condition: template
+              value_template: "{{ action_id == 'close' }}"
+          sequence:
+            - action: cover.close_cover
+              target:
+                entity_id: "{{ cover_entity }}"
+        - conditions:
+            - condition: template
+              value_template: "{{ action_id == 'open' }}"
+          sequence:
+            - action: cover.open_cover
+              target:
+                entity_id: "{{ cover_entity }}"
+      default:
+        - action: persistent_notification.create
+          data:
+            title: "Hitzeschutz: unbekannte Aktion"
+            message: "Unbekannte Aktion '{{ action_id }}' fuer {{ cover_entity }}."
+
+hitzeschutz_jalousie_benachrichtigen:
+  alias: Hitzeschutz Jalousie benachrichtigen
+  mode: parallel
+  fields:
+    facade_name:
+      required: true
+      selector:
+        text:
+    action_id:
+      required: true
+      selector:
+        select:
+          options:
+            - close
+            - open
+    cover_name:
+      required: true
+      selector:
+        text:
+    current_text:
+      required: true
+      selector:
+        text:
+    target_type:
+      required: true
+      selector:
+        text:
+    mode_text:
+      required: true
+      selector:
+        text:
+    reason:
+      required: false
+      selector:
+        text:
+  sequence:
+    - variables:
+        action_text: "{{ 'Schliessen' if action_id == 'close' else 'Oeffnen' }}"
+        lux: "{{ states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) }}"
+        outside_temp: "{{ states('sensor.aussenbereich_wetterstation_temperatur') | float(0) }}"
+        azimuth: "{{ state_attr('sun.sun', 'azimuth') | float(0) }}"
+        elevation: "{{ state_attr('sun.sun', 'elevation') | float(0) }}"
+    - action: notify.mobile_app_torbens_iphone
+      metadata: {}
+      data:
+        title: "Jalousien: Hitzeschutz"
+        message: >-
+          {{ action_text }} {{ mode_text }} {{ target_type }} {{ facade_name }}:
+          {{ cover_name }} ({{ current_text }}).
+          {% if reason | default('', true) | trim %}
+          {{ reason | trim }}.
+          {% endif %}
+          Helligkeit: {{ lux | round(0) }} lx, aussen: {{ outside_temp | round(1) }} °C,
+          Sonne: {{ elevation | round(1) }}° / {{ azimuth | round(0) }}°.
+        data:
+          push:
+            sound:
+              name: default
+
+hitzeschutz_jalousie_fassade_pruefen:
+  alias: Hitzeschutz Jalousie Fassade pruefen
+  mode: parallel
+  fields:
+    facade_name:
+      required: true
+      selector:
+        text:
+    action_id:
+      required: true
+      selector:
+        select:
+          options:
+            - close
+            - open
+    cover_entities:
+      required: true
+      selector:
+        object:
+  sequence:
+    - variables:
+        action_text: "{{ 'Schliessen' if action_id == 'close' else 'Oeffnen' }}"
+        cover_entity_ids: "{{ cover_entities if cover_entities is iterable and cover_entities is not string else [] }}"
+        automatik_entity_ids: "{{ expand('group.hitzeschutz_automatik_jalousien') | map(attribute='entity_id') | list }}"
+        bedroom_entity_ids: "{{ area_entities('schlafzimmer') | select('match', '^cover\\.') | list }}"
+    - if:
+        - condition: template
+          value_template: "{{ cover_entity_ids | count == 0 }}"
+      then:
+        - action: persistent_notification.create
+          data:
+            title: "Hitzeschutz ohne Jalousien"
+            message: "{{ action_text }} {{ facade_name }} wurde ausgeloest, aber die Fassadenliste war leer."
+    - repeat:
+        for_each: "{{ cover_entity_ids }}"
+        sequence:
+          - variables:
+              cover_entity: "{{ repeat.item }}"
+              cover_name: "{{ state_attr(repeat.item, 'friendly_name') | default(repeat.item, true) }}"
+              cover_state: "{{ states(repeat.item) }}"
+              position: "{{ state_attr(repeat.item, 'current_position') }}"
+          - variables:
+              current_text: >-
+                {% if position is number %}
+                {{ position | round(0) }}%
+                {% else %}
+                {{ cover_state }}
+                {% endif %}
+              too_open: "{{ (position is number and position > 25) or (position is not number and cover_state in ['open', 'opening']) }}"
+              too_closed: "{{ (position is number and position < 80) or (position is not number and cover_state in ['closed', 'closing']) }}"
+          - variables:
+              needs_change: "{{ (action_id == 'close' and too_open) or (action_id == 'open' and too_closed) }}"
+              automatik_marked: "{{ repeat.item in automatik_entity_ids }}"
+              automatik_enabled: "{{ is_state('switch.hitzeschutz_og_automatik', 'on') }}"
+              bedroom_open_blocked: "{{ action_id == 'open' and now().hour < 10 and repeat.item in bedroom_entity_ids }}"
+          - variables:
+              target_type: "{{ 'OG' if automatik_marked else 'EG/KG' }}"
+              mode_text: "{{ 'automatisch' if automatik_marked and automatik_enabled and not bedroom_open_blocked else 'Empfehlung' }}"
+              reason: >-
+                {% if automatik_marked and bedroom_open_blocked %}
+                Schlafzimmer vor 10:00 nicht automatisch
+                {% elif automatik_marked and not automatik_enabled %}
+                Automatik aus
+                {% elif not automatik_marked %}
+                nicht fuer Automatik markiert
+                {% endif %}
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: "{{ cover_state in ['unknown', 'unavailable'] }}"
+                sequence:
+                  - action: persistent_notification.create
+                    data:
+                      title: "Hitzeschutz: Jalousie nicht pruefbar"
+                      message: "{{ cover_entity }} ist {{ cover_state }} und wurde fuer {{ action_text }} {{ facade_name }} uebersprungen."
+              - conditions:
+                  - condition: template
+                    value_template: "{{ needs_change and automatik_marked and automatik_enabled and not bedroom_open_blocked }}"
+                sequence:
+                  - action: script.hitzeschutz_jalousie_automatisieren
+                    data:
+                      cover_entity: "{{ cover_entity }}"
+                      action_id: "{{ action_id }}"
+                  - action: script.hitzeschutz_jalousie_benachrichtigen
+                    data:
+                      facade_name: "{{ facade_name }}"
+                      action_id: "{{ action_id }}"
+                      cover_name: "{{ cover_name }}"
+                      current_text: "{{ current_text | trim }}"
+                      target_type: "{{ target_type }}"
+                      mode_text: "{{ mode_text }}"
+                      reason: "{{ reason | trim }}"
+              - conditions:
+                  - condition: template
+                    value_template: "{{ needs_change }}"
+                sequence:
+                  - action: script.hitzeschutz_jalousie_benachrichtigen
+                    data:
+                      facade_name: "{{ facade_name }}"
+                      action_id: "{{ action_id }}"
+                      cover_name: "{{ cover_name }}"
+                      current_text: "{{ current_text | trim }}"
+                      target_type: "{{ target_type }}"
+                      mode_text: "{{ mode_text }}"
+                      reason: "{{ reason | trim }}"

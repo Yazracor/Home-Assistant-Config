@@ -280,131 +280,107 @@
   description: Fährt tagsüber OG-Jalousien für solaren Wärmeschutz und meldet EG/KG nur als Empfehlung.
   triggers:
   - trigger: state
-    entity_id:
-    - binary_sensor.hitzeschutz_fassade_west
-    - binary_sensor.hitzeschutz_fassade_ost
-    - binary_sensor.hitzeschutz_fassade_sud
-    - binary_sensor.hitzeschutz_fassade_nord
+    entity_id: binary_sensor.hitzeschutz_fassade_west
     from: "off"
     to: "on"
     for:
       minutes: 10
-    id: close
+    id: west_close
   - trigger: state
-    entity_id:
-    - binary_sensor.hitzeschutz_fassade_west
-    - binary_sensor.hitzeschutz_fassade_ost
-    - binary_sensor.hitzeschutz_fassade_sud
-    - binary_sensor.hitzeschutz_fassade_nord
+    entity_id: binary_sensor.hitzeschutz_fassade_ost
+    from: "off"
+    to: "on"
+    for:
+      minutes: 10
+    id: ost_close
+  - trigger: state
+    entity_id: binary_sensor.hitzeschutz_fassade_sud
+    from: "off"
+    to: "on"
+    for:
+      minutes: 10
+    id: sued_close
+  - trigger: state
+    entity_id: binary_sensor.hitzeschutz_fassade_nord
+    from: "off"
+    to: "on"
+    for:
+      minutes: 10
+    id: nord_close
+  - trigger: state
+    entity_id: binary_sensor.hitzeschutz_fassade_west
     from: "on"
     to: "off"
     for:
       minutes: 30
-    id: open
+    id: west_open
+  - trigger: state
+    entity_id: binary_sensor.hitzeschutz_fassade_ost
+    from: "on"
+    to: "off"
+    for:
+      minutes: 30
+    id: ost_open
+  - trigger: state
+    entity_id: binary_sensor.hitzeschutz_fassade_sud
+    from: "on"
+    to: "off"
+    for:
+      minutes: 30
+    id: sued_open
+  - trigger: state
+    entity_id: binary_sensor.hitzeschutz_fassade_nord
+    from: "on"
+    to: "off"
+    for:
+      minutes: 30
+    id: nord_open
   variables:
+    action_id: "{{ 'close' if trigger.id.endswith('_close') else 'open' }}"
     facade_group: >-
       {% set mapping = {
-        'binary_sensor.hitzeschutz_fassade_west': 'group.fassade_west',
-        'binary_sensor.hitzeschutz_fassade_ost': 'group.fassade_ost',
-        'binary_sensor.hitzeschutz_fassade_sud': 'group.fassade_sued',
-        'binary_sensor.hitzeschutz_fassade_nord': 'group.fassade_nord'
+        'west_close': 'group.fassade_west',
+        'west_open': 'group.fassade_west',
+        'ost_close': 'group.fassade_ost',
+        'ost_open': 'group.fassade_ost',
+        'sued_close': 'group.fassade_sued',
+        'sued_open': 'group.fassade_sued',
+        'nord_close': 'group.fassade_nord',
+        'nord_open': 'group.fassade_nord'
       } %}
-      {{ mapping.get(trigger.entity_id, '') }}
+      {{ mapping.get(trigger.id, '') }}
     facade_name: >-
-      {{ state_attr(trigger.entity_id, 'friendly_name') | default('Hitzeschutz', true) | replace('Hitzeschutz ', '') }}
-    og_cover_entity_ids: >-
-      {{ floor_entities('obergeschoss') | select('match', '^cover\.') | list }}
-    bedroom_cover_entity_ids: >-
-      {{ area_entities('schlafzimmer') | select('match', '^cover\.') | list }}
-    action_verb: "{{ 'Schließen' if trigger.id == 'close' else 'Öffnen' }}"
-    hitzeschutz_plan: >-
-      {# Erstellt einmalig den Plan für Automatik und Benachrichtigung. #}
-      {% set plan = namespace(
-        og_auto_names=[],
-        og_blocked_names=[],
-        recommendation_names=[],
-        og_action_entities=[]
-      ) %}
-      {% for cover in expand(facade_group) %}
-        {% set pos = cover.attributes.current_position if cover.attributes.current_position is defined else none %}
-        {% set current = ((pos | round(0) | int) ~ '%') if pos is number else cover.state %}
-        {% set too_open = (pos is number and pos > 25) or (pos is not number and cover.state in ['open', 'opening']) %}
-        {% set too_closed = (pos is number and pos < 80) or (pos is not number and cover.state in ['closed', 'closing']) %}
-        {% set should_close = trigger.id == 'close' and too_open %}
-        {% set should_open = trigger.id == 'open' and too_closed %}
-        {% set needs_change = should_close or should_open %}
-        {% set is_og_cover = cover.entity_id in og_cover_entity_ids %}
-        {% set bedroom_open_blocked = (
-          trigger.id == 'open'
-          and now().hour < 10
-          and cover.entity_id in bedroom_cover_entity_ids
-        ) %}
-        {% set target = cover.name ~ ' (' ~ current ~ ')' %}
-        {% if needs_change %}
-          {% if is_og_cover and not bedroom_open_blocked %}
-            {% set plan.og_auto_names = plan.og_auto_names + [target] %}
-            {% set plan.og_action_entities = plan.og_action_entities + [cover.entity_id] %}
-          {% elif is_og_cover %}
-            {% set plan.og_blocked_names = plan.og_blocked_names + [target] %}
-          {% else %}
-            {% set plan.recommendation_names = plan.recommendation_names + [target] %}
-          {% endif %}
-        {% endif %}
-      {% endfor %}
-      {{ {
-        'og_auto_names': plan.og_auto_names,
-        'og_blocked_names': plan.og_blocked_names,
-        'recommendation_names': plan.recommendation_names,
-        'og_action_entities': plan.og_action_entities
-      } | to_json }}
-    recommendation_message: >-
-      {% set lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
-      {% set outside_temp = states('sensor.aussenbereich_wetterstation_temperatur') | float(0) %}
-      {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
-      {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
-      {% set plan = hitzeschutz_plan | from_json %}
-      {% set og_mode = 'automatisch' if is_state('switch.hitzeschutz_og_automatik', 'on') else 'Empfehlung' %}
-      {% set og_suffix = '' if is_state('switch.hitzeschutz_og_automatik', 'on') else ' (Automatik aus)' %}
-      {% if plan.og_auto_names or plan.og_blocked_names or plan.recommendation_names %}
-      {% if plan.og_auto_names %}
-      {{ action_verb }} {{ og_mode }} OG {{ facade_name }}: {{ plan.og_auto_names | join(', ') }}{{ og_suffix }}
-      {% endif %}
-      {% if plan.og_blocked_names %}
-      {{ action_verb }} Empfehlung OG {{ facade_name }}: {{ plan.og_blocked_names | join(', ') }} (Schlafzimmer vor 10:00 nicht automatisch)
-      {% endif %}
-      {% if plan.recommendation_names %}
-      {{ action_verb }} Empfehlung EG/KG {{ facade_name }}: {{ plan.recommendation_names | join(', ') }}
-      {% endif %}
-
-      Helligkeit: {{ lux | round(0) }} lx, außen: {{ outside_temp | round(1) }} °C, Sonne: {{ elevation | round(1) }}° / {{ azimuth | round(0) }}°.
-      {% endif %}
+      {% set mapping = {
+        'west_close': 'Fassade West',
+        'west_open': 'Fassade West',
+        'ost_close': 'Fassade Ost',
+        'ost_open': 'Fassade Ost',
+        'sued_close': 'Fassade Sued',
+        'sued_open': 'Fassade Sued',
+        'nord_close': 'Fassade Nord',
+        'nord_open': 'Fassade Nord'
+      } %}
+      {{ mapping.get(trigger.id, trigger.id) }}
+    cover_entities: >-
+      {% set mapping = {
+        'west_close': 'group.fassade_west',
+        'west_open': 'group.fassade_west',
+        'ost_close': 'group.fassade_ost',
+        'ost_open': 'group.fassade_ost',
+        'sued_close': 'group.fassade_sued',
+        'sued_open': 'group.fassade_sued',
+        'nord_close': 'group.fassade_nord',
+        'nord_open': 'group.fassade_nord'
+      } %}
+      {{ expand(mapping.get(trigger.id, '')) | map(attribute='entity_id') | list }}
   conditions:
   - condition: state
     entity_id: sun.sun
     state: above_horizon
-  - condition: template
-    value_template: "{{ recommendation_message | trim != '' }}"
   actions:
-  - if:
-    - condition: state
-      entity_id: switch.hitzeschutz_og_automatik
-      state: "on"
-    - condition: template
-      value_template: "{{ (hitzeschutz_plan | from_json).og_action_entities | count > 0 }}"
-    then:
-    - repeat:
-        for_each: "{{ (hitzeschutz_plan | from_json).og_action_entities }}"
-        sequence:
-        - action: "cover.{{ 'close_cover' if trigger.id == 'close' else 'open_cover' }}"
-          target:
-            entity_id: "{{ repeat.item }}"
-  - action: notify.mobile_app_torbens_iphone
-    metadata: {}
+  - action: script.hitzeschutz_jalousie_fassade_pruefen
     data:
-      title: "Jalousien: Hitzeschutz"
-      message: "{{ recommendation_message | trim }}"
-      data:
-        push:
-          sound:
-            name: default
+      facade_name: "{{ facade_name }}"
+      action_id: "{{ action_id }}"
+      cover_entities: "{{ cover_entities }}"
   mode: single

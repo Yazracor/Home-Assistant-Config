@@ -34,3 +34,17 @@ fassade_nord:
     - cover.og_ankleide_fenster
     - cover.og_buro_fenster
     - cover.og_wc_fenster
+
+# Tag/Marker: nur diese Jalousien duerfen vom Hitzeschutz automatisch fahren.
+hitzeschutz_automatik_jalousien:
+  name: Hitzeschutz Automatik Jalousien
+  entities:
+    - cover.og_schlafzimmer_front
+    - cover.og_bad_panorama_aussen
+    - cover.og_treppe
+    - cover.og_schlafzimmer_panorama_aussen
+    - cover.og_flur_fenster
+    - cover.og_bad_balkon
+    - cover.og_ankleide_fenster
+    - cover.og_buro_fenster
+    - cover.og_wc_fenster
