@@ -36,44 +36,19 @@ hitzeschutz_jalousie_automatisieren:
             title: "Hitzeschutz: unbekannte Aktion"
             message: "Unbekannte Aktion '{{ action_id }}' fuer {{ cover_entity }}."
 
-hitzeschutz_jalousie_benachrichtigen:
-  alias: Hitzeschutz Jalousie benachrichtigen
+hitzeschutz_jalousien_sammel_benachrichtigen:
+  alias: Hitzeschutz Jalousien gesammelt benachrichtigen
   mode: parallel
   fields:
-    facade_name:
+    notification_payload:
       required: true
       selector:
-        text:
-    action_id:
-      required: true
-      selector:
-        select:
-          options:
-            - close
-            - open
-    cover_name:
-      required: true
-      selector:
-        text:
-    current_text:
-      required: true
-      selector:
-        text:
-    target_type:
-      required: true
-      selector:
-        text:
-    mode_text:
-      required: true
-      selector:
-        text:
-    reason:
-      required: false
-      selector:
-        text:
+        object:
   sequence:
     - variables:
-        action_text: "{{ 'Schliessen' if action_id == 'close' else 'Oeffnen' }}"
+        payload: "{{ notification_payload | from_json if notification_payload is string else notification_payload }}"
+        summaries: "{{ payload.summaries }}"
+        items: "{{ payload.items }}"
         lux: "{{ states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) }}"
         outside_temp: "{{ states('sensor.aussenbereich_wetterstation_temperatur') | float(0) }}"
         azimuth: "{{ state_attr('sun.sun', 'azimuth') | float(0) }}"
@@ -83,17 +58,123 @@ hitzeschutz_jalousie_benachrichtigen:
       data:
         title: "Jalousien: Hitzeschutz"
         message: >-
-          {{ action_text }} {{ mode_text }} {{ target_type }} {{ facade_name }}:
-          {{ cover_name }} ({{ current_text }}).
-          {% if reason | default('', true) | trim %}
-          {{ reason | trim }}.
-          {% endif %}
+          Hitzeschutz: {{ summaries | join(', ') }}
+          {{ items | join('\n') }}
+
           Helligkeit: {{ lux | round(0) }} lx, aussen: {{ outside_temp | round(1) }} °C,
           Sonne: {{ elevation | round(1) }}° / {{ azimuth | round(0) }}°.
         data:
           push:
             sound:
               name: default
+
+hitzeschutz_jalousien_checks_pruefen:
+  alias: Hitzeschutz Jalousien Checks pruefen
+  mode: parallel
+  fields:
+    checks:
+      required: true
+      selector:
+        object:
+  sequence:
+    - variables:
+        check_items: "{{ checks | from_json if checks is string else checks }}"
+        notification_payload: >-
+          {% set facade_names = {
+            'Fassade West': 'Westseite',
+            'Fassade Ost': 'Ostseite',
+            'Fassade Sued': 'Südseite',
+            'Fassade Süd': 'Südseite',
+            'Fassade Nord': 'Nordseite'
+          } %}
+          {% set ns = namespace(summaries=[], items=[]) %}
+          {% for check in check_items %}
+            {% set facade_name = check.facade_name %}
+            {% set action_id = check.action_id %}
+            {% set action_text = 'schließen' if action_id == 'close' else 'öffnen' %}
+            {% set cover_entity_ids = check.cover_entities if check.cover_entities is iterable and check.cover_entities is not string else [] %}
+            {% set facade = namespace(items=[]) %}
+            {% for cover_entity in cover_entity_ids %}
+              {% set cover_name = state_attr(cover_entity, 'friendly_name') | default(cover_entity, true) %}
+              {% set cover_state = states(cover_entity) %}
+              {% set position = state_attr(cover_entity, 'current_position') %}
+              {% set position_text = (position | round(0) | string) ~ '%' if position is number else cover_state %}
+              {% if cover_state in ['unknown', 'unavailable'] %}
+                {% set facade.items = facade.items + ['- ' ~ facade_names.get(facade_name, facade_name) ~ ': ' ~ cover_name ~ ' (' ~ cover_state ~ ', nicht prüfbar)'] %}
+              {% elif action_id == 'close' and ((position is number and position > 25) or (position is not number and cover_state in ['open', 'opening'])) %}
+                {% set facade.items = facade.items + ['- ' ~ facade_names.get(facade_name, facade_name) ~ ': ' ~ cover_name ~ ' schließen (' ~ position_text ~ ')'] %}
+              {% elif action_id == 'open' and ((position is number and position < 80) or (position is not number and cover_state in ['closed', 'closing'])) %}
+                {% set facade.items = facade.items + ['- ' ~ facade_names.get(facade_name, facade_name) ~ ': ' ~ cover_name ~ ' öffnen (' ~ position_text ~ ')'] %}
+              {% endif %}
+            {% endfor %}
+            {% if facade.items | count > 0 %}
+              {% set ns.summaries = ns.summaries + [facade_names.get(facade_name, facade_name) ~ ' ' ~ action_text] %}
+              {% set ns.items = ns.items + facade.items %}
+            {% endif %}
+          {% endfor %}
+          {{ {'summaries': ns.summaries, 'items': ns.items} | to_json }}
+    - repeat:
+        for_each: "{{ check_items }}"
+        sequence:
+          - action: script.hitzeschutz_jalousie_fassade_pruefen
+            data:
+              facade_name: "{{ repeat.item.facade_name }}"
+              action_id: "{{ repeat.item.action_id }}"
+              cover_entities: "{{ repeat.item.cover_entities }}"
+              allow_automation: "{{ repeat.item.allow_automation | default(true) }}"
+    - if:
+        - condition: template
+          value_template: "{{ (notification_payload | from_json).items | count > 0 }}"
+      then:
+        - action: script.hitzeschutz_jalousien_sammel_benachrichtigen
+          data:
+            notification_payload: "{{ notification_payload }}"
+
+hitzeschutz_jalousien_fassadenstatus_pruefen:
+  alias: Hitzeschutz Jalousien Fassadenstatus pruefen
+  mode: parallel
+  fields:
+    facade_state:
+      required: true
+      selector:
+        select:
+          options:
+            - "on"
+            - "off"
+    action_id:
+      required: true
+      selector:
+        select:
+          options:
+            - close
+            - open
+    allow_automation:
+      required: false
+      default: false
+      selector:
+        boolean:
+  sequence:
+    - variables:
+        checks: >-
+          {% set facades = [
+            {'name': 'Fassade West', 'sensor': 'binary_sensor.hitzeschutz_fassade_west', 'group': 'group.fassade_west'},
+            {'name': 'Fassade Ost', 'sensor': 'binary_sensor.hitzeschutz_fassade_ost', 'group': 'group.fassade_ost'},
+            {'name': 'Fassade Sued', 'sensor': 'binary_sensor.hitzeschutz_fassade_sud', 'group': 'group.fassade_sued'},
+            {'name': 'Fassade Nord', 'sensor': 'binary_sensor.hitzeschutz_fassade_nord', 'group': 'group.fassade_nord'}
+          ] %}
+          {% set ns = namespace(checks=[]) %}
+          {% for facade in facades if is_state(facade.sensor, facade_state) %}
+            {% set ns.checks = ns.checks + [{
+              'facade_name': facade.name,
+              'action_id': action_id,
+              'cover_entities': expand(facade.group) | map(attribute='entity_id') | list,
+              'allow_automation': allow_automation | default(false)
+            }] %}
+          {% endfor %}
+          {{ ns.checks | to_json }}
+    - action: script.hitzeschutz_jalousien_checks_pruefen
+      data:
+        checks: "{{ checks }}"
 
 hitzeschutz_jalousie_fassade_pruefen:
   alias: Hitzeschutz Jalousie Fassade pruefen
@@ -155,19 +236,6 @@ hitzeschutz_jalousie_fassade_pruefen:
               automatik_marked: "{{ repeat.item in automatik_entity_ids }}"
               automatik_enabled: "{{ allow_automation | default(true) and is_state('switch.hitzeschutz_og_automatik', 'on') }}"
               bedroom_open_blocked: "{{ action_id == 'open' and now().hour < 10 and repeat.item in bedroom_entity_ids }}"
-          - variables:
-              target_type: "{{ 'OG' if automatik_marked else 'EG/KG' }}"
-              mode_text: "{{ 'automatisch' if automatik_marked and automatik_enabled and not bedroom_open_blocked else 'Empfehlung' }}"
-              reason: >-
-                {% if automatik_marked and bedroom_open_blocked %}
-                Schlafzimmer vor 10:00 nicht automatisch
-                {% elif automatik_marked and not (allow_automation | default(true)) %}
-                periodischer Nachcheck, keine Automatik
-                {% elif automatik_marked and not automatik_enabled %}
-                Automatik aus
-                {% elif not automatik_marked %}
-                nicht fuer Automatik markiert
-                {% endif %}
           - choose:
               - conditions:
                   - condition: template
@@ -177,15 +245,6 @@ hitzeschutz_jalousie_fassade_pruefen:
                     data:
                       title: "Hitzeschutz: Jalousie nicht pruefbar"
                       message: "{{ cover_entity }} ist {{ cover_state }} und wurde fuer {{ action_text }} {{ facade_name }} uebersprungen."
-                  - action: script.hitzeschutz_jalousie_benachrichtigen
-                    data:
-                      facade_name: "{{ facade_name }}"
-                      action_id: "{{ action_id }}"
-                      cover_name: "{{ cover_name }}"
-                      current_text: "{{ cover_state }}"
-                      target_type: "{{ target_type }}"
-                      mode_text: "nicht pruefbar"
-                      reason: "Status {{ cover_state }}, keine Automatik ausgefuehrt"
               - conditions:
                   - condition: template
                     value_template: "{{ needs_change and automatik_marked and automatik_enabled and not bedroom_open_blocked }}"
@@ -194,25 +253,3 @@ hitzeschutz_jalousie_fassade_pruefen:
                     data:
                       cover_entity: "{{ cover_entity }}"
                       action_id: "{{ action_id }}"
-                  - action: script.hitzeschutz_jalousie_benachrichtigen
-                    data:
-                      facade_name: "{{ facade_name }}"
-                      action_id: "{{ action_id }}"
-                      cover_name: "{{ cover_name }}"
-                      current_text: "{{ current_text | trim }}"
-                      target_type: "{{ target_type }}"
-                      mode_text: "{{ mode_text }}"
-                      reason: "{{ reason | trim }}"
-              - conditions:
-                  - condition: template
-                    value_template: "{{ needs_change }}"
-                sequence:
-                  - action: script.hitzeschutz_jalousie_benachrichtigen
-                    data:
-                      facade_name: "{{ facade_name }}"
-                      action_id: "{{ action_id }}"
-                      cover_name: "{{ cover_name }}"
-                      current_text: "{{ current_text | trim }}"
-                      target_type: "{{ target_type }}"
-                      mode_text: "{{ mode_text }}"
-                      reason: "{{ reason | trim }}"
