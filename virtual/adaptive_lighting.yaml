@@ -1,0 +1,12 @@
+input_datetime:
+  adaptive_light_manual_og_buro_decke: &adaptive_light_manual_defaults
+    has_date: true
+    has_time: true
+  adaptive_light_manual_og_flur_decke: *adaptive_light_manual_defaults
+  adaptive_light_manual_og_schlafzimmer_decke: *adaptive_light_manual_defaults
+  adaptive_light_manual_og_bad_decke: *adaptive_light_manual_defaults
+  adaptive_light_manual_eg_kueche_decke: *adaptive_light_manual_defaults
+  adaptive_light_manual_eg_wohnzimmer_decke_mitte: *adaptive_light_manual_defaults
+  adaptive_light_manual_eg_wohnzimmer_decke_seiten: *adaptive_light_manual_defaults
+  adaptive_light_manual_eg_flur_decke: *adaptive_light_manual_defaults
+  adaptive_light_manual_eg_arbeitszimmer_decke: *adaptive_light_manual_defaults

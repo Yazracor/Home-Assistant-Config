@@ -56,3 +56,16 @@ hitzeschutz_automatik_jalousien:
     - cover.og_ankleide_fenster
     - cover.og_buro_fenster
     - cover.og_wc_fenster
+
+adaptive_helligkeit_lichter:
+  name: Adaptive Helligkeit Lichter
+  entities:
+    - light.og_buro_decke
+    - light.og_flur_decke
+    - light.og_schlafzimmer_decke
+    - light.og_bad_decke
+    - light.eg_kueche_decke
+    - light.eg_wohnzimmer_decke_mitte
+    - light.eg_wohnzimmer_decke_seiten
+    - light.eg_flur_decke
+    - light.eg_arbeitszimmer_decke

@@ -525,6 +525,143 @@
         data:
           datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
   mode: queued
+- id: adaptive_helligkeit_manuelle_lichtbedienung_merken
+  alias: Adaptive Helligkeit manuelle Lichtbedienung merken
+  description: Merkt pro dimmbarem Licht, wann es zuletzt manuell oder extern bedient wurde.
+  triggers:
+  - trigger: event
+    event_type: knx_event
+    id: knx
+  - trigger: event
+    event_type: call_service
+    id: service
+  variables:
+    adaptive_light_entities: "{{ expand('group.adaptive_helligkeit_lichter') | map(attribute='entity_id') | list }}"
+    touched_light_entities: >-
+      {% from 'adaptive_lighting.jinja' import knx_light_map %}
+      {% set knx_light_map = knx_light_map | as_function %}
+      {% set ns = namespace(items=[]) %}
+      {% if trigger.id == 'knx' %}
+        {% set data = trigger.event.data %}
+        {% set address = data.destination | string %}
+        {% set source = data.source | string %}
+        {% set direction = data.direction | string %}
+        {% set ignored_sources = ['15.15.250', '1.1.15'] %}
+        {% if direction == 'Incoming' and source not in ignored_sources %}
+          {% set ns.items = knx_light_map().get(address, []) %}
+        {% endif %}
+      {% elif trigger.id == 'homekit' %}
+        {% set entity = trigger.event.data.entity_id | default('', true) %}
+        {% if entity is string and entity in adaptive_light_entities %}
+          {% set ns.items = [entity] %}
+        {% endif %}
+      {% elif trigger.id == 'service' %}
+        {% set data = trigger.event.data %}
+        {% set service_data = data.service_data | default({}, true) %}
+        {% set has_brightness = (
+          'brightness' in service_data
+          or 'brightness_pct' in service_data
+          or 'brightness_step' in service_data
+          or 'brightness_step_pct' in service_data
+        ) %}
+        {% if trigger.event.context.user_id is not none and data.domain == 'light' and has_brightness %}
+          {% set raw_entities = data.service_data.entity_id | default([], true) %}
+          {% if raw_entities is string %}
+            {% set entities = [raw_entities] %}
+          {% elif raw_entities is iterable %}
+            {% set entities = raw_entities | list %}
+          {% else %}
+            {% set entities = [] %}
+          {% endif %}
+          {% for entity in entities if entity in adaptive_light_entities %}
+            {% set ns.items = ns.items + [entity] %}
+          {% endfor %}
+        {% endif %}
+      {% endif %}
+      {{ ns.items | unique | list | to_json }}
+  conditions:
+  - condition: template
+    value_template: "{{ touched_light_entities | from_json | count > 0 }}"
+  actions:
+  - repeat:
+      for_each: "{{ touched_light_entities | from_json }}"
+      sequence:
+      - variables:
+          manual_helper: >-
+            {% from 'adaptive_lighting.jinja' import manual_helper %}
+            {% set manual_helper = manual_helper | as_function %}
+            {{ manual_helper(repeat.item) }}
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: "{{ manual_helper }}"
+        data:
+          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+  mode: queued
+- id: adaptive_helligkeit_nachtlicht_beim_einschalten
+  alias: Adaptive Helligkeit Nachtlicht beim Einschalten
+  description: Dimmt bestimmte Lichter nachts nach dem Einschalten auf 2 Prozent, ohne manuelle Dimmung zu überschreiben.
+  triggers:
+  - trigger: state
+    entity_id:
+    - light.eg_arbeitszimmer_decke
+    - light.og_flur_decke
+    - light.og_bad_decke
+    to: "on"
+  conditions:
+  - condition: template
+    value_template: >-
+      {{
+        now().hour >= 22
+        or now().hour < 8
+        or (now().hour < 12 and is_state('sun.sun', 'below_horizon'))
+      }}
+  actions:
+  - action: script.adaptive_helligkeit_nachtlicht_dimmen
+    data:
+      light_entity: "{{ trigger.entity_id }}"
+  mode: single
+- id: adaptive_helligkeit_lichter_nach_aussenhelligkeit
+  alias: Adaptive Helligkeit Lichter nach Außenhelligkeit
+  description: Dimmt bereits eingeschaltete dimmbare Lichter passend zur Außenhelligkeit, ohne manuelle Bedienung zu überschreiben.
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.aussenbereich_wetterstation_helligkeit
+    below: 1000
+  - trigger: numeric_state
+    entity_id: sensor.aussenbereich_wetterstation_helligkeit
+    above: 1000
+  - trigger: numeric_state
+    entity_id: sensor.aussenbereich_wetterstation_helligkeit
+    below: 5000
+  - trigger: numeric_state
+    entity_id: sensor.aussenbereich_wetterstation_helligkeit
+    above: 5000
+  - trigger: numeric_state
+    entity_id: sensor.aussenbereich_wetterstation_helligkeit
+    below: 15000
+  - trigger: numeric_state
+    entity_id: sensor.aussenbereich_wetterstation_helligkeit
+    above: 15000
+  - trigger: numeric_state
+    entity_id: sensor.aussenbereich_wetterstation_helligkeit
+    below: 30000
+  - trigger: numeric_state
+    entity_id: sensor.aussenbereich_wetterstation_helligkeit
+    above: 30000
+  - trigger: time
+    at: "08:00:00"
+  - trigger: sun
+    event: sunrise
+  - trigger: time_pattern
+    minutes: "/15"
+  conditions:
+  - condition: template
+    value_template: "{{ state_attr('sun.sun', 'elevation') | float(-90) > -6 }}"
+  - condition: template
+    value_template: "{{ expand('group.adaptive_helligkeit_lichter') | selectattr('state', 'eq', 'on') | list | count > 0 }}"
+  actions:
+  - action: script.adaptive_helligkeit_lichter_anpassen
+  mode: single
 - id: aussenbeleuchtung_tagsueber_ausschalten
   alias: Außenbeleuchtung tagsüber ausschalten
   description: Schaltet vergessene Außenbeleuchtung bei Tageslicht aus, ohne die Dauerbeleuchtung anzufassen.
