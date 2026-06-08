@@ -15,3 +15,11 @@ known_devices.yaml
 home-assistant.log*
 home-assistant_v2.db*
 .ha_run.lock
+
+# Credentials and secrets in .storage — kept out of version control
+.storage/auth
+.storage/auth_provider.homeassistant
+.storage/androidtv_remote_key.pem
+.storage/androidtv_remote_cert.pem
+.storage/http.auth
+
