@@ -40,13 +40,19 @@ fassade_nord:
 hitzeschutz_automatik_jalousien:
   name: Hitzeschutz Automatik Jalousien
   entities:
+    - cover.eg_wohnzimmer_balkon
     - cover.og_schlafzimmer_front
     - cover.og_bad_panorama_aussen
+    - cover.kg_zimmer_sinja_jalousie
+    - cover.kg_zimmer_silas_jalousie
     - cover.og_treppe
+    - cover.eg_arbeitszimmer_vorgarten
+    - cover.eg_wohnzimmer_panorama
     - cover.og_schlafzimmer_panorama_aussen
     - cover.og_flur_fenster
     - cover.og_bad_balkon
     - cover.og_bad_balkon_innen
+    - cover.eg_arbeitszimmer_garten
     - cover.og_ankleide_fenster
     - cover.og_buro_fenster
     - cover.og_wc_fenster

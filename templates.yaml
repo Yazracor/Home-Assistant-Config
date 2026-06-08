@@ -4,27 +4,12 @@
   condition:
     - condition: template
       value_template: >-
+        {% from 'knx_addresses.jinja' import indoor_addresses, cover_addresses %}
+        {% set indoor_addresses = indoor_addresses | as_function %}
+        {% set cover_addresses = cover_addresses | as_function %}
         {% set address = trigger.event.data.destination | string %}
         {% set direction = trigger.event.data.direction | string %}
-        {% set command_addresses = [
-          '2/0/0', '2/0/2', '2/0/4', '2/0/6', '2/0/10', '2/0/12',
-          '2/0/14', '2/0/18', '2/0/20', '2/0/24', '2/0/26', '2/0/28',
-          '2/1/4', '2/1/6', '2/1/8', '2/1/12', '2/1/14', '2/2/0',
-          '3/0/0', '3/0/2', '3/0/6', '3/0/8', '3/0/12', '3/0/14',
-          '3/0/24', '3/0/26', '3/0/30', '3/0/32', '3/0/36', '3/0/38',
-          '3/0/48', '3/0/50', '3/0/54', '3/0/56', '3/0/60', '3/0/62',
-          '3/1/0', '3/1/2', '3/1/6', '3/1/8', '3/1/12', '3/1/14',
-          '3/1/18', '3/1/20', '3/1/26', '3/1/28',
-          '4/0/0', '4/0/1', '4/0/4', '4/0/5', '4/0/8', '4/0/9',
-          '4/0/12', '4/0/13', '4/0/48', '4/0/49', '4/0/52', '4/0/53',
-          '4/0/56', '4/0/57', '4/0/60', '4/0/61', '4/0/64', '4/0/65',
-          '4/0/68', '4/0/69', '4/0/72', '4/0/73', '4/0/76', '4/0/77',
-          '4/0/80', '4/0/81', '4/0/84', '4/0/85', '4/0/88', '4/0/89',
-          '4/0/94', '4/0/95', '4/1/20', '4/1/21', '4/2/0', '4/2/1',
-          '4/2/2', '4/2/3', '4/2/6', '4/2/7', '4/2/8', '4/2/9',
-          '4/2/14', '4/2/15'
-        ] %}
-        {{ direction == 'Incoming' and address in command_addresses }}
+        {{ direction == 'Incoming' and address in indoor_addresses() + cover_addresses() }}
   sensor:
     - name: "KNX Präsenzkandidat letztes Telegramm"
       unique_id: knx_praesenzkandidat_letztes_telegramm
@@ -51,34 +36,17 @@
         {% if trigger.id == 'init' %}
           {{ true }}
         {% else %}
+        {% from 'knx_addresses.jinja' import indoor_addresses, cover_addresses %}
+        {% set indoor_addresses = indoor_addresses | as_function %}
+        {% set cover_addresses = cover_addresses | as_function %}
         {% set address = trigger.event.data.destination | string %}
         {% set source = trigger.event.data.source | string %}
         {% set direction = trigger.event.data.direction | string %}
         {% set ignored_sources = ['15.15.250', '1.1.15'] %}
-        {% set indoor_addresses = [
-          '2/0/0', '2/0/2', '2/0/4', '2/0/6', '2/0/10', '2/0/12',
-          '2/0/14', '2/0/18', '2/0/20', '2/0/24', '2/0/26', '2/0/28',
-          '2/1/4', '2/1/6', '2/1/8', '2/1/12', '2/1/14', '2/2/0',
-          '3/0/0', '3/0/2', '3/0/6', '3/0/8', '3/0/12', '3/0/14',
-          '3/0/24', '3/0/26', '3/0/30', '3/0/32', '3/0/36', '3/0/38',
-          '3/0/48', '3/0/50', '3/0/54', '3/0/56', '3/0/60', '3/0/62',
-          '3/1/0', '3/1/2', '3/1/6', '3/1/8', '3/1/12', '3/1/14',
-          '3/1/18', '3/1/20', '3/1/26', '3/1/28'
-        ] %}
-        {% set cover_addresses = [
-          '4/0/0', '4/0/1', '4/0/4', '4/0/5', '4/0/8', '4/0/9',
-          '4/0/12', '4/0/13', '4/0/48', '4/0/49', '4/0/52', '4/0/53',
-          '4/0/56', '4/0/57', '4/0/60', '4/0/61', '4/0/64', '4/0/65',
-          '4/0/68', '4/0/69', '4/0/72', '4/0/73', '4/0/76', '4/0/77',
-          '4/0/80', '4/0/81', '4/0/84', '4/0/85', '4/0/88', '4/0/89',
-          '4/0/94', '4/0/95', '4/1/20', '4/1/21', '4/2/0', '4/2/1',
-          '4/2/2', '4/2/3', '4/2/6', '4/2/7', '4/2/8', '4/2/9',
-          '4/2/14', '4/2/15'
-        ] %}
         {{
           direction == 'Incoming'
           and source not in ignored_sources
-          and address in indoor_addresses + cover_addresses
+          and address in indoor_addresses() + cover_addresses()
         }}
         {% endif %}
   sensor:
@@ -233,29 +201,18 @@
       unique_id: gast_im_haus
       device_class: occupancy
       state: >-
-        {% set bekannte_accounts = ['torben', 'julia', 'sinja', 'silas', 'aleksandramorawska'] %}
-        {% set ns = namespace(found=false) %}
-        {% for sensor in states.binary_sensor %}
-          {% set object_id = sensor.entity_id.split('.', 1)[1] %}
-          {% set account = object_id.rsplit('_wlan', 1)[0].split('_', 1)[0] %}
-          {% if object_id.endswith('_wlan') and account not in bekannte_accounts and sensor.state == 'on' %}
-            {% set ns.found = true %}
-          {% endif %}
-        {% endfor %}
-        {{ ns.found }}
+        {% from 'presence.jinja' import active_guest_names %}
+        {% set active_guest_names = active_guest_names | as_function %}
+        {{ active_guest_names() | count > 0 }}
       attributes:
         aktive_gaeste: >-
-          {% set bekannte_accounts = ['torben', 'julia', 'sinja', 'silas', 'aleksandramorawska'] %}
-          {% set ns = namespace(active=[]) %}
-          {% for sensor in states.binary_sensor %}
-            {% set object_id = sensor.entity_id.split('.', 1)[1] %}
-            {% set account = object_id.rsplit('_wlan', 1)[0].split('_', 1)[0] %}
-            {% if object_id.endswith('_wlan') and account not in bekannte_accounts and sensor.state == 'on' %}
-              {% set ns.active = ns.active + [sensor.name] %}
-            {% endif %}
-          {% endfor %}
-          {{ ns.active }}
-        ausgeschlossene_radius_accounts: torben, julia, sinja, silas, aleksandramorawska
+          {% from 'presence.jinja' import active_guest_names %}
+          {% set active_guest_names = active_guest_names | as_function %}
+          {{ active_guest_names() }}
+        ausgeschlossene_radius_accounts: >-
+          {% from 'presence.jinja' import excluded_radius_accounts %}
+          {% set excluded_radius_accounts = excluded_radius_accounts | as_function %}
+          {{ excluded_radius_accounts() | join(', ') }}
 
     - name: "Haushaltshilfe anwesend"
       unique_id: haushaltshilfe_anwesend
@@ -270,78 +227,58 @@
         source_entity: binary_sensor.aleksandramorawska_aleksandramorawska_wlan
         legacy_source_entity: binary_sensor.radius_presence_aleksandramorawska
 
-    - name: "Hitzeschutz Fassade West"
+    - <<: &hitzeschutz_facade_defaults
+        delay_on:
+          minutes: 5
+        delay_off:
+          minutes: 5
+      name: "Hitzeschutz Fassade West"
       unique_id: hitzeschutz_fassade_west
-      delay_on:
-        minutes: 5
-      delay_off:
-        minutes: 5
       state: >-
-        {% set lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
-        {% set outside_temp = states('sensor.aussenbereich_wetterstation_temperatur') | float(0) %}
-        {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
-        {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
-        {% set temp_threshold = 10000 if outside_temp >= 23 else 15000 if outside_temp >= 15 else 20000 if outside_temp >= 5 else 24000 %}
-        {% set elevation_factor = 0.8 if elevation > 60 else 1 %}
-        {% set delta = (((azimuth - 270 + 180) % 360) - 180) | abs %}
-        {% set load = lux * ([0, 1 - (delta / 90)] | max) * elevation_factor %}
-        {{ is_state('sun.sun', 'above_horizon') and elevation > 8 and lux > 25000 and delta < 90 and load > temp_threshold }}
+        {% from 'heat_protection.jinja' import facade_active %}
+        {% set facade_active = facade_active | as_function %}
+        {{ facade_active('west') }}
       attributes:
-        facade_azimuth: 270
+        facade_azimuth: >-
+          {% from 'heat_protection.jinja' import facade_azimuth %}
+          {% set facade_azimuth = facade_azimuth | as_function %}
+          {{ facade_azimuth('west') }}
 
-    - name: "Hitzeschutz Fassade Ost"
+    - <<: *hitzeschutz_facade_defaults
+      name: "Hitzeschutz Fassade Ost"
       unique_id: hitzeschutz_fassade_ost
-      delay_on:
-        minutes: 5
-      delay_off:
-        minutes: 5
       state: >-
-        {% set lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
-        {% set outside_temp = states('sensor.aussenbereich_wetterstation_temperatur') | float(0) %}
-        {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
-        {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
-        {% set temp_threshold = 10000 if outside_temp >= 23 else 15000 if outside_temp >= 15 else 20000 if outside_temp >= 5 else 24000 %}
-        {% set elevation_factor = 0.8 if elevation > 60 else 1 %}
-        {% set delta = (((azimuth - 100 + 180) % 360) - 180) | abs %}
-        {% set load = lux * ([0, 1 - (delta / 90)] | max) * elevation_factor %}
-        {{ is_state('sun.sun', 'above_horizon') and elevation > 8 and lux > 25000 and delta < 80 and load > temp_threshold + 4000 }}
+        {% from 'heat_protection.jinja' import facade_active %}
+        {% set facade_active = facade_active | as_function %}
+        {{ facade_active('ost') }}
       attributes:
-        facade_azimuth: 100
+        facade_azimuth: >-
+          {% from 'heat_protection.jinja' import facade_azimuth %}
+          {% set facade_azimuth = facade_azimuth | as_function %}
+          {{ facade_azimuth('ost') }}
 
-    - name: "Hitzeschutz Fassade Süd"
+    - <<: *hitzeschutz_facade_defaults
+      name: "Hitzeschutz Fassade Süd"
       unique_id: hitzeschutz_fassade_sued
-      delay_on:
-        minutes: 5
-      delay_off:
-        minutes: 5
       state: >-
-        {% set lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
-        {% set outside_temp = states('sensor.aussenbereich_wetterstation_temperatur') | float(0) %}
-        {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
-        {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
-        {% set temp_threshold = 10000 if outside_temp >= 23 else 15000 if outside_temp >= 15 else 20000 if outside_temp >= 5 else 24000 %}
-        {% set elevation_factor = 0.8 if elevation > 60 else 1 %}
-        {% set delta = (((azimuth - 180 + 180) % 360) - 180) | abs %}
-        {% set load = lux * ([0, 1 - (delta / 90)] | max) * elevation_factor %}
-        {{ is_state('sun.sun', 'above_horizon') and elevation > 8 and lux > 25000 and delta < 90 and load > temp_threshold + 3000 }}
+        {% from 'heat_protection.jinja' import facade_active %}
+        {% set facade_active = facade_active | as_function %}
+        {{ facade_active('sued') }}
       attributes:
-        facade_azimuth: 180
+        facade_azimuth: >-
+          {% from 'heat_protection.jinja' import facade_azimuth %}
+          {% set facade_azimuth = facade_azimuth | as_function %}
+          {{ facade_azimuth('sued') }}
 
-    - name: "Hitzeschutz Fassade Nord"
+    - <<: *hitzeschutz_facade_defaults
+      name: "Hitzeschutz Fassade Nord"
       unique_id: hitzeschutz_fassade_nord
-      delay_on:
-        minutes: 5
-      delay_off:
-        minutes: 5
       state: >-
-        {% set lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
-        {% set outside_temp = states('sensor.aussenbereich_wetterstation_temperatur') | float(0) %}
-        {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
-        {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
-        {% set temp_threshold = 10000 if outside_temp >= 23 else 15000 if outside_temp >= 15 else 20000 if outside_temp >= 5 else 24000 %}
-        {% set elevation_factor = 0.8 if elevation > 60 else 1 %}
-        {% set delta = (((azimuth - 0 + 180) % 360) - 180) | abs %}
-        {% set load = lux * ([0, 1 - (delta / 90)] | max) * elevation_factor %}
-        {{ is_state('sun.sun', 'above_horizon') and elevation > 8 and lux > 35000 and delta < 45 and load > temp_threshold + 10000 }}
+        {% from 'heat_protection.jinja' import facade_active %}
+        {% set facade_active = facade_active | as_function %}
+        {{ facade_active('nord') }}
       attributes:
-        facade_azimuth: 0
+        facade_azimuth: >-
+          {% from 'heat_protection.jinja' import facade_azimuth %}
+          {% set facade_azimuth = facade_azimuth | as_function %}
+          {{ facade_azimuth('nord') }}

@@ -237,7 +237,7 @@
   mode: single
 - id: '1780073742923'
   alias: Garagenwarnung
-  description: ''
+  description: Meldet bei offenem Garagentor nach 5 Minuten, bei Abwesenheit sofort.
   triggers:
   - trigger: state
     entity_id:
@@ -248,7 +248,35 @@
       seconds: 0
     to:
     - open
-  conditions: []
+    id: offen
+  - trigger: state
+    entity_id:
+    - cover.aussenbereich_garage_garagentor
+    to:
+    - open
+    id: offen_abwesend
+  - trigger: state
+    entity_id: binary_sensor.person_zuhause
+    to: "off"
+    id: abwesend
+  conditions:
+  - condition: or
+    conditions:
+    - condition: trigger
+      id: offen
+    - condition: and
+      conditions:
+      - condition: trigger
+        id:
+        - offen_abwesend
+        - abwesend
+      - condition: state
+        entity_id: binary_sensor.person_zuhause
+        state: "off"
+      - condition: state
+        entity_id: cover.aussenbereich_garage_garagentor
+        state:
+        - open
   actions:
   - repeat:
       while:
@@ -274,6 +302,276 @@
           seconds: 0
           milliseconds: 0
 
+  mode: single
+- id: garage_entfeuchter_startfeuchte_merker
+  alias: Garage Entfeuchter Startfeuchte merken
+  description: Merkt die Luftfeuchte, wenn die Entfeuchtung aus dem Stillstand startet.
+  triggers:
+  - trigger: state
+    entity_id: switch.entfeuchter
+    from: "off"
+    to: "on"
+  - trigger: state
+    entity_id: switch.ttr_57_entfeuchter
+    from: "off"
+    to: "on"
+  conditions:
+  - condition: template
+    value_template: >-
+      {{
+        (
+        trigger.entity_id == 'switch.entfeuchter'
+        and not is_state('switch.ttr_57_entfeuchter', 'on')
+        )
+        or (
+        trigger.entity_id == 'switch.ttr_57_entfeuchter'
+        and not is_state('switch.entfeuchter', 'on')
+        )
+      }}
+  actions:
+  - action: input_number.set_value
+    target:
+      entity_id: input_number.garage_entfeuchtung_startfeuchte
+    data:
+      value: "{{ states('sensor.wifi_smart_switch_humidity') | float(0) }}"
+  mode: single
+- id: garage_entfeuchter_trocknet_nicht_genug
+  alias: Garage Entfeuchter trocknet nicht genug
+  description: Meldet, wenn die Garagenfeuchte nach mehreren Stunden Entfeuchtung kaum sinkt.
+  triggers:
+  - trigger: template
+    value_template: >-
+      {% set running = [
+        states.switch.entfeuchter,
+        states.switch.ttr_57_entfeuchter
+      ] | selectattr('state', 'eq', 'on') | list %}
+      {% set oldest_ts = running | map(attribute='last_changed') | map('as_timestamp') | min if running | count > 0 else 0 %}
+      {% set start = states('input_number.garage_entfeuchtung_startfeuchte') | float(0) %}
+      {% set current = states('sensor.wifi_smart_switch_humidity') | float(0) %}
+      {{
+        running | count > 0
+        and oldest_ts > 0
+        and now() | as_timestamp - oldest_ts > 3 * 3600
+        and current > 60
+        and start - current < 3
+      }}
+  actions:
+  - action: notify.mobile_app_torbens_iphone
+    metadata: {}
+    data:
+      title: Garage trocknet kaum
+      message: >-
+        Die Garagenfeuchte ist nach mehreren Stunden Entfeuchtung kaum gesunken:
+        Start {{ states('input_number.garage_entfeuchtung_startfeuchte') | float(0) | round(1) }} %,
+        jetzt {{ states('sensor.wifi_smart_switch_humidity') | float(0) | round(1) }} %.
+        Temperatur: {{ states('sensor.wifi_smart_switch_temperature') | float(0) | round(1) }} °C.
+        TTK: {{ states('switch.entfeuchter') }}, TTR: {{ states('switch.ttr_57_entfeuchter') }}.
+      data:
+        push:
+          sound:
+            name: default
+  mode: single
+- id: abendstatus_haus_hinweise
+  alias: Abendstatus Haus Hinweise
+  description: Schickt um 20 Uhr eine kompakte Zusammenfassung offener Punkte.
+  triggers:
+  - trigger: time
+    at: "20:00:00"
+  variables:
+    outdoor_lights:
+      - light.aussenbereich_eingangsbereich_eingang_vordach
+      - light.aussenbereich_balkon_licht
+      - light.aussenbereich_garten_aussenleuchten_rechts
+      - light.aussenbereich_balkon_balken
+      - light.aussenbereich_balkon_obergeschoss_licht
+      - light.aussenbereich_terrasse_licht
+      - light.aussenbereich_garage_licht
+      - light.aussenbereich_eingangsbereich_treppe_und_garage
+      - light.aussenbereich_eingangsbereich_hof_bega_baumstrahler
+      - light.aussenbereich_teich_licht
+      - light.aussenbereich_teich_unterwasserstrahler
+      - light.aussenbereich_garten_wegebeleuchtung_nach_oben
+      - light.aussenbereich_garten_aussenleuchten_links
+    digest_items: >-
+      {% set ns = namespace(items=[]) %}
+      {% if is_state('cover.aussenbereich_garage_garagentor', 'open') %}
+        {% set ns.items = ns.items + ['- Garage ist offen'] %}
+      {% endif %}
+      {% set lights_on = expand(outdoor_lights) | selectattr('state', 'eq', 'on') | map(attribute='name') | list %}
+      {% if lights_on | count > 0 %}
+        {% set ns.items = ns.items + ['- Außenlicht an: ' ~ lights_on | join(', ')] %}
+      {% endif %}
+      {% if is_state('switch.hitzeschutz_og_automatik', 'off') %}
+        {% set ns.items = ns.items + ['- Hitzeschutz OG Automatik ist aus'] %}
+      {% endif %}
+      {% set humidity = states('sensor.wifi_smart_switch_humidity') | float(0) %}
+      {% if humidity > 65 %}
+        {% set ns.items = ns.items + ['- Garage feucht: ' ~ (humidity | round(0) | string) ~ ' %'] %}
+      {% endif %}
+      {% set drying = is_state('switch.entfeuchter', 'on') or is_state('switch.ttr_57_entfeuchter', 'on') %}
+      {% set start = states('input_number.garage_entfeuchtung_startfeuchte') | float(0) %}
+      {% if drying and start > 0 and start - humidity < 3 and humidity > 60 %}
+        {% set ns.items = ns.items + ['- Garage trocknet kaum seit Entfeuchtungsstart'] %}
+      {% endif %}
+      {{ ns.items | to_json }}
+  actions:
+  - action: notify.mobile_app_torbens_iphone
+    metadata: {}
+    data:
+      title: Abendstatus Haus
+      message: >-
+        {% set items = digest_items | from_json %}
+        {% if items | count > 0 %}
+          {{ items | join('\n') }}
+        {% else %}
+          Alles ruhig.
+        {% endif %}
+      data:
+        push:
+          sound:
+            name: default
+  mode: single
+- id: garage_regen_bei_offenem_tor_warnung
+  alias: Garage Regen bei offenem Tor Warnung
+  description: Meldet, wenn Regen beginnt und das Garagentor offen ist.
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.aussenbereich_wetterstation_niederschlag
+    from: "off"
+    to: "on"
+  conditions:
+  - condition: state
+    entity_id: cover.aussenbereich_garage_garagentor
+    state:
+    - open
+  actions:
+  - action: notify.mobile_app_torbens_iphone
+    metadata: {}
+    data:
+      title: Garage offen bei Regen
+      message: Es regnet und das Garagentor ist offen.
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+  mode: single
+- id: hitzeschutz_manuelle_jalousie_bedienung_merken
+  alias: Hitzeschutz manuelle Jalousie Bedienung merken
+  description: Merkt pro Jalousie, wann sie zuletzt manuell bedient wurde.
+  triggers:
+  - trigger: event
+    event_type: knx_event
+    id: knx
+  - trigger: event
+    event_type: homekit_state_change
+    id: homekit
+  - trigger: event
+    event_type: call_service
+    id: service
+  variables:
+    automatik_entity_ids: "{{ expand('group.hitzeschutz_automatik_jalousien') | map(attribute='entity_id') | list }}"
+    touched_cover_entities: >-
+      {% from 'hitzeschutz_manual.jinja' import knx_cover_map %}
+      {% set knx_cover_map = knx_cover_map | as_function %}
+      {% set ns = namespace(items=[]) %}
+      {% if trigger.id == 'knx' %}
+        {% set data = trigger.event.data %}
+        {% set address = data.destination | string %}
+        {% set source = data.source | string %}
+        {% set direction = data.direction | string %}
+        {% set ignored_sources = ['15.15.250', '1.1.15'] %}
+        {% if direction == 'Incoming' and source not in ignored_sources %}
+          {% set ns.items = knx_cover_map().get(address, []) %}
+        {% endif %}
+      {% elif trigger.id == 'homekit' %}
+        {% set entity = trigger.event.data.entity_id | default('', true) %}
+        {% if entity is string and entity in automatik_entity_ids %}
+          {% set ns.items = [entity] %}
+        {% endif %}
+      {% elif trigger.id == 'service' %}
+        {% set data = trigger.event.data %}
+        {% if trigger.event.context.user_id is not none and data.domain == 'cover' %}
+          {% set raw_entities = data.service_data.entity_id | default([], true) %}
+          {% if raw_entities is string %}
+            {% set entities = [raw_entities] %}
+          {% elif raw_entities is iterable %}
+            {% set entities = raw_entities | list %}
+          {% else %}
+            {% set entities = [] %}
+          {% endif %}
+          {% for entity in entities if entity in automatik_entity_ids %}
+            {% set ns.items = ns.items + [entity] %}
+          {% endfor %}
+        {% endif %}
+      {% endif %}
+      {{ ns.items | unique | list | to_json }}
+  conditions:
+  - condition: template
+    value_template: "{{ touched_cover_entities | from_json | count > 0 }}"
+  actions:
+  - repeat:
+      for_each: "{{ touched_cover_entities | from_json }}"
+      sequence:
+      - variables:
+          cooldown_helper: >-
+            {% from 'hitzeschutz_manual.jinja' import cooldown_helper %}
+            {% set cooldown_helper = cooldown_helper | as_function %}
+            {{ cooldown_helper(repeat.item) }}
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: "{{ cooldown_helper }}"
+        data:
+          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+  mode: queued
+- id: aussenbeleuchtung_tagsueber_ausschalten
+  alias: Außenbeleuchtung tagsüber ausschalten
+  description: Schaltet vergessene Außenbeleuchtung bei Tageslicht aus, ohne die Dauerbeleuchtung anzufassen.
+  triggers:
+  - trigger: sun
+    event: sunrise
+    offset: 00:30:00
+  - trigger: numeric_state
+    entity_id: sensor.aussenbereich_wetterstation_helligkeit
+    above: 10000
+    for:
+      minutes: 15
+  conditions:
+  - condition: template
+    value_template: >-
+      {{
+        expand([
+          'light.aussenbereich_eingangsbereich_eingang_vordach',
+          'light.aussenbereich_balkon_licht',
+          'light.aussenbereich_garten_aussenleuchten_rechts',
+          'light.aussenbereich_balkon_balken',
+          'light.aussenbereich_balkon_obergeschoss_licht',
+          'light.aussenbereich_terrasse_licht',
+          'light.aussenbereich_eingangsbereich_treppe_und_garage',
+          'light.aussenbereich_eingangsbereich_hof_bega_baumstrahler',
+          'light.aussenbereich_teich_licht',
+          'light.aussenbereich_teich_unterwasserstrahler',
+          'light.aussenbereich_garten_wegebeleuchtung_nach_oben',
+          'light.aussenbereich_garten_aussenleuchten_links'
+        ]) | selectattr('state', 'eq', 'on') | list | count > 0
+      }}
+  actions:
+  - action: light.turn_off
+    target:
+      entity_id:
+      - light.aussenbereich_eingangsbereich_eingang_vordach
+      - light.aussenbereich_balkon_licht
+      - light.aussenbereich_garten_aussenleuchten_rechts
+      - light.aussenbereich_balkon_balken
+      - light.aussenbereich_balkon_obergeschoss_licht
+      - light.aussenbereich_terrasse_licht
+      - light.aussenbereich_eingangsbereich_treppe_und_garage
+      - light.aussenbereich_eingangsbereich_hof_bega_baumstrahler
+      - light.aussenbereich_teich_licht
+      - light.aussenbereich_teich_unterwasserstrahler
+      - light.aussenbereich_garten_wegebeleuchtung_nach_oben
+      - light.aussenbereich_garten_aussenleuchten_links
   mode: single
 - id: solar_heat_protection_blind_recommendation
   alias: Hitzeschutz Jalousie OG Automatik und Empfehlung
@@ -398,4 +696,19 @@
       facade_state: "off"
       action_id: open
       allow_automation: false
+  mode: single
+- id: hitzeschutz_og_automatik_bei_sonnenaufgang_aktivieren
+  alias: Hitzeschutz OG Automatik bei Sonnenaufgang aktivieren
+  description: Aktiviert die OG-Hitzeschutz-Automatik nach manueller Abschaltung am nächsten Morgen wieder.
+  triggers:
+  - trigger: sun
+    event: sunrise
+  conditions:
+  - condition: state
+    entity_id: switch.hitzeschutz_og_automatik
+    state: "off"
+  actions:
+  - action: switch.turn_on
+    target:
+      entity_id: switch.hitzeschutz_og_automatik
   mode: single

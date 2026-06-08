@@ -10,6 +10,7 @@ known_devices.yaml
 
 # Editor backup/autosave files
 \#*\#
+*.yaml~
 
 # Home Assistant runtime files
 home-assistant.log*

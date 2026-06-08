@@ -1,0 +1,16 @@
+{% macro excluded_radius_accounts(returns) %}
+  {% do returns(['torben', 'julia', 'sinja', 'silas', 'aleksandramorawska']) %}
+{% endmacro %}
+
+{% macro active_guest_names(returns) %}
+  {% set excluded_accounts = excluded_radius_accounts | as_function %}
+  {% set ns = namespace(active=[]) %}
+  {% for sensor in states.binary_sensor %}
+    {% set object_id = sensor.entity_id.split('.', 1)[1] %}
+    {% set account = object_id.rsplit('_wlan', 1)[0].split('_', 1)[0] %}
+    {% if object_id.endswith('_wlan') and account not in excluded_accounts() and sensor.state == 'on' %}
+      {% set ns.active = ns.active + [sensor.name] %}
+    {% endif %}
+  {% endfor %}
+  {% do returns(ns.active) %}
+{% endmacro %}

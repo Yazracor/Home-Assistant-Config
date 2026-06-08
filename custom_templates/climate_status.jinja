@@ -1,0 +1,27 @@
+{% macro energy_request(room, returns) %}
+  {% set heat = states('binary_sensor.' ~ room ~ '_anforderung_heizen') %}
+  {% set cool = states('binary_sensor.' ~ room ~ '_anforderung_kuhlen') %}
+  {% set heat_cool = states('binary_sensor.heizen_kuehlen_rueckmeldung') %}
+  {% if heat_cool == 'off' and cool == 'on' %}
+    {% do returns('kuehlen') %}
+  {% elif heat_cool == 'on' and heat == 'on' %}
+    {% do returns('heizen') %}
+  {% elif cool == 'on' and heat != 'on' %}
+    {% do returns('kuehlen') %}
+  {% elif heat == 'on' and cool != 'on' %}
+    {% do returns('heizen') %}
+  {% elif heat == 'off' and cool == 'off' %}
+    {% do returns('keine') %}
+  {% else %}
+    {% do returns('unbekannt') %}
+  {% endif %}
+{% endmacro %}
+
+{% macro energy_icon(room, returns) %}
+  {% set request = energy_request | as_function %}
+  {% set icons = {
+    'heizen': 'mdi:fire',
+    'kuehlen': 'mdi:snowflake'
+  } %}
+  {% do returns(icons.get(request(room), 'mdi:thermostat')) %}
+{% endmacro %}
