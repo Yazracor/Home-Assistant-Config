@@ -1,0 +1,20 @@
+input_boolean:
+  schlafmodus_aktiv:
+    name: "Intern Schlafmodus"
+    icon: mdi:sleep
+    initial: false
+
+template:
+  - switch:
+      - name: "Schlafmodus"
+        unique_id: schlafmodus_homekit_switch
+        icon: mdi:sleep
+        state: "{{ is_state('input_boolean.schlafmodus_aktiv', 'on') }}"
+        turn_on:
+          - action: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.schlafmodus_aktiv
+        turn_off:
+          - action: input_boolean.turn_off
+            target:
+              entity_id: input_boolean.schlafmodus_aktiv

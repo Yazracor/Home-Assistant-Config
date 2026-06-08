@@ -1,0 +1,43 @@
+{% macro touched_entities(trigger_id, event_data, context_user_id, allowed_entities, knx_map, domain, require_brightness, returns) %}
+  {% set ns = namespace(items=[]) %}
+
+  {% if trigger_id == 'knx' %}
+    {% set ignored_sources = ['15.15.250', '1.1.15'] %}
+    {% set address = event_data.destination | string %}
+    {% set source = event_data.source | string %}
+    {% set direction = event_data.direction | string %}
+    {% if direction == 'Incoming' and source not in ignored_sources %}
+      {% set ns.items = knx_map.get(address, []) %}
+    {% endif %}
+
+  {% elif trigger_id == 'homekit' %}
+    {% set entity = event_data.entity_id | default('', true) %}
+    {% if entity is string and entity in allowed_entities %}
+      {% set ns.items = [entity] %}
+    {% endif %}
+
+  {% elif trigger_id == 'service' %}
+    {% set service_data = event_data.service_data | default({}, true) %}
+    {% set has_brightness = (
+      'brightness' in service_data
+      or 'brightness_pct' in service_data
+      or 'brightness_step' in service_data
+      or 'brightness_step_pct' in service_data
+    ) %}
+    {% if context_user_id is not none and event_data.domain == domain and (not require_brightness or has_brightness) %}
+      {% set raw_entities = service_data.entity_id | default([], true) %}
+      {% if raw_entities is string %}
+        {% set entities = [raw_entities] %}
+      {% elif raw_entities is iterable %}
+        {% set entities = raw_entities | list %}
+      {% else %}
+        {% set entities = [] %}
+      {% endif %}
+      {% for entity in entities if entity in allowed_entities %}
+        {% set ns.items = ns.items + [entity] %}
+      {% endfor %}
+    {% endif %}
+  {% endif %}
+
+  {% do returns(ns.items | unique | list) %}
+{% endmacro %}
