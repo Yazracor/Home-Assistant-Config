@@ -25,7 +25,10 @@ fassade_sued:
     - cover.eg_kueche_nebeneingang
     - cover.og_schlafzimmer_panorama_aussen
     - cover.og_flur_fenster
-    - cover.og_bad_balkon
+    - cover.og_bad_balkon_rechts
+    - cover.og_bad_balkon_mitte
+    - cover.og_bad_balkon_links
+    - cover.og_bad_balkon_rechts_2
     - cover.eg_arbeitszimmer_garten
 
 fassade_nord:
@@ -44,7 +47,10 @@ hitzeschutz_automatik_jalousien:
     - cover.og_treppe
     - cover.og_schlafzimmer_panorama_aussen
     - cover.og_flur_fenster
-    - cover.og_bad_balkon
+    - cover.og_bad_balkon_rechts
+    - cover.og_bad_balkon_mitte
+    - cover.og_bad_balkon_links
+    - cover.og_bad_balkon_rechts_2
     - cover.og_ankleide_fenster
     - cover.og_buro_fenster
     - cover.og_wc_fenster

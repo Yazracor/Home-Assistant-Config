@@ -250,10 +250,59 @@
 # move_short_address: 4/2/9 -> OG Bad 5x aussen KZ | Jalousien > Gruppen
 # position_address: 4/0/15 -> A4 OG Bad Panoramaf. JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/14 -> A4 OG Bad Panoramaf. R JP | Jalousien > OG/EG/KG Aussen
+# Nicht fuer Fassaden-Hitzeschutz verwenden: 4/2/8 faehrt auch Bad Panorama West.
 - name: "Jalousie_OG_Bad_Aussen_Balkon"
   move_long_address: "4/2/8"
   move_short_address: "4/2/9"
   position_state_address: "4/0/14"
+  travelling_time_down: 27
+  travelling_time_up: 27
+# ETS: A5 OG Bad rechts
+# move_long_address: 4/0/16 -> A5 OG Bad rechts LZ | Jalousien > OG/EG/KG Aussen
+# move_short_address: 4/0/17 -> A5 OG Bad rechts KZ | Jalousien > OG/EG/KG Aussen
+# position_address: 4/0/19 -> A5 OG Bad rechts JP | Jalousien > OG/EG/KG Aussen
+# position_state_address: 4/0/18 -> A5 OG Bad rechts R JP | Jalousien > OG/EG/KG Aussen
+- name: "Jalousie_OG_Bad_Aussen_Balkon_Rechts"
+  move_long_address: "4/0/16"
+  move_short_address: "4/0/17"
+  position_address: "4/0/19"
+  position_state_address: "4/0/18"
+  travelling_time_down: 27
+  travelling_time_up: 27
+# ETS: A6 OG Bad mitte
+# move_long_address: 4/0/20 -> A6 OG Bad mitte LZ | Jalousien > OG/EG/KG Aussen
+# move_short_address: 4/0/21 -> A6 OG Bad mitte KZ | Jalousien > OG/EG/KG Aussen
+# position_address: 4/0/23 -> A6 OG Bad mitte JP | Jalousien > OG/EG/KG Aussen
+# position_state_address: 4/0/22 -> A6 OG Bad mitte R JP | Jalousien > OG/EG/KG Aussen
+- name: "Jalousie_OG_Bad_Aussen_Balkon_Mitte"
+  move_long_address: "4/0/20"
+  move_short_address: "4/0/21"
+  position_address: "4/0/23"
+  position_state_address: "4/0/22"
+  travelling_time_down: 27
+  travelling_time_up: 27
+# ETS: A7 OG Bad links
+# move_long_address: 4/0/24 -> A7 OG Bad links LZ | Jalousien > OG/EG/KG Aussen
+# move_short_address: 4/0/25 -> A7 OG Bad links KZ | Jalousien > OG/EG/KG Aussen
+# position_address: 4/0/27 -> A7 OG Bad links JP | Jalousien > OG/EG/KG Aussen
+# position_state_address: 4/0/26 -> A7 OG Bad links R JP | Jalousien > OG/EG/KG Aussen
+- name: "Jalousie_OG_Bad_Aussen_Balkon_Links"
+  move_long_address: "4/0/24"
+  move_short_address: "4/0/25"
+  position_address: "4/0/27"
+  position_state_address: "4/0/26"
+  travelling_time_down: 27
+  travelling_time_up: 27
+# ETS: 5A3 OG Bad rechts
+# move_long_address: 4/1/24 -> 5A3 OG Bad rechts LZ | Jalousien > OG Innen
+# move_short_address: 4/1/25 -> 5A3 OG Bad rechts KZ | Jalousien > OG Innen
+# position_address: 4/1/27 -> 5A3 OG Bad rechts JP | Jalousien > OG Innen
+# position_state_address: 4/1/26 -> 5A3 OG Bad rechts R JP | Jalousien > OG Innen
+- name: "Jalousie_OG_Bad_Aussen_Balkon_Rechts_2"
+  move_long_address: "4/1/24"
+  move_short_address: "4/1/25"
+  position_address: "4/1/27"
+  position_state_address: "4/1/26"
   travelling_time_down: 27
   travelling_time_up: 27
 # FHEM: Jalousie_OG_Bad_Aussen_Panorama
