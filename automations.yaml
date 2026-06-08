@@ -237,7 +237,7 @@
   mode: single
 - id: '1780073742923'
   alias: Garagenwarnung
-  description: ''
+  description: Meldet bei offenem Garagentor nach 5 Minuten, bei Abwesenheit sofort.
   triggers:
   - trigger: state
     entity_id:
@@ -248,7 +248,35 @@
       seconds: 0
     to:
     - open
-  conditions: []
+    id: offen
+  - trigger: state
+    entity_id:
+    - cover.aussenbereich_garage_garagentor
+    to:
+    - open
+    id: offen_abwesend
+  - trigger: state
+    entity_id: binary_sensor.person_zuhause
+    to: "off"
+    id: abwesend
+  conditions:
+  - condition: or
+    conditions:
+    - condition: trigger
+      id: offen
+    - condition: and
+      conditions:
+      - condition: trigger
+        id:
+        - offen_abwesend
+        - abwesend
+      - condition: state
+        entity_id: binary_sensor.person_zuhause
+        state: "off"
+      - condition: state
+        entity_id: cover.aussenbereich_garage_garagentor
+        state:
+        - open
   actions:
   - repeat:
       while:
@@ -274,6 +302,86 @@
           seconds: 0
           milliseconds: 0
 
+  mode: single
+- id: garage_entfeuchter_luftfeuchte_bleibt_hoch
+  alias: Garage Entfeuchter Luftfeuchte bleibt hoch
+  description: Meldet, wenn die Garagenfeuchte trotz laufender Entfeuchtung mehrere Stunden hoch bleibt.
+  triggers:
+  - trigger: template
+    value_template: >-
+      {{
+        states('sensor.wifi_smart_switch_humidity') | float(0) > 65
+        and (
+          is_state('switch.entfeuchter', 'on')
+          or is_state('switch.ttr_57_entfeuchter', 'on')
+        )
+      }}
+    for:
+      hours: 4
+      minutes: 0
+      seconds: 0
+  actions:
+  - action: notify.mobile_app_torbens_iphone
+    metadata: {}
+    data:
+      title: Garage weiterhin feucht
+      message: >-
+        Die Garagenfeuchte liegt seit mehreren Stunden trotz Entfeuchtung bei
+        {{ states('sensor.wifi_smart_switch_humidity') | float(0) | round(0) }} %.
+        Temperatur: {{ states('sensor.wifi_smart_switch_temperature') | float(0) | round(1) }} °C.
+        TTK: {{ states('switch.entfeuchter') }}, TTR: {{ states('switch.ttr_57_entfeuchter') }}.
+      data:
+        push:
+          sound:
+            name: default
+  mode: single
+- id: aussenbeleuchtung_tagsueber_ausschalten
+  alias: Außenbeleuchtung tagsüber ausschalten
+  description: Schaltet vergessene Außenbeleuchtung bei Tageslicht aus, ohne die Dauerbeleuchtung anzufassen.
+  triggers:
+  - trigger: sun
+    event: sunrise
+    offset: 00:30:00
+  - trigger: numeric_state
+    entity_id: sensor.aussenbereich_wetterstation_helligkeit
+    above: 10000
+    for:
+      minutes: 15
+  conditions:
+  - condition: template
+    value_template: >-
+      {{
+        expand([
+          'light.aussenbereich_eingangsbereich_eingang_vordach',
+          'light.aussenbereich_balkon_licht',
+          'light.aussenbereich_garten_aussenleuchten_rechts',
+          'light.aussenbereich_balkon_balken',
+          'light.aussenbereich_balkon_obergeschoss_licht',
+          'light.aussenbereich_terrasse_licht',
+          'light.aussenbereich_eingangsbereich_treppe_und_garage',
+          'light.aussenbereich_eingangsbereich_hof_bega_baumstrahler',
+          'light.aussenbereich_teich_licht',
+          'light.aussenbereich_teich_unterwasserstrahler',
+          'light.aussenbereich_garten_wegebeleuchtung_nach_oben',
+          'light.aussenbereich_garten_aussenleuchten_links'
+        ]) | selectattr('state', 'eq', 'on') | list | count > 0
+      }}
+  actions:
+  - action: light.turn_off
+    target:
+      entity_id:
+      - light.aussenbereich_eingangsbereich_eingang_vordach
+      - light.aussenbereich_balkon_licht
+      - light.aussenbereich_garten_aussenleuchten_rechts
+      - light.aussenbereich_balkon_balken
+      - light.aussenbereich_balkon_obergeschoss_licht
+      - light.aussenbereich_terrasse_licht
+      - light.aussenbereich_eingangsbereich_treppe_und_garage
+      - light.aussenbereich_eingangsbereich_hof_bega_baumstrahler
+      - light.aussenbereich_teich_licht
+      - light.aussenbereich_teich_unterwasserstrahler
+      - light.aussenbereich_garten_wegebeleuchtung_nach_oben
+      - light.aussenbereich_garten_aussenleuchten_links
   mode: single
 - id: solar_heat_protection_blind_recommendation
   alias: Hitzeschutz Jalousie OG Automatik und Empfehlung
@@ -398,4 +506,19 @@
       facade_state: "off"
       action_id: open
       allow_automation: false
+  mode: single
+- id: hitzeschutz_og_automatik_bei_sonnenaufgang_aktivieren
+  alias: Hitzeschutz OG Automatik bei Sonnenaufgang aktivieren
+  description: Aktiviert die OG-Hitzeschutz-Automatik nach manueller Abschaltung am nächsten Morgen wieder.
+  triggers:
+  - trigger: sun
+    event: sunrise
+  conditions:
+  - condition: state
+    entity_id: switch.hitzeschutz_og_automatik
+    state: "off"
+  actions:
+  - action: switch.turn_on
+    target:
+      entity_id: switch.hitzeschutz_og_automatik
   mode: single

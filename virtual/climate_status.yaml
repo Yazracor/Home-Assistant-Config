@@ -98,21 +98,3 @@ template:
         unique_id: kg_zimmer_silas_energieanforderung
         variables:
           room: kg_zimmer_silas
-
-  - binary_sensor:
-      - name: "Thermostate Zentralumschaltung OK"
-        unique_id: thermostate_zentralumschaltung_ok
-        availability: "{{ states('binary_sensor.heizen_kuehlen_rueckmeldung') in ['on', 'off'] }}"
-        state: >-
-          {% from 'climate_status.jinja' import central_switching_ok %}
-          {% set central_switching_ok = central_switching_ok | as_function %}
-          {{ central_switching_ok() }}
-        attributes:
-          erwarteter_modus: >-
-            {% from 'climate_status.jinja' import expected_mode_label %}
-            {% set expected_mode_label = expected_mode_label | as_function %}
-            {{ expected_mode_label() }}
-          abweichende_thermostate: >-
-            {% from 'climate_status.jinja' import deviating_thermostats %}
-            {% set deviating_thermostats = deviating_thermostats | as_function %}
-            {{ deviating_thermostats() }}
