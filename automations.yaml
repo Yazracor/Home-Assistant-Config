@@ -550,11 +550,6 @@
         {% if direction == 'Incoming' and source not in ignored_sources %}
           {% set ns.items = knx_light_map().get(address, []) %}
         {% endif %}
-      {% elif trigger.id == 'homekit' %}
-        {% set entity = trigger.event.data.entity_id | default('', true) %}
-        {% if entity is string and entity in adaptive_light_entities %}
-          {% set ns.items = [entity] %}
-        {% endif %}
       {% elif trigger.id == 'service' %}
         {% set data = trigger.event.data %}
         {% set service_data = data.service_data | default({}, true) %}
