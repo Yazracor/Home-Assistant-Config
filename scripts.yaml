@@ -236,6 +236,13 @@ hitzeschutz_jalousie_fassade_pruefen:
               automatik_marked: "{{ repeat.item in automatik_entity_ids }}"
               automatik_enabled: "{{ allow_automation | default(true) and is_state('switch.hitzeschutz_og_automatik', 'on') }}"
               bedroom_open_blocked: "{{ action_id == 'open' and now().hour < 10 and repeat.item in bedroom_entity_ids }}"
+              cooldown_helper: >-
+                {% from 'hitzeschutz_manual.jinja' import cooldown_helper %}
+                {% set cooldown_helper = cooldown_helper | as_function %}
+                {{ cooldown_helper(repeat.item) }}
+              cover_manual_cooldown_active: >-
+                {% set last_ts = states(cooldown_helper) | as_timestamp(0) %}
+                {{ last_ts > 0 and (now() | as_timestamp) - last_ts < 2 * 3600 }}
           - choose:
               - conditions:
                   - condition: template
@@ -247,7 +254,7 @@ hitzeschutz_jalousie_fassade_pruefen:
                       message: "{{ cover_entity }} ist {{ cover_state }} und wurde fuer {{ action_text }} {{ facade_name }} uebersprungen."
               - conditions:
                   - condition: template
-                    value_template: "{{ needs_change and automatik_marked and automatik_enabled and not bedroom_open_blocked }}"
+                    value_template: "{{ needs_change and automatik_marked and automatik_enabled and not bedroom_open_blocked and not cover_manual_cooldown_active }}"
                 sequence:
                   - action: script.hitzeschutz_jalousie_automatisieren
                     data:
