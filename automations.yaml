@@ -335,6 +335,32 @@
           sound:
             name: default
   mode: single
+- id: garage_regen_bei_offenem_tor_warnung
+  alias: Garage Regen bei offenem Tor Warnung
+  description: Meldet, wenn Regen beginnt und das Garagentor offen ist.
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.aussenbereich_wetterstation_niederschlag
+    from: "off"
+    to: "on"
+  conditions:
+  - condition: state
+    entity_id: cover.aussenbereich_garage_garagentor
+    state:
+    - open
+  actions:
+  - action: notify.mobile_app_torbens_iphone
+    metadata: {}
+    data:
+      title: Garage offen bei Regen
+      message: Es regnet und das Garagentor ist offen.
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+  mode: single
 - id: aussenbeleuchtung_tagsueber_ausschalten
   alias: Außenbeleuchtung tagsüber ausschalten
   description: Schaltet vergessene Außenbeleuchtung bei Tageslicht aus, ohne die Dauerbeleuchtung anzufassen.
