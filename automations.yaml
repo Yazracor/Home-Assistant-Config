@@ -474,39 +474,10 @@
     automatik_entity_ids: "{{ expand('group.hitzeschutz_automatik_jalousien') | map(attribute='entity_id') | list }}"
     touched_cover_entities: >-
       {% from 'hitzeschutz_manual.jinja' import knx_cover_map %}
+      {% from 'manual_control.jinja' import touched_entities %}
       {% set knx_cover_map = knx_cover_map | as_function %}
-      {% set ns = namespace(items=[]) %}
-      {% if trigger.id == 'knx' %}
-        {% set data = trigger.event.data %}
-        {% set address = data.destination | string %}
-        {% set source = data.source | string %}
-        {% set direction = data.direction | string %}
-        {% set ignored_sources = ['15.15.250', '1.1.15'] %}
-        {% if direction == 'Incoming' and source not in ignored_sources %}
-          {% set ns.items = knx_cover_map().get(address, []) %}
-        {% endif %}
-      {% elif trigger.id == 'homekit' %}
-        {% set entity = trigger.event.data.entity_id | default('', true) %}
-        {% if entity is string and entity in automatik_entity_ids %}
-          {% set ns.items = [entity] %}
-        {% endif %}
-      {% elif trigger.id == 'service' %}
-        {% set data = trigger.event.data %}
-        {% if trigger.event.context.user_id is not none and data.domain == 'cover' %}
-          {% set raw_entities = data.service_data.entity_id | default([], true) %}
-          {% if raw_entities is string %}
-            {% set entities = [raw_entities] %}
-          {% elif raw_entities is iterable %}
-            {% set entities = raw_entities | list %}
-          {% else %}
-            {% set entities = [] %}
-          {% endif %}
-          {% for entity in entities if entity in automatik_entity_ids %}
-            {% set ns.items = ns.items + [entity] %}
-          {% endfor %}
-        {% endif %}
-      {% endif %}
-      {{ ns.items | unique | list | to_json }}
+      {% set touched_entities = touched_entities | as_function %}
+      {{ touched_entities(trigger.id, trigger.event.data, trigger.event.context.user_id, automatik_entity_ids, knx_cover_map(), 'cover', false) | to_json }}
   conditions:
   - condition: template
     value_template: "{{ touched_cover_entities | from_json | count > 0 }}"
@@ -533,47 +504,19 @@
     event_type: knx_event
     id: knx
   - trigger: event
+    event_type: homekit_state_change
+    id: homekit
+  - trigger: event
     event_type: call_service
     id: service
   variables:
     adaptive_light_entities: "{{ expand('group.adaptive_helligkeit_lichter') | map(attribute='entity_id') | list }}"
     touched_light_entities: >-
       {% from 'adaptive_lighting.jinja' import knx_light_map %}
+      {% from 'manual_control.jinja' import touched_entities %}
       {% set knx_light_map = knx_light_map | as_function %}
-      {% set ns = namespace(items=[]) %}
-      {% if trigger.id == 'knx' %}
-        {% set data = trigger.event.data %}
-        {% set address = data.destination | string %}
-        {% set source = data.source | string %}
-        {% set direction = data.direction | string %}
-        {% set ignored_sources = ['15.15.250', '1.1.15'] %}
-        {% if direction == 'Incoming' and source not in ignored_sources %}
-          {% set ns.items = knx_light_map().get(address, []) %}
-        {% endif %}
-      {% elif trigger.id == 'service' %}
-        {% set data = trigger.event.data %}
-        {% set service_data = data.service_data | default({}, true) %}
-        {% set has_brightness = (
-          'brightness' in service_data
-          or 'brightness_pct' in service_data
-          or 'brightness_step' in service_data
-          or 'brightness_step_pct' in service_data
-        ) %}
-        {% if trigger.event.context.user_id is not none and data.domain == 'light' and has_brightness %}
-          {% set raw_entities = data.service_data.entity_id | default([], true) %}
-          {% if raw_entities is string %}
-            {% set entities = [raw_entities] %}
-          {% elif raw_entities is iterable %}
-            {% set entities = raw_entities | list %}
-          {% else %}
-            {% set entities = [] %}
-          {% endif %}
-          {% for entity in entities if entity in adaptive_light_entities %}
-            {% set ns.items = ns.items + [entity] %}
-          {% endfor %}
-        {% endif %}
-      {% endif %}
-      {{ ns.items | unique | list | to_json }}
+      {% set touched_entities = touched_entities | as_function %}
+      {{ touched_entities(trigger.id, trigger.event.data, trigger.event.context.user_id, adaptive_light_entities, knx_light_map(), 'light', true) | to_json }}
   conditions:
   - condition: template
     value_template: "{{ touched_light_entities | from_json | count > 0 }}"
