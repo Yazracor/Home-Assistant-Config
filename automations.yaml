@@ -608,17 +608,72 @@
     - light.og_bad_decke
     to: "on"
   conditions:
-  - condition: template
-    value_template: >-
-      {{
-        now().hour >= 22
-        or now().hour < 8
-        or (now().hour < 12 and is_state('sun.sun', 'below_horizon'))
-      }}
+  - condition: state
+    entity_id: switch.schlafmodus
+    state: "on"
   actions:
   - action: script.adaptive_helligkeit_nachtlicht_dimmen
     data:
       light_entity: "{{ trigger.entity_id }}"
+  mode: single
+- id: schlafmodus_zeitplan
+  alias: Schlafmodus Zeitplan
+  description: Schaltet den Schlafmodus abhängig von Arbeitstagen und freien Tagen in Hessen.
+  triggers:
+  - trigger: time
+    at: "22:00:00"
+    id: workday_tomorrow_on
+  - trigger: time
+    at: "07:30:00"
+    id: workday_today_off
+  - trigger: time
+    at: "23:00:00"
+    id: free_tomorrow_on
+  - trigger: time
+    at: "09:00:00"
+    id: free_today_off
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: workday_tomorrow_on
+      - condition: state
+        entity_id: binary_sensor.arbeitstag_morgen
+        state: "on"
+      sequence:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.schlafmodus
+    - conditions:
+      - condition: trigger
+        id: workday_today_off
+      - condition: state
+        entity_id: binary_sensor.arbeitstag
+        state: "on"
+      sequence:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.schlafmodus
+    - conditions:
+      - condition: trigger
+        id: free_tomorrow_on
+      - condition: state
+        entity_id: binary_sensor.arbeitstag_morgen
+        state: "off"
+      sequence:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.schlafmodus
+    - conditions:
+      - condition: trigger
+        id: free_today_off
+      - condition: state
+        entity_id: binary_sensor.arbeitstag
+        state: "off"
+      sequence:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.schlafmodus
   mode: single
 - id: adaptive_helligkeit_lichter_nach_aussenhelligkeit
   alias: Adaptive Helligkeit Lichter nach Außenhelligkeit

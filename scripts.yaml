@@ -42,25 +42,20 @@ adaptive_helligkeit_lichter_anpassen:
   sequence:
     - variables:
         lux: "{{ states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) }}"
-        target_brightness: >-
+        target_pct_of_max: >-
           {% if lux < 1000 %}
-            255
+            100
           {% elif lux < 5000 %}
-            220
+            85
           {% elif lux < 15000 %}
-            185
+            70
           {% elif lux < 30000 %}
-            150
+            55
           {% else %}
-            115
+            40
           {% endif %}
         target_lights: "{{ expand('group.adaptive_helligkeit_lichter') | map(attribute='entity_id') | list }}"
-        night_override_active: >-
-          {{
-            now().hour >= 22
-            or now().hour < 8
-            or (now().hour < 12 and is_state('sun.sun', 'below_horizon'))
-          }}
+        night_override_active: "{{ is_state('switch.schlafmodus', 'on') }}"
     - repeat:
         for_each: "{{ target_lights }}"
         sequence:
@@ -73,19 +68,18 @@ adaptive_helligkeit_lichter_anpassen:
               manual_cooldown_active: >-
                 {% set last_ts = states(manual_helper) | as_timestamp(0) %}
                 {{ last_ts > 0 and (now() | as_timestamp) - last_ts < 2 * 3600 }}
-              dim_address: >-
-                {% from 'adaptive_lighting.jinja' import dim_address %}
-                {% set dim_address = dim_address | as_function %}
-                {{ dim_address(repeat.item) }}
               light_target_brightness: >-
                 {% set caps = {
                   'light.og_schlafzimmer_decke': 77,
                   'light.og_bad_decke': 178,
                   'light.og_flur_decke': 255,
                   'light.eg_flur_decke': 255,
-                  'light.eg_arbeitszimmer_decke': 255
+                  'light.eg_arbeitszimmer_decke': 255,
+                  'light.eg_wohnzimmer_decke_mitte': 102,
+                  'light.eg_wohnzimmer_decke_seiten': 102
                 } %}
-                {{ [target_brightness | int(0), caps.get(repeat.item, 255)] | min }}
+                {% set max_brightness = caps.get(repeat.item, 255) %}
+                {{ (max_brightness * target_pct_of_max | int(0) / 100) | round(0) | int }}
               brightness_delta: "{{ (light_target_brightness | int(0) - state_attr(repeat.item, 'brightness') | int(0)) | abs }}"
               night_dim_lights:
                 - light.eg_arbeitszimmer_decke
@@ -98,15 +92,14 @@ adaptive_helligkeit_lichter_anpassen:
                     is_state(light_entity, 'on')
                     and not (night_override_active and light_entity in night_dim_lights)
                     and not manual_cooldown_active
-                    and dim_address != ''
                     and brightness_delta | int(0) >= 20
                   }}
             then:
-              - action: knx.send
+              - action: light.turn_on
+                target:
+                  entity_id: "{{ light_entity }}"
                 data:
-                  address: "{{ dim_address }}"
-                  payload:
-                    - "{{ light_target_brightness | int }}"
+                  brightness: "{{ light_target_brightness | int }}"
 
 adaptive_helligkeit_nachtlicht_dimmen:
   alias: Adaptive Helligkeit Nachtlicht dimmen
@@ -126,24 +119,19 @@ adaptive_helligkeit_nachtlicht_dimmen:
         manual_cooldown_active: >-
           {% set last_ts = states(manual_helper) | as_timestamp(0) %}
           {{ last_ts > 0 and (now() | as_timestamp) - last_ts < 2 * 3600 }}
-        dim_address: >-
-          {% from 'adaptive_lighting.jinja' import dim_address %}
-          {% set dim_address = dim_address | as_function %}
-          {{ dim_address(light_entity) }}
     - if:
         - condition: template
           value_template: >-
             {{
               is_state(light_entity, 'on')
               and not manual_cooldown_active
-              and dim_address != ''
             }}
       then:
-        - action: knx.send
+        - action: light.turn_on
+          target:
+            entity_id: "{{ light_entity }}"
           data:
-            address: "{{ dim_address }}"
-            payload:
-              - 5
+            brightness: 5
 
 hitzeschutz_jalousien_sammel_benachrichtigen:
   alias: Hitzeschutz Jalousien gesammelt benachrichtigen

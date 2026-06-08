@@ -2,20 +2,6 @@
   {% do returns('input_datetime.adaptive_light_manual_' ~ light_entity.split('.', 1)[1]) %}
 {% endmacro %}
 
-{% macro dim_address(light_entity, returns) %}
-  {% do returns({
-    'light.og_buro_decke': '3/0/2',
-    'light.og_flur_decke': '3/0/8',
-    'light.og_schlafzimmer_decke': '3/0/26',
-    'light.og_bad_decke': '3/0/32',
-    'light.eg_kueche_decke': '3/0/38',
-    'light.eg_wohnzimmer_decke_mitte': '3/0/50',
-    'light.eg_wohnzimmer_decke_seiten': '3/0/56',
-    'light.eg_flur_decke': '3/0/14',
-    'light.eg_arbeitszimmer_decke': '3/0/62'
-  }.get(light_entity, '')) %}
-{% endmacro %}
-
 {% macro knx_light_map(returns) %}
   {% do returns({
     '3/0/2': ['light.og_buro_decke'],
