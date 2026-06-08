@@ -42557,3 +42557,39 @@ Das ist normal, wenn Home Assistant nach dem YAML-Import noch nicht neu gestarte
 Starting Home Assistant Core...
 Command completed successfully.
 KNX area assignments applied.
+2026-06-08T17:52:00Z runner scheduled after 10s: /homeassistant/devscripts/apply-pending-knx-area-assignments.sh
+2026-06-08T17:52:10Z runner starting: /homeassistant/devscripts/apply-pending-knx-area-assignments.sh
+Using Python: /usr/bin/python3
+Stopping Home Assistant Core for first registry patch...
+Command completed successfully.
+Floors: erstellt=0, aktualisiert=0
+Areas: erstellt=0, aktualisiert=0
+Obsolete Areas: entfernt=0, Entity-Zuordnungen geändert=0, Device-Zuordnungen geändert=0
+Entities: Area geändert=0, Entity-ID geändert=0, Name geändert=0, Sichtbarkeit geändert=0, Unique-ID geändert=0, Duplikate entfernt=0, nicht gefunden=5
+Devices: Area geändert=0, Name geändert=0
+
+Nicht zugeordnete erwartete Entitäten:
+  - cover.Bad OG Balkon rechts / unique_id=4/0/16_4/0/19 / expected=cover.og_bad_balkon_rechts
+  - cover.Bad OG Balkon Mitte / unique_id=4/0/20_4/0/23 / expected=cover.og_bad_balkon_mitte
+  - cover.Bad OG Balkon links / unique_id=4/0/24_4/0/27 / expected=cover.og_bad_balkon_links
+  - cover.Bad OG Balkon rechts 2 / unique_id=4/1/24_4/1/27 / expected=cover.og_bad_balkon_rechts_2
+  - group.Hitzeschutz Automatik Jalousien / unique_id=hitzeschutz_automatik_jalousien / expected=group.hitzeschutz_automatik_jalousien
+
+Das ist normal, wenn Home Assistant nach dem YAML-Import noch nicht neu gestartet wurde oder wenn Entity-IDs manuell geändert wurden. Unique-IDs werden bevorzugt; geänderte Entity-IDs sind daher meist unkritisch.
+Starting Home Assistant Core so YAML entity changes are written to the registry...
+Command completed successfully.
+Stopping Home Assistant Core for second registry patch...
+Command completed successfully.
+Floors: erstellt=0, aktualisiert=0
+Areas: erstellt=0, aktualisiert=0
+Obsolete Areas: entfernt=0, Entity-Zuordnungen geändert=0, Device-Zuordnungen geändert=0
+Entities: Area geändert=4, Entity-ID geändert=4, Name geändert=4, Sichtbarkeit geändert=4, Unique-ID geändert=0, Duplikate entfernt=0, nicht gefunden=1
+Devices: Area geändert=0, Name geändert=0
+
+Nicht zugeordnete erwartete Entitäten:
+  - group.Hitzeschutz Automatik Jalousien / unique_id=hitzeschutz_automatik_jalousien / expected=group.hitzeschutz_automatik_jalousien
+
+Das ist normal, wenn Home Assistant nach dem YAML-Import noch nicht neu gestartet wurde oder wenn Entity-IDs manuell geändert wurden. Unique-IDs werden bevorzugt; geänderte Entity-IDs sind daher meist unkritisch.
+Starting Home Assistant Core...
+Command completed successfully.
+KNX area assignments applied.
