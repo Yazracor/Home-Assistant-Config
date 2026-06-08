@@ -1,0 +1,41 @@
+template:
+  - cover:
+      - name: "Bad OG Balkon"
+        unique_id: og_bad_balkon_virtual_cover
+        device_class: blind
+        availability: >-
+          {{ states('cover.og_bad_balkon_mitte') not in ['unknown', 'unavailable'] }}
+        state: >-
+          {{ states('cover.og_bad_balkon_mitte') }}
+        position: >-
+          {{ state_attr('cover.og_bad_balkon_mitte', 'current_position') }}
+        open_cover:
+          - action: cover.open_cover
+            target:
+              entity_id:
+                - cover.og_bad_balkon_rechts
+                - cover.og_bad_balkon_mitte
+                - cover.og_bad_balkon_links
+        close_cover:
+          - action: cover.close_cover
+            target:
+              entity_id:
+                - cover.og_bad_balkon_rechts
+                - cover.og_bad_balkon_mitte
+                - cover.og_bad_balkon_links
+        set_cover_position:
+          - action: cover.set_cover_position
+            target:
+              entity_id:
+                - cover.og_bad_balkon_rechts
+                - cover.og_bad_balkon_mitte
+                - cover.og_bad_balkon_links
+            data:
+              position: "{{ position }}"
+        stop_cover:
+          - action: cover.stop_cover
+            target:
+              entity_id:
+                - cover.og_bad_balkon_rechts
+                - cover.og_bad_balkon_mitte
+                - cover.og_bad_balkon_links

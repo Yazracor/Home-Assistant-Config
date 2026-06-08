@@ -232,26 +232,24 @@
   position_state_address: "4/0/10"
   travelling_time_down: 27
   travelling_time_up: 27
-# FHEM: Jalousie_OG_Bad_Innen
-# FHEM room: OG_Bad,KNX,homebridge
+# ETS/FHEM group: OG Bad 3x innen, Balkon innen
 # move_long_address: 4/2/2 -> OG Bad 3x innen LZ | Jalousien > Gruppen
 # move_short_address: 4/2/3 -> OG Bad 3x innen KZ  | Jalousien > Gruppen
 # position_address: 4/1/3 -> 4A4 OG Bad mitte JP | Jalousien > OG Innen
 # position_state_address: 4/1/2 -> 4A4 OG Bad mitte R JP | Jalousien > OG Innen
-- name: "Jalousie_OG_Bad_Innen"
+- name: "Jalousie_OG_Bad_Balkon_Innen"
   move_long_address: "4/2/2"
   move_short_address: "4/2/3"
   position_state_address: "4/1/2"
   travelling_time_down: 27
   travelling_time_up: 27
-# FHEM: Jalousie_OG_Bad_Aussen_Balkon
-# FHEM room: OG_Bad,KNX,homebridge
+# ETS/FHEM group: OG Bad 5x aussen
+# Deckt die gemeinsame Aussen-/Balkonwand-Gruppe ab; Einzelachsen stehen darunter separat.
 # move_long_address: 4/2/8 -> OG Bad 5x aussen LZ | Jalousien > Gruppen
 # move_short_address: 4/2/9 -> OG Bad 5x aussen KZ | Jalousien > Gruppen
 # position_address: 4/0/15 -> A4 OG Bad Panoramaf. JP | Jalousien > OG/EG/KG Aussen
 # position_state_address: 4/0/14 -> A4 OG Bad Panoramaf. R JP | Jalousien > OG/EG/KG Aussen
-# Nicht fuer Fassaden-Hitzeschutz verwenden: 4/2/8 faehrt auch Bad Panorama West.
-- name: "Jalousie_OG_Bad_Aussen_Balkon"
+- name: "Jalousie_OG_Bad_Aussen_5x"
   move_long_address: "4/2/8"
   move_short_address: "4/2/9"
   position_state_address: "4/0/14"
@@ -291,18 +289,6 @@
   move_short_address: "4/0/25"
   position_address: "4/0/27"
   position_state_address: "4/0/26"
-  travelling_time_down: 27
-  travelling_time_up: 27
-# ETS: 5A3 OG Bad rechts
-# move_long_address: 4/1/24 -> 5A3 OG Bad rechts LZ | Jalousien > OG Innen
-# move_short_address: 4/1/25 -> 5A3 OG Bad rechts KZ | Jalousien > OG Innen
-# position_address: 4/1/27 -> 5A3 OG Bad rechts JP | Jalousien > OG Innen
-# position_state_address: 4/1/26 -> 5A3 OG Bad rechts R JP | Jalousien > OG Innen
-- name: "Jalousie_OG_Bad_Aussen_Balkon_Rechts_2"
-  move_long_address: "4/1/24"
-  move_short_address: "4/1/25"
-  position_address: "4/1/27"
-  position_state_address: "4/1/26"
   travelling_time_down: 27
   travelling_time_up: 27
 # FHEM: Jalousie_OG_Bad_Aussen_Panorama
