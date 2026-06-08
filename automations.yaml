@@ -336,54 +336,34 @@
       minutes: 30
     id: nord_open
   variables:
+    facade_key: "{{ trigger.id.split('_')[0] }}"
     action_id: "{{ 'close' if trigger.id.endswith('_close') else 'open' }}"
-    facade_group: >-
-      {% set mapping = {
-        'west_close': 'group.fassade_west',
-        'west_open': 'group.fassade_west',
-        'ost_close': 'group.fassade_ost',
-        'ost_open': 'group.fassade_ost',
-        'sued_close': 'group.fassade_sued',
-        'sued_open': 'group.fassade_sued',
-        'nord_close': 'group.fassade_nord',
-        'nord_open': 'group.fassade_nord'
-      } %}
-      {{ mapping.get(trigger.id, '') }}
+    facade_group: "{{ 'group.fassade_' ~ facade_key }}"
     facade_name: >-
       {% set mapping = {
-        'west_close': 'Fassade West',
-        'west_open': 'Fassade West',
-        'ost_close': 'Fassade Ost',
-        'ost_open': 'Fassade Ost',
-        'sued_close': 'Fassade Sued',
-        'sued_open': 'Fassade Sued',
-        'nord_close': 'Fassade Nord',
-        'nord_open': 'Fassade Nord'
+        'west': 'Fassade West',
+        'ost': 'Fassade Ost',
+        'sued': 'Fassade Sued',
+        'nord': 'Fassade Nord'
       } %}
-      {{ mapping.get(trigger.id, trigger.id) }}
-    cover_entities: >-
-      {% set mapping = {
-        'west_close': 'group.fassade_west',
-        'west_open': 'group.fassade_west',
-        'ost_close': 'group.fassade_ost',
-        'ost_open': 'group.fassade_ost',
-        'sued_close': 'group.fassade_sued',
-        'sued_open': 'group.fassade_sued',
-        'nord_close': 'group.fassade_nord',
-        'nord_open': 'group.fassade_nord'
-      } %}
-      {{ expand(mapping.get(trigger.id, '')) | map(attribute='entity_id') | list }}
+      {{ mapping.get(facade_key, trigger.id) }}
+    cover_entities: "{{ expand(facade_group) | map(attribute='entity_id') | list }}"
   conditions:
   - condition: state
     entity_id: sun.sun
     state: above_horizon
   actions:
-  - action: script.hitzeschutz_jalousie_fassade_pruefen
+  - action: script.hitzeschutz_jalousien_checks_pruefen
     data:
-      facade_name: "{{ facade_name }}"
-      action_id: "{{ action_id }}"
-      cover_entities: "{{ cover_entities }}"
-      allow_automation: true
+      checks: >-
+        {{
+          [{
+            'facade_name': facade_name,
+            'action_id': action_id,
+            'cover_entities': cover_entities,
+            'allow_automation': true
+          }] | to_json
+        }}
   mode: single
 - id: solar_heat_protection_blind_notification_periodic
   alias: Hitzeschutz Jalousie Nachcheck Empfehlung
@@ -396,50 +376,11 @@
     entity_id: sun.sun
     state: above_horizon
   actions:
-  - if:
-    - condition: state
-      entity_id: binary_sensor.hitzeschutz_fassade_west
-      state: "on"
-    then:
-    - action: script.hitzeschutz_jalousie_fassade_pruefen
-      data:
-        facade_name: Fassade West
-        action_id: close
-        cover_entities: "{{ expand('group.fassade_west') | map(attribute='entity_id') | list }}"
-        allow_automation: false
-  - if:
-    - condition: state
-      entity_id: binary_sensor.hitzeschutz_fassade_ost
-      state: "on"
-    then:
-    - action: script.hitzeschutz_jalousie_fassade_pruefen
-      data:
-        facade_name: Fassade Ost
-        action_id: close
-        cover_entities: "{{ expand('group.fassade_ost') | map(attribute='entity_id') | list }}"
-        allow_automation: false
-  - if:
-    - condition: state
-      entity_id: binary_sensor.hitzeschutz_fassade_sud
-      state: "on"
-    then:
-    - action: script.hitzeschutz_jalousie_fassade_pruefen
-      data:
-        facade_name: Fassade Sued
-        action_id: close
-        cover_entities: "{{ expand('group.fassade_sued') | map(attribute='entity_id') | list }}"
-        allow_automation: false
-  - if:
-    - condition: state
-      entity_id: binary_sensor.hitzeschutz_fassade_nord
-      state: "on"
-    then:
-    - action: script.hitzeschutz_jalousie_fassade_pruefen
-      data:
-        facade_name: Fassade Nord
-        action_id: close
-        cover_entities: "{{ expand('group.fassade_nord') | map(attribute='entity_id') | list }}"
-        allow_automation: false
+  - action: script.hitzeschutz_jalousien_fassadenstatus_pruefen
+    data:
+      facade_state: "on"
+      action_id: close
+      allow_automation: false
   mode: single
 - id: solar_heat_protection_blind_open_notification_hourly
   alias: Hitzeschutz Jalousie Öffnen Empfehlung
@@ -452,48 +393,9 @@
     entity_id: sun.sun
     state: above_horizon
   actions:
-  - if:
-    - condition: state
-      entity_id: binary_sensor.hitzeschutz_fassade_west
-      state: "off"
-    then:
-    - action: script.hitzeschutz_jalousie_fassade_pruefen
-      data:
-        facade_name: Fassade West
-        action_id: open
-        cover_entities: "{{ expand('group.fassade_west') | map(attribute='entity_id') | list }}"
-        allow_automation: false
-  - if:
-    - condition: state
-      entity_id: binary_sensor.hitzeschutz_fassade_ost
-      state: "off"
-    then:
-    - action: script.hitzeschutz_jalousie_fassade_pruefen
-      data:
-        facade_name: Fassade Ost
-        action_id: open
-        cover_entities: "{{ expand('group.fassade_ost') | map(attribute='entity_id') | list }}"
-        allow_automation: false
-  - if:
-    - condition: state
-      entity_id: binary_sensor.hitzeschutz_fassade_sud
-      state: "off"
-    then:
-    - action: script.hitzeschutz_jalousie_fassade_pruefen
-      data:
-        facade_name: Fassade Sued
-        action_id: open
-        cover_entities: "{{ expand('group.fassade_sued') | map(attribute='entity_id') | list }}"
-        allow_automation: false
-  - if:
-    - condition: state
-      entity_id: binary_sensor.hitzeschutz_fassade_nord
-      state: "off"
-    then:
-    - action: script.hitzeschutz_jalousie_fassade_pruefen
-      data:
-        facade_name: Fassade Nord
-        action_id: open
-        cover_entities: "{{ expand('group.fassade_nord') | map(attribute='entity_id') | list }}"
-        allow_automation: false
+  - action: script.hitzeschutz_jalousien_fassadenstatus_pruefen
+    data:
+      facade_state: "off"
+      action_id: open
+      allow_automation: false
   mode: single
