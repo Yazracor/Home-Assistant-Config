@@ -1,9 +1,10 @@
 {% macro facade_configs(returns) %}
   {% do returns({
-    'west': {'azimuth': 270, 'max_delta': 90, 'min_lux': 25000, 'temp_offset': 0},
-    'ost': {'azimuth': 100, 'max_delta': 80, 'min_lux': 25000, 'temp_offset': 4000},
-    'sued': {'azimuth': 180, 'max_delta': 90, 'min_lux': 25000, 'temp_offset': 3000},
-    'nord': {'azimuth': 0, 'max_delta': 45, 'min_lux': 35000, 'temp_offset': 10000}
+    'west': {'azimuth': 295, 'max_delta': 90, 'min_lux': 25000, 'temp_offset': 0},
+    'wohnzimmer_panorama': {'azimuth': 275, 'max_delta': 90, 'min_lux': 25000, 'temp_offset': 0},
+    'ost': {'azimuth': 115, 'max_delta': 80, 'min_lux': 25000, 'temp_offset': 4000},
+    'sued': {'azimuth': 205, 'max_delta': 90, 'min_lux': 25000, 'temp_offset': 3000},
+    'nord': {'azimuth': 25, 'max_delta': 45, 'min_lux': 35000, 'temp_offset': 10000}
   }) %}
 {% endmacro %}
 

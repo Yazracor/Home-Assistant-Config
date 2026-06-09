@@ -245,6 +245,19 @@
           {{ facade_azimuth('west') }}
 
     - <<: *hitzeschutz_facade_defaults
+      name: "Hitzeschutz Fassade Wohnzimmer Panorama"
+      unique_id: hitzeschutz_fassade_wohnzimmer_panorama
+      state: >-
+        {% from 'heat_protection.jinja' import facade_active %}
+        {% set facade_active = facade_active | as_function %}
+        {{ facade_active('wohnzimmer_panorama') }}
+      attributes:
+        facade_azimuth: >-
+          {% from 'heat_protection.jinja' import facade_azimuth %}
+          {% set facade_azimuth = facade_azimuth | as_function %}
+          {{ facade_azimuth('wohnzimmer_panorama') }}
+
+    - <<: *hitzeschutz_facade_defaults
       name: "Hitzeschutz Fassade Ost"
       unique_id: hitzeschutz_fassade_ost
       state: >-

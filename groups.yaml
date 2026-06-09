@@ -7,9 +7,15 @@ fassade_west:
     - cover.eg_kueche_balkon
     - cover.og_schlafzimmer_front
     - cover.og_bad_panorama_aussen
+    - cover.og_flur_fenster
     - cover.kg_zimmer_sinja_jalousie
     - cover.kg_zimmer_silas_jalousie
     - cover.aussenbereich_balkon_sonnensegel
+
+fassade_wohnzimmer_panorama:
+  name: Fassade Wohnzimmer Panorama
+  entities:
+    - cover.eg_wohnzimmer_panorama
 
 fassade_ost:
   name: Fassade Ost
@@ -20,11 +26,9 @@ fassade_ost:
 fassade_sued:
   name: Fassade Süd
   entities:
-    - cover.eg_wohnzimmer_panorama
     - cover.eg_kueche_seite
     - cover.eg_kueche_nebeneingang
     - cover.og_schlafzimmer_panorama_aussen
-    - cover.og_flur_fenster
     - cover.og_bad_balkon
     - cover.og_bad_balkon_innen
     - cover.eg_arbeitszimmer_garten

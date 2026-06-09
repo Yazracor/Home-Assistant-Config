@@ -715,6 +715,13 @@
       minutes: 10
     id: west_close
   - trigger: state
+    entity_id: binary_sensor.hitzeschutz_fassade_wohnzimmer_panorama
+    from: "off"
+    to: "on"
+    for:
+      minutes: 10
+    id: wohnzimmer_panorama_close
+  - trigger: state
     entity_id: binary_sensor.hitzeschutz_fassade_ost
     from: "off"
     to: "on"
@@ -743,6 +750,13 @@
       minutes: 30
     id: west_open
   - trigger: state
+    entity_id: binary_sensor.hitzeschutz_fassade_wohnzimmer_panorama
+    from: "on"
+    to: "off"
+    for:
+      minutes: 30
+    id: wohnzimmer_panorama_open
+  - trigger: state
     entity_id: binary_sensor.hitzeschutz_fassade_ost
     from: "on"
     to: "off"
@@ -764,12 +778,13 @@
       minutes: 30
     id: nord_open
   variables:
-    facade_key: "{{ trigger.id.split('_')[0] }}"
-    action_id: "{{ 'close' if trigger.id.endswith('_close') else 'open' }}"
+    facade_key: "{{ trigger.id.rsplit('_', 1)[0] }}"
+    action_id: "{{ trigger.id.rsplit('_', 1)[1] }}"
     facade_group: "{{ 'group.fassade_' ~ facade_key }}"
     facade_name: >-
       {% set mapping = {
         'west': 'Fassade West',
+        'wohnzimmer_panorama': 'Wohnzimmer Panorama',
         'ost': 'Fassade Ost',
         'sued': 'Fassade Sued',
         'nord': 'Fassade Nord'
