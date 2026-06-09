@@ -21,7 +21,7 @@ template:
       - name: "Hitzeschutz Jalousien anwenden"
         unique_id: hitzeschutz_jalousien_anwenden_homekit_switch
         icon: mdi:blinds-horizontal
-        state: "false"
+        state: "{{ false }}"
         turn_on:
           - action: script.hitzeschutz_jalousien_regeln_anwenden
         turn_off: []
