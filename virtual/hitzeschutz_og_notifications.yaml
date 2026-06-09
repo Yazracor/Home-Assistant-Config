@@ -18,9 +18,10 @@ template:
           - action: input_boolean.turn_off
             target:
               entity_id: input_boolean.hitzeschutz_og_automatik_aktiv
-    button:
       - name: "Hitzeschutz Jalousien anwenden"
-        unique_id: hitzeschutz_jalousien_anwenden_homekit_button
+        unique_id: hitzeschutz_jalousien_anwenden_homekit_switch
         icon: mdi:blinds-horizontal
-        press:
+        state: "false"
+        turn_on:
           - action: script.hitzeschutz_jalousien_regeln_anwenden
+        turn_off: []
