@@ -296,8 +296,9 @@ hitzeschutz_jalousien_fassadenstatus_pruefen:
       data:
         checks: "{{ checks }}"
 
-hitzeschutz_jalousien_regeln_anwenden:
-  alias: Hitzeschutz Jalousien Regeln anwenden
+auto_jalousien:
+  alias: Auto Jalousien
+  icon: mdi:blinds-horizontal
   mode: single
   sequence:
     - action: script.hitzeschutz_jalousien_fassadenstatus_pruefen
