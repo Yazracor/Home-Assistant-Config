@@ -64,7 +64,6 @@ cover,Flur OG Fenster,cover.og_flur_fenster,4/2/14_None,flur_og,Flur OG,obergesc
 cover,Treppe OG,cover.og_treppe,4/0/52_None,treppe_og,Treppe OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=cover.treppe_og;cover.jalousie_og_treppe
 cover,WC OG Fenster,cover.og_wc_fenster,4/0/8_None,wc_og,WC OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,legacy_entity_ids=cover.wc_og_fenster;cover.jalousie_og_wc
 cover,Bad OG Balkon innen,cover.og_bad_balkon_innen,4/2/2_None,bad_og,Bad OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,"Gruppenadresse Balkon innen 3x aus 4A4/4A5/5A3. legacy_entity_ids=cover.bad_og_innen;cover.jalousie_og_bad_innen"
-cover,Bad OG außen 5x,cover.og_bad_aussen_5x,4/2/8_None,bad_og,Bad OG,obergeschoss,Obergeschoss,FHEM room + KNX/ETS group address name,"Gruppenadresse fuer Balkon-/Suedwand. legacy_entity_ids=cover.jalousie_og_bad_aussen_balkon"
 cover,Bad OG Balkon rechts,cover.og_bad_balkon_rechts,4/0/16_None,bad_og,Bad OG,obergeschoss,Obergeschoss,KNX/ETS group address name,Sued-Fassade Einzelachse A5. hidden_by=integration
 cover,Bad OG Balkon Mitte,cover.og_bad_balkon_mitte,4/0/20_None,bad_og,Bad OG,obergeschoss,Obergeschoss,KNX/ETS group address name,Sued-Fassade Einzelachse A6. hidden_by=integration
 cover,Bad OG Balkon links,cover.og_bad_balkon_links,4/0/24_None,bad_og,Bad OG,obergeschoss,Obergeschoss,KNX/ETS group address name,Sued-Fassade Einzelachse A7. hidden_by=integration
