@@ -144,8 +144,8 @@ hitzeschutz_jalousien_sammel_benachrichtigen:
   sequence:
     - variables:
         payload: "{{ notification_payload | from_json if notification_payload is string else notification_payload }}"
-        summaries: "{{ payload.summaries }}"
-        items: "{{ payload.items }}"
+        summaries: "{{ payload['summaries'] }}"
+        details: "{{ payload['details'] }}"
         lux: "{{ states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) }}"
         outside_temp: "{{ states('sensor.aussenbereich_wetterstation_temperatur') | float(0) }}"
         azimuth: "{{ state_attr('sun.sun', 'azimuth') | float(0) }}"
@@ -156,7 +156,7 @@ hitzeschutz_jalousien_sammel_benachrichtigen:
         title: "Jalousien: Hitzeschutz"
         message: >-
           Hitzeschutz: {{ summaries | join(', ') }}
-          {{ items | join('\n') }}
+          {{ details | join('\n') }}
 
           Helligkeit: {{ lux | round(0) }} lx, aussen: {{ outside_temp | round(1) }} °C,
           Sonne: {{ elevation | round(1) }}° / {{ azimuth | round(0) }}°.
@@ -185,11 +185,15 @@ hitzeschutz_jalousien_checks_pruefen:
             'Fassade Süd': 'Südseite',
             'Fassade Nord': 'Nordseite'
           } %}
+          {% set automatik_entity_ids = expand('group.hitzeschutz_automatik_jalousien') | map(attribute='entity_id') | list %}
+          {% set bedroom_entity_ids = area_entities('schlafzimmer') | select('match', '^cover\.') | list %}
           {% set ns = namespace(summaries=[], items=[]) %}
           {% for check in check_items %}
             {% set facade_name = check.facade_name %}
             {% set action_id = check.action_id %}
             {% set action_text = 'schließen' if action_id == 'close' else 'öffnen' %}
+            {% set action_done = 'Schließen ausgelöst' if action_id == 'close' else 'Öffnen ausgelöst' %}
+            {% set action_blocked = 'Schließen nicht ausgelöst' if action_id == 'close' else 'Öffnen nicht ausgelöst' %}
             {% set cover_entity_ids = check.cover_entities if check.cover_entities is iterable and check.cover_entities is not string else [] %}
             {% set facade = namespace(items=[]) %}
             {% for cover_entity in cover_entity_ids %}
@@ -197,12 +201,39 @@ hitzeschutz_jalousien_checks_pruefen:
               {% set cover_state = states(cover_entity) %}
               {% set position = state_attr(cover_entity, 'current_position') %}
               {% set position_text = (position | round(0) | string) ~ '%' if position is number else cover_state %}
+              {% set too_open = (position is number and position > 25) or (position is not number and cover_state in ['open', 'opening']) %}
+              {% set too_closed = (position is number and position < 80) or (position is not number and cover_state in ['closed', 'closing']) %}
+              {% set needs_change = (action_id == 'close' and too_open) or (action_id == 'open' and too_closed) %}
+              {% set automation_marker_ok = not check.require_automation_marker | default(true) or cover_entity in automatik_entity_ids %}
+              {% set automatik_enabled = check.allow_automation | default(true) and (not check.respect_automation_switch | default(true) or is_state('switch.hitzeschutz_og_automatik', 'on')) %}
+              {% set bedroom_open_blocked = action_id == 'open' and now().hour < 10 and cover_entity in bedroom_entity_ids %}
+              {% from 'hitzeschutz_manual.jinja' import cooldown_helper %}
+              {% set cooldown_helper = cooldown_helper | as_function %}
+              {% set cooldown_entity = cooldown_helper(cover_entity) %}
+              {% set last_manual_ts = states(cooldown_entity) | as_timestamp(0) %}
+              {% set manual_cooldown_active = last_manual_ts > 0 and (now() | as_timestamp) - last_manual_ts < 2 * 3600 %}
+              {% set manual_cooldown_ok = check.ignore_manual_cooldown | default(false) or not manual_cooldown_active %}
               {% if cover_state in ['unknown', 'unavailable'] %}
-                {% set facade.items = facade.items + ['- ' ~ facade_names.get(facade_name, facade_name) ~ ': ' ~ cover_name ~ ' (' ~ cover_state ~ ', nicht prüfbar)'] %}
-              {% elif action_id == 'close' and ((position is number and position > 25) or (position is not number and cover_state in ['open', 'opening'])) %}
-                {% set facade.items = facade.items + ['- ' ~ facade_names.get(facade_name, facade_name) ~ ': ' ~ cover_name ~ ' schließen (' ~ position_text ~ ')'] %}
-              {% elif action_id == 'open' and ((position is number and position < 80) or (position is not number and cover_state in ['closed', 'closing'])) %}
-                {% set facade.items = facade.items + ['- ' ~ facade_names.get(facade_name, facade_name) ~ ': ' ~ cover_name ~ ' öffnen (' ~ position_text ~ ')'] %}
+                {% set facade.items = facade.items + ['- ' ~ facade_names.get(facade_name, facade_name) ~ ': ' ~ cover_name ~ ' übersprungen, nicht prüfbar (' ~ cover_state ~ ')'] %}
+              {% elif needs_change %}
+                {% set reasons = [] %}
+                {% if not automatik_enabled %}
+                  {% set reasons = reasons + ['Automatik aus'] %}
+                {% endif %}
+                {% if not automation_marker_ok %}
+                  {% set reasons = reasons + ['nicht im Automatik-Tag'] %}
+                {% endif %}
+                {% if bedroom_open_blocked %}
+                  {% set reasons = reasons + ['Schlafzimmer vor 10:00'] %}
+                {% endif %}
+                {% if not manual_cooldown_ok %}
+                  {% set reasons = reasons + ['manueller Override aktiv'] %}
+                {% endif %}
+                {% if reasons | count == 0 %}
+                  {% set facade.items = facade.items + ['- ' ~ facade_names.get(facade_name, facade_name) ~ ': ' ~ cover_name ~ ' ' ~ action_done ~ ' (' ~ position_text ~ ')'] %}
+                {% else %}
+                  {% set facade.items = facade.items + ['- ' ~ facade_names.get(facade_name, facade_name) ~ ': ' ~ cover_name ~ ' ' ~ action_blocked ~ ' (' ~ position_text ~ '), Grund: ' ~ (reasons | join(', '))] %}
+                {% endif %}
               {% endif %}
             {% endfor %}
             {% if facade.items | count > 0 %}
@@ -210,7 +241,7 @@ hitzeschutz_jalousien_checks_pruefen:
               {% set ns.items = ns.items + facade.items %}
             {% endif %}
           {% endfor %}
-          {{ {'summaries': ns.summaries, 'items': ns.items} | to_json }}
+          {{ {'summaries': ns.summaries, 'details': ns.items} | to_json }}
     - repeat:
         for_each: "{{ check_items }}"
         sequence:
@@ -225,7 +256,7 @@ hitzeschutz_jalousien_checks_pruefen:
               ignore_manual_cooldown: "{{ repeat.item.ignore_manual_cooldown | default(false) }}"
     - if:
         - condition: template
-          value_template: "{{ (notification_payload | from_json).items | count > 0 }}"
+          value_template: "{{ (notification_payload | from_json)['details'] | count > 0 }}"
       then:
         - action: script.hitzeschutz_jalousien_sammel_benachrichtigen
           data:
