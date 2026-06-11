@@ -243,18 +243,6 @@
   position_state_address: "4/1/2"
   travelling_time_down: 27
   travelling_time_up: 27
-# ETS/FHEM group: OG Bad 5x aussen
-# Deckt die gemeinsame Aussen-/Balkonwand-Gruppe ab; Einzelachsen stehen darunter separat.
-# move_long_address: 4/2/8 -> OG Bad 5x aussen LZ | Jalousien > Gruppen
-# move_short_address: 4/2/9 -> OG Bad 5x aussen KZ | Jalousien > Gruppen
-# position_address: 4/0/15 -> A4 OG Bad Panoramaf. JP | Jalousien > OG/EG/KG Aussen
-# position_state_address: 4/0/14 -> A4 OG Bad Panoramaf. R JP | Jalousien > OG/EG/KG Aussen
-- name: "Jalousie_OG_Bad_Aussen_5x"
-  move_long_address: "4/2/8"
-  move_short_address: "4/2/9"
-  position_state_address: "4/0/14"
-  travelling_time_down: 27
-  travelling_time_up: 27
 # ETS: A5 OG Bad rechts
 # move_long_address: 4/0/16 -> A5 OG Bad rechts LZ | Jalousien > OG/EG/KG Aussen
 # move_short_address: 4/0/17 -> A5 OG Bad rechts KZ | Jalousien > OG/EG/KG Aussen
