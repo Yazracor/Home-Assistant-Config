@@ -26,11 +26,15 @@
       - media_player.homepod_kuche
       - media_player.medienzimmer
       - media_player.samsung_fernseher
+      - media_player.sinja_homepod
+      - media_player.silas_homepod
       - media_player.verstarker
       - media_player.verstarker_wohnzimmer_zone2
       - media_player.wohnzimmer_3
       - remote.homepod_kuche
       - remote.samsung_fernseher
+      - remote.sinja_homepod
+      - remote.silas_homepod
       - remote.wohnzimmer
       - switch.hitzeschutz_jalousien_anwenden
       - switch.medienzimmer_crossfade
@@ -49,3 +53,10 @@
       - switch.verstarker_extra_bass_2
       - switch.verstarker_party_mode
       - switch.verstarker_pure_direct
+
+- name: Fernseher
+  port: 21067
+  mode: accessory
+  filter:
+    include_entities:
+      - media_player.samsung_fernseher
