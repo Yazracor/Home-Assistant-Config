@@ -1,5 +1,5 @@
 - name: HASS Bridge
-  port: 21064
+  port: 21066
   filter:
     include_domains:
       - alarm_control_panel
@@ -51,7 +51,7 @@
       - switch.verstarker_pure_direct
 
 - name: Fernseher
-  port: 21065
+  port: 21067
   mode: accessory
   filter:
     include_entities:
