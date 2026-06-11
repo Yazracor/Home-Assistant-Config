@@ -40,10 +40,16 @@
       hours: 0
       minutes: 10
       seconds: 0
+  - trigger: time_pattern
+    minutes: "/5"
   conditions:
-  - condition: numeric_state
-    entity_id: sensor.wifi_smart_switch_humidity
-    above: 60
+  - condition: state
+    entity_id: binary_sensor.garage_feuchte_ueber_60
+    state: "on"
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
   - condition: numeric_state
     entity_id: sensor.wifi_smart_switch_temperature
     above: 5.5

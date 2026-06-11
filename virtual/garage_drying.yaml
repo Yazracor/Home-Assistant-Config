@@ -6,3 +6,10 @@ input_number:
     step: 0.1
     unit_of_measurement: "%"
     icon: mdi:water-percent
+
+template:
+  - binary_sensor:
+      - name: "Garage Feuchte ueber 60"
+        unique_id: garage_feuchte_ueber_60
+        device_class: moisture
+        state: "{{ states('sensor.wifi_smart_switch_humidity') | float(0) > 60 }}"
