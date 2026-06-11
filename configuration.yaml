@@ -18,5 +18,7 @@ template: !include templates.yaml
 shell_command:
   git_snapshot: /bin/sh /config/git-snapshot.sh
 
+homekit: !include homekit.yaml
+
 # KNX entities converted from FHEM/ETS
 knx: !include knx.yaml

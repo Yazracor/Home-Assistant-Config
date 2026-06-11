@@ -1,0 +1,58 @@
+- name: HASS Bridge
+  port: 21064
+  filter:
+    include_domains:
+      - alarm_control_panel
+      - climate
+      - cover
+      - humidifier
+      - fan
+      - light
+      - lock
+      - media_player
+      - remote
+      - switch
+      - vacuum
+      - lawn_mower
+      - water_heater
+    include_entities:
+      - binary_sensor.praesenz
+      - binary_sensor.person_zuhause
+      - binary_sensor.haushaltshilfe_anwesend
+      - binary_sensor.gast_im_haus
+      - binary_sensor.manuelle_bedienung_aktiv
+      - script.auto_jalousien
+    exclude_entities:
+      - media_player.homepod_kuche
+      - media_player.medienzimmer
+      - media_player.samsung_fernseher
+      - media_player.verstarker
+      - media_player.verstarker_wohnzimmer_zone2
+      - media_player.wohnzimmer_3
+      - remote.homepod_kuche
+      - remote.samsung_fernseher
+      - remote.wohnzimmer
+      - switch.hitzeschutz_jalousien_anwenden
+      - switch.medienzimmer_crossfade
+      - switch.medienzimmer_loudness
+      - switch.medienzimmer_night_sound
+      - switch.medienzimmer_speech_enhancement
+      - switch.medienzimmer_subwoofer_enabled
+      - switch.medienzimmer_surround_enabled
+      - switch.medienzimmer_surround_music_full_volume
+      - switch.medienzimmer_tv_autoplay
+      - switch.medienzimmer_ungroup_on_autoplay
+      - switch.verstarker_adaptive_drc
+      - switch.verstarker_enhancer
+      - switch.verstarker_enhancer_2
+      - switch.verstarker_extra_bass
+      - switch.verstarker_extra_bass_2
+      - switch.verstarker_party_mode
+      - switch.verstarker_pure_direct
+
+- name: Fernseher
+  port: 21065
+  mode: accessory
+  filter:
+    include_entities:
+      - media_player.samsung_fernseher
