@@ -508,10 +508,10 @@
       {{ touched_entities(trigger.id, trigger.event.data, trigger.event.context.user_id, automatik_entity_ids, knx_cover_map(), 'cover', false) | to_json }}
   conditions:
   - condition: template
-    value_template: "{{ touched_cover_entities | from_json | count > 0 }}"
+    value_template: "{{ touched_cover_entities | from_json(default=[]) | count > 0 }}"
   actions:
   - repeat:
-      for_each: "{{ touched_cover_entities | from_json }}"
+      for_each: "{{ touched_cover_entities | from_json(default=[]) }}"
       sequence:
       - variables:
           cooldown_helper: >-
@@ -547,10 +547,10 @@
       {{ touched_entities(trigger.id, trigger.event.data, trigger.event.context.user_id, adaptive_light_entities, knx_light_map(), 'light', true) | to_json }}
   conditions:
   - condition: template
-    value_template: "{{ touched_light_entities | from_json | count > 0 }}"
+    value_template: "{{ touched_light_entities | from_json(default=[]) | count > 0 }}"
   actions:
   - repeat:
-      for_each: "{{ touched_light_entities | from_json }}"
+      for_each: "{{ touched_light_entities | from_json(default=[]) }}"
       sequence:
       - variables:
           manual_helper: >-
