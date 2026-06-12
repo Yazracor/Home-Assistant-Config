@@ -64,12 +64,12 @@
   alias: Garage TTK Entfeuchter aus
   description: Schaltet den TTK 75 Eco bei Ziel-Feuchte oder unter 5 Grad ab.
   triggers:
-  - trigger: numeric_state
-    entity_id: sensor.wifi_smart_switch_humidity
-    below: 55
-  - trigger: numeric_state
-    entity_id: sensor.wifi_smart_switch_temperature
-    below: 5
+  - trigger: state
+    entity_id: binary_sensor.garage_feuchte_unter_55
+    to: "on"
+  - trigger: state
+    entity_id: binary_sensor.garage_temperatur_unter_5
+    to: "on"
     for:
       hours: 0
       minutes: 5
@@ -82,12 +82,16 @@
     state: "on"
   - condition: or
     conditions:
-    - condition: numeric_state
-      entity_id: sensor.wifi_smart_switch_humidity
-      below: 55
-    - condition: numeric_state
-      entity_id: sensor.wifi_smart_switch_temperature
-      below: 5
+    - condition: state
+      entity_id: binary_sensor.garage_feuchte_unter_55
+      state: "on"
+    - condition: state
+      entity_id: binary_sensor.garage_temperatur_unter_5
+      state: "on"
+      for:
+        hours: 0
+        minutes: 5
+        seconds: 0
   actions:
   - action: switch.turn_off
     metadata: {}
@@ -175,16 +179,16 @@
   alias: Garage TTR Entfeuchter Boost aus
   description: Schaltet den TTR 57 mit Hysterese ab, wenn die Feuchte wieder passt oder der TTK allein sinnvoller ist.
   triggers:
-  - trigger: numeric_state
-    entity_id: sensor.wifi_smart_switch_humidity
-    below: 58
+  - trigger: state
+    entity_id: binary_sensor.garage_feuchte_unter_58
+    to: "on"
     for:
       hours: 0
       minutes: 30
       seconds: 0
-  - trigger: numeric_state
-    entity_id: sensor.wifi_smart_switch_temperature
-    above: 13
+  - trigger: state
+    entity_id: binary_sensor.garage_temperatur_ueber_13
+    to: "on"
     for:
       hours: 0
       minutes: 30
@@ -204,17 +208,29 @@
     state: "on"
   - condition: or
     conditions:
-    - condition: numeric_state
-      entity_id: sensor.wifi_smart_switch_humidity
-      below: 58
-    - condition: numeric_state
-      entity_id: sensor.wifi_smart_switch_temperature
-      above: 13
+    - condition: state
+      entity_id: binary_sensor.garage_feuchte_unter_58
+      state: "on"
+      for:
+        hours: 0
+        minutes: 30
+        seconds: 0
+    - condition: state
+      entity_id: binary_sensor.garage_temperatur_ueber_13
+      state: "on"
+      for:
+        hours: 0
+        minutes: 30
+        seconds: 0
     - condition: and
       conditions:
       - condition: state
         entity_id: switch.entfeuchter
         state: "off"
+        for:
+          hours: 0
+          minutes: 2
+          seconds: 0
       - condition: template
         value_template: >-
           {{ states('sensor.wifi_smart_switch_temperature') | float(99) >= 5 }}
