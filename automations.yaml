@@ -448,6 +448,10 @@
         and current > 60
         and start - current < 3
       }}
+  conditions:
+  - condition: state
+    entity_id: input_boolean.garage_entfeuchtung_warnung_aktiv
+    state: "off"
   actions:
   - action: notify.mobile_app_torbens_iphone
     metadata: {}
@@ -463,6 +467,9 @@
         push:
           sound:
             name: default
+  - action: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.garage_entfeuchtung_warnung_aktiv
   mode: single
 - id: garage_entfeuchter_beide_feuchte_steigt_warnung
   alias: Garage Entfeuchter beide Feuchte steigt Warnung
@@ -480,6 +487,10 @@
         and current > 60
         and current - start >= 1
       }}
+  conditions:
+  - condition: state
+    entity_id: input_boolean.garage_entfeuchtung_warnung_aktiv
+    state: "off"
   actions:
   - action: notify.mobile_app_torbens_iphone
     metadata: {}
@@ -496,6 +507,42 @@
         push:
           sound:
             name: default
+  - action: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.garage_entfeuchtung_warnung_aktiv
+  mode: single
+- id: garage_entfeuchter_feuchte_wieder_ok
+  alias: Garage Entfeuchter Feuchte wieder ok
+  description: Meldet einmalig Entwarnung, wenn die Garagenfeuchte nach einer Entfeuchtungswarnung wieder unter 60 Prozent liegt.
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.garage_feuchte_unter_60
+    to: "on"
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  conditions:
+  - condition: state
+    entity_id: input_boolean.garage_entfeuchtung_warnung_aktiv
+    state: "on"
+  actions:
+  - action: notify.mobile_app_torbens_iphone
+    metadata: {}
+    data:
+      title: Garage wieder unter 60 Prozent
+      message: >-
+        Die Garagenfeuchte ist wieder bei
+        {{ states('sensor.wifi_smart_switch_humidity') | float(0) | round(1) }} %.
+        TTK: {{ states('switch.entfeuchter') }},
+        TTR: {{ states('switch.ttr_57_entfeuchter') }}.
+      data:
+        push:
+          sound:
+            name: default
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.garage_entfeuchtung_warnung_aktiv
   mode: single
 - id: abendstatus_haus_hinweise
   alias: Abendstatus Haus Hinweise

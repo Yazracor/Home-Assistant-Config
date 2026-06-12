@@ -1,3 +1,8 @@
+input_boolean:
+  garage_entfeuchtung_warnung_aktiv:
+    name: "Garage Entfeuchtung Warnung aktiv"
+    icon: mdi:alert-circle-outline
+
 input_number:
   garage_entfeuchtung_startfeuchte:
     name: "Garage Entfeuchtung Startfeuchte"
