@@ -137,9 +137,6 @@
   - condition: numeric_state
     entity_id: sensor.wifi_smart_switch_humidity
     above: 63
-  - condition: numeric_state
-    entity_id: sensor.wifi_smart_switch_temperature
-    below: 12
   - condition: or
     conditions:
     - condition: numeric_state
@@ -157,6 +154,21 @@
       - condition: numeric_state
         entity_id: sensor.wifi_smart_switch_humidity
         above: 63
+      - condition: numeric_state
+        entity_id: sensor.wifi_smart_switch_temperature
+        below: 12
+    - condition: and
+      conditions:
+      - condition: state
+        entity_id: switch.entfeuchter
+        state: "on"
+      - condition: state
+        entity_id: binary_sensor.garage_feuchte_ueber_65
+        state: "on"
+        for:
+          hours: 0
+          minutes: 30
+          seconds: 0
     - condition: and
       conditions:
       - condition: state
@@ -180,7 +192,7 @@
   description: Schaltet den TTR 57 mit Hysterese ab, wenn die Feuchte wieder passt oder der TTK allein sinnvoller ist.
   triggers:
   - trigger: state
-    entity_id: binary_sensor.garage_feuchte_unter_58
+    entity_id: binary_sensor.garage_feuchte_unter_60
     to: "on"
     for:
       hours: 0
@@ -209,19 +221,24 @@
   - condition: or
     conditions:
     - condition: state
-      entity_id: binary_sensor.garage_feuchte_unter_58
+      entity_id: binary_sensor.garage_feuchte_unter_60
       state: "on"
       for:
         hours: 0
         minutes: 30
         seconds: 0
-    - condition: state
-      entity_id: binary_sensor.garage_temperatur_ueber_13
-      state: "on"
-      for:
-        hours: 0
-        minutes: 30
-        seconds: 0
+    - condition: and
+      conditions:
+      - condition: state
+        entity_id: binary_sensor.garage_temperatur_ueber_13
+        state: "on"
+        for:
+          hours: 0
+          minutes: 30
+          seconds: 0
+      - condition: numeric_state
+        entity_id: sensor.wifi_smart_switch_humidity
+        below: 63
     - condition: and
       conditions:
       - condition: state
@@ -240,6 +257,32 @@
     target:
       entity_id: switch.ttr_57_entfeuchter
     data: {}
+  mode: single
+- id: garage_entfeuchter_boost_startfeuchte_merken
+  alias: Garage Entfeuchter Boost Startfeuchte merken
+  description: Merkt die Luftfeuchte, wenn beide Garagen-Entfeuchter gemeinsam laufen.
+  triggers:
+  - trigger: state
+    entity_id: switch.entfeuchter
+    from: "off"
+    to: "on"
+  - trigger: state
+    entity_id: switch.ttr_57_entfeuchter
+    from: "off"
+    to: "on"
+  conditions:
+  - condition: state
+    entity_id: switch.entfeuchter
+    state: "on"
+  - condition: state
+    entity_id: switch.ttr_57_entfeuchter
+    state: "on"
+  actions:
+  - action: input_number.set_value
+    target:
+      entity_id: input_number.garage_entfeuchtung_boost_startfeuchte
+    data:
+      value: "{{ states('sensor.wifi_smart_switch_humidity') | float(0) }}"
   mode: single
 - id: garage_entfeuchter_ohne_leistung_warnung
   alias: Garage Entfeuchter ohne Leistung Warnung
@@ -416,6 +459,39 @@
         jetzt {{ states('sensor.wifi_smart_switch_humidity') | float(0) | round(1) }} %.
         Temperatur: {{ states('sensor.wifi_smart_switch_temperature') | float(0) | round(1) }} °C.
         TTK: {{ states('switch.entfeuchter') }}, TTR: {{ states('switch.ttr_57_entfeuchter') }}.
+      data:
+        push:
+          sound:
+            name: default
+  mode: single
+- id: garage_entfeuchter_beide_feuchte_steigt_warnung
+  alias: Garage Entfeuchter beide Feuchte steigt Warnung
+  description: Meldet, wenn die Garagenfeuchte trotz beider laufender Entfeuchter weiter steigt.
+  triggers:
+  - trigger: template
+    value_template: >-
+      {% set start = states('input_number.garage_entfeuchtung_boost_startfeuchte') | float(0) %}
+      {% set current = states('sensor.wifi_smart_switch_humidity') | float(0) %}
+      {{
+        is_state('switch.entfeuchter', 'on')
+        and is_state('switch.ttr_57_entfeuchter', 'on')
+        and now() - states.switch.entfeuchter.last_changed > timedelta(hours=1)
+        and now() - states.switch.ttr_57_entfeuchter.last_changed > timedelta(hours=1)
+        and current > 60
+        and current - start >= 1
+      }}
+  actions:
+  - action: notify.mobile_app_torbens_iphone
+    metadata: {}
+    data:
+      title: Garage wird trotz Boost feuchter
+      message: >-
+        Die Garagenfeuchte steigt trotz TTK und TTR:
+        Boost-Start {{ states('input_number.garage_entfeuchtung_boost_startfeuchte') | float(0) | round(1) }} %,
+        jetzt {{ states('sensor.wifi_smart_switch_humidity') | float(0) | round(1) }} %.
+        Temperatur: {{ states('sensor.wifi_smart_switch_temperature') | float(0) | round(1) }} °C.
+        TTK-Leistung: {{ states('sensor.entfeuchter_power') | float(0) | round(0) }} W,
+        TTR-Leistung: {{ states('sensor.ttr_57_entfeuchter_leistung') | float(0) | round(0) }} W.
       data:
         push:
           sound:
