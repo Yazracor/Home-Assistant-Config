@@ -907,3 +907,53 @@
     target:
       entity_id: switch.hitzeschutz_og_automatik
   mode: single
+- id: kueche_homepod_guten_morgen_erste_bedienung
+  alias: Küche HomePod Guten Morgen bei erster Bedienung
+  description: Sagt morgens beim ersten Einschalten von Küchenlicht oder Tisch-Schalter einmalig Guten Morgen.
+  triggers:
+  - trigger: state
+    entity_id: light.eg_kueche_decke
+    from: "off"
+    to: "on"
+  - trigger: state
+    entity_id: switch.eg_kueche_tisch
+    from: "off"
+    to: "on"
+  conditions:
+  - condition: time
+    after: "04:00:00"
+    before: "11:00:00"
+  - condition: template
+    value_template: >-
+      {{
+        this.attributes.last_triggered is none
+        or as_local(this.attributes.last_triggered).date() != now().date()
+      }}
+  actions:
+  - variables:
+      previous_volume: "{{ state_attr('media_player.homepod_kuche', 'volume_level') }}"
+  - action: media_player.volume_set
+    target:
+      entity_id: media_player.homepod_kuche
+    data:
+      volume_level: 0.6
+  - action: tts.speak
+    target:
+      entity_id: tts.home_assistant_cloud
+    data:
+      cache: true
+      media_player_entity_id: media_player.homepod_kuche
+      message: Guten Morgen
+      language: de-DE
+  - delay:
+      seconds: 5
+  - if:
+    - condition: template
+      value_template: "{{ previous_volume is number }}"
+    then:
+    - action: media_player.volume_set
+      target:
+        entity_id: media_player.homepod_kuche
+      data:
+        volume_level: "{{ previous_volume }}"
+  mode: single
