@@ -13,3 +13,19 @@ template:
         unique_id: garage_feuchte_ueber_60
         device_class: moisture
         state: "{{ states('sensor.wifi_smart_switch_humidity') | float(0) > 60 }}"
+      - name: "Garage Feuchte unter 55"
+        unique_id: garage_feuchte_unter_55
+        device_class: moisture
+        state: "{{ states('sensor.wifi_smart_switch_humidity') | float(999) < 55 }}"
+      - name: "Garage Feuchte unter 58"
+        unique_id: garage_feuchte_unter_58
+        device_class: moisture
+        state: "{{ states('sensor.wifi_smart_switch_humidity') | float(999) < 58 }}"
+      - name: "Garage Temperatur unter 5"
+        unique_id: garage_temperatur_unter_5
+        device_class: cold
+        state: "{{ states('sensor.wifi_smart_switch_temperature') | float(99) < 5 }}"
+      - name: "Garage Temperatur ueber 13"
+        unique_id: garage_temperatur_ueber_13
+        device_class: heat
+        state: "{{ states('sensor.wifi_smart_switch_temperature') | float(-99) > 13 }}"
