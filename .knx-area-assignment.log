@@ -43250,3 +43250,4 @@ Nicht zugeordnete erwartete Entitäten:
 Das ist normal, wenn Home Assistant nach dem YAML-Import noch nicht neu gestartet wurde oder wenn Entity-IDs manuell geändert wurden. Unique-IDs werden bevorzugt; geänderte Entity-IDs sind daher meist unkritisch.
 Starting Home Assistant Core...
 {"result":"ok","data":{}}KNX area assignments applied.
+2026-06-12T12:08:47Z runner scheduled after 10s: /homeassistant/devscripts/apply-pending-knx-area-assignments.sh
