@@ -186,7 +186,7 @@ hitzeschutz_jalousien_checks_pruefen:
             'Fassade Nord': 'Nordseite'
           } %}
           {% set automatik_entity_ids = expand('group.hitzeschutz_automatik_jalousien') | map(attribute='entity_id') | list %}
-          {% set bedroom_entity_ids = area_entities('schlafzimmer') | select('match', '^cover\.') | list %}
+          {% set upper_floor_cover_entity_ids = floor_entities('obergeschoss') | select('match', '^cover\.') | list %}
           {% set ns = namespace(summaries=[], items=[]) %}
           {% for check in check_items %}
             {% set facade_name = check.facade_name %}
@@ -206,7 +206,7 @@ hitzeschutz_jalousien_checks_pruefen:
               {% set needs_change = (action_id == 'close' and too_open) or (action_id == 'open' and too_closed) %}
               {% set automation_marker_ok = not check.require_automation_marker | default(true) or cover_entity in automatik_entity_ids %}
               {% set automatik_enabled = check.allow_automation | default(true) and (not check.respect_automation_switch | default(true) or is_state('switch.hitzeschutz_og_automatik', 'on')) %}
-              {% set bedroom_open_blocked = action_id == 'open' and now().hour < 10 and cover_entity in bedroom_entity_ids %}
+              {% set upper_floor_open_blocked = action_id == 'open' and now().hour < 10 and cover_entity in upper_floor_cover_entity_ids %}
               {% from 'hitzeschutz_manual.jinja' import cooldown_helper %}
               {% set cooldown_helper = cooldown_helper | as_function %}
               {% set cooldown_entity = cooldown_helper(cover_entity) %}
@@ -223,8 +223,8 @@ hitzeschutz_jalousien_checks_pruefen:
                 {% if not automation_marker_ok %}
                   {% set reasons = reasons + ['nicht im Automatik-Tag'] %}
                 {% endif %}
-                {% if bedroom_open_blocked %}
-                  {% set reasons = reasons + ['Schlafzimmer vor 10:00'] %}
+                {% if upper_floor_open_blocked %}
+                  {% set reasons = reasons + ['Obergeschoss vor 10:00'] %}
                 {% endif %}
                 {% if not manual_cooldown_ok %}
                   {% set reasons = reasons + ['manueller Override aktiv'] %}
@@ -393,7 +393,7 @@ hitzeschutz_jalousie_fassade_pruefen:
         action_text: "{{ 'Schliessen' if action_id == 'close' else 'Oeffnen' }}"
         cover_entity_ids: "{{ cover_entities if cover_entities is iterable and cover_entities is not string else [] }}"
         automatik_entity_ids: "{{ expand('group.hitzeschutz_automatik_jalousien') | map(attribute='entity_id') | list }}"
-        bedroom_entity_ids: "{{ area_entities('schlafzimmer') | select('match', '^cover\\.') | list }}"
+        upper_floor_cover_entity_ids: "{{ floor_entities('obergeschoss') | select('match', '^cover\\.') | list }}"
     - if:
         - condition: template
           value_template: "{{ cover_entity_ids | count == 0 }}"
@@ -423,7 +423,7 @@ hitzeschutz_jalousie_fassade_pruefen:
               needs_change: "{{ (action_id == 'close' and too_open) or (action_id == 'open' and too_closed) }}"
               automatik_marked: "{{ repeat.item in automatik_entity_ids }}"
               automatik_enabled: "{{ allow_automation | default(true) and (not respect_automation_switch | default(true) or is_state('switch.hitzeschutz_og_automatik', 'on')) }}"
-              bedroom_open_blocked: "{{ action_id == 'open' and now().hour < 10 and repeat.item in bedroom_entity_ids }}"
+              upper_floor_open_blocked: "{{ action_id == 'open' and now().hour < 10 and repeat.item in upper_floor_cover_entity_ids }}"
               automation_marker_ok: "{{ not require_automation_marker | default(true) or automatik_marked }}"
               cooldown_helper: >-
                 {% from 'hitzeschutz_manual.jinja' import cooldown_helper %}
@@ -444,7 +444,7 @@ hitzeschutz_jalousie_fassade_pruefen:
                       message: "{{ cover_entity }} ist {{ cover_state }} und wurde fuer {{ action_text }} {{ facade_name }} uebersprungen."
               - conditions:
                   - condition: template
-                    value_template: "{{ needs_change and automation_marker_ok and automatik_enabled and not bedroom_open_blocked and manual_cooldown_ok }}"
+                    value_template: "{{ needs_change and automation_marker_ok and automatik_enabled and not upper_floor_open_blocked and manual_cooldown_ok }}"
                 sequence:
                   - action: script.hitzeschutz_jalousie_automatisieren
                     data:
