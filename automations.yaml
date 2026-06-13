@@ -1093,9 +1093,6 @@
     entity_id: binary_sensor.praesenz
     from: "off"
     to: "on"
-  variables:
-    klimaanlage_entity: climate.schlafzimmer
-    klimaanlage_target_temperature: "{{ state_attr(klimaanlage_entity, 'temperature') }}"
   conditions:
   - condition: state
     entity_id: binary_sensor.praesenz
@@ -1111,16 +1108,16 @@
   actions:
   - action: climate.set_hvac_mode
     target:
-      entity_id: "{{ klimaanlage_entity }}"
+      entity_id: climate.schlafzimmer
     data:
       hvac_mode: cool
   - if:
     - condition: template
-      value_template: "{{ klimaanlage_target_temperature | float(99) > 22 }}"
+      value_template: "{{ state_attr('climate.schlafzimmer', 'temperature') | float(99) > 22 }}"
     then:
     - action: climate.set_temperature
       target:
-        entity_id: "{{ klimaanlage_entity }}"
+        entity_id: climate.schlafzimmer
       data:
         temperature: 22
         hvac_mode: cool
