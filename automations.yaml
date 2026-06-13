@@ -652,6 +652,9 @@
       {% set touched_entities = touched_entities | as_function %}
       {{ touched_entities(trigger.id, trigger.event.data, trigger.event.context.user_id, automatik_entity_ids, knx_cover_map(), 'cover', false) | to_json }}
   conditions:
+  - condition: state
+    entity_id: input_boolean.hitzeschutz_automatik_fahrbefehl_aktiv
+    state: "off"
   - condition: template
     value_template: "{{ touched_cover_entities | from_json(default=[]) | count > 0 }}"
   actions:

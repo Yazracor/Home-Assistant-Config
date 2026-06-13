@@ -15,12 +15,16 @@ hitzeschutz_jalousie_automatisieren:
             - close
             - open
   sequence:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.hitzeschutz_automatik_fahrbefehl_aktiv
     - choose:
         - conditions:
             - condition: template
               value_template: "{{ action_id == 'close' }}"
           sequence:
             - action: cover.close_cover
+              continue_on_error: true
               target:
                 entity_id: "{{ cover_entity }}"
         - conditions:
@@ -28,6 +32,7 @@ hitzeschutz_jalousie_automatisieren:
               value_template: "{{ action_id == 'open' }}"
           sequence:
             - action: cover.open_cover
+              continue_on_error: true
               target:
                 entity_id: "{{ cover_entity }}"
       default:
@@ -35,6 +40,11 @@ hitzeschutz_jalousie_automatisieren:
           data:
             title: "Hitzeschutz: unbekannte Aktion"
             message: "Unbekannte Aktion '{{ action_id }}' fuer {{ cover_entity }}."
+    - delay:
+        seconds: 5
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.hitzeschutz_automatik_fahrbefehl_aktiv
 
 adaptive_helligkeit_lichter_anpassen:
   alias: Adaptive Helligkeit Lichter anpassen
@@ -327,11 +337,31 @@ hitzeschutz_jalousien_fassadenstatus_pruefen:
       data:
         checks: "{{ checks }}"
 
+hitzeschutz_manuellen_jalousie_block_zuruecksetzen:
+  alias: Hitzeschutz manuellen Jalousie-Block zuruecksetzen
+  mode: single
+  sequence:
+    - repeat:
+        for_each: >-
+          {{
+            states.input_datetime
+            | map(attribute='entity_id')
+            | select('match', '^input_datetime\.hitzeschutz_manual_')
+            | list
+          }}
+        sequence:
+          - action: input_datetime.set_datetime
+            target:
+              entity_id: "{{ repeat.item }}"
+            data:
+              datetime: "1970-01-01 00:00:00"
+
 auto_jalousien:
   alias: Auto Jalousien
   icon: mdi:blinds-horizontal
   mode: single
   sequence:
+    - action: script.hitzeschutz_manuellen_jalousie_block_zuruecksetzen
     - action: script.hitzeschutz_jalousien_fassadenstatus_pruefen
       data:
         facade_state: "on"
