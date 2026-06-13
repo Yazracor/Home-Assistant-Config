@@ -1,0 +1,27 @@
+#!/bin/sh
+set -eu
+
+HA_HOST="${HA_HOST:-192.168.1.10}"
+HA_USER="${HA_USER:-}"
+HA_CONFIG_DIR="${HA_CONFIG_DIR:-/config}"
+
+if [ -n "$HA_USER" ]; then
+  REMOTE="${HA_USER}@${HA_HOST}:${HA_CONFIG_DIR%/}/.storage/"
+else
+  REMOTE="${HA_HOST}:${HA_CONFIG_DIR%/}/.storage/"
+fi
+LOCAL=".storage/"
+
+if ! command -v rsync >/dev/null 2>&1; then
+  echo "rsync is required to pull .storage from ${REMOTE}" >&2
+  exit 1
+fi
+
+mkdir -p "$LOCAL"
+rsync -az --delete \
+  --exclude '/auth' \
+  --exclude '/auth_provider.homeassistant' \
+  --exclude '/http.auth' \
+  --exclude '/*.pem' \
+  "$@" \
+  "$REMOTE" "$LOCAL"

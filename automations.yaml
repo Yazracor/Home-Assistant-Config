@@ -1083,3 +1083,45 @@
       data:
         volume_level: "{{ previous_volume }}"
   mode: single
+- id: schlafzimmer_klimaanlage_abends_kuehlen
+  alias: Schlafzimmer Klimaanlage abends kühlen
+  description: Schaltet die Schlafzimmer-Klimaanlage nach 17 Uhr bei Anwesenheit und Wärme in den Kühlmodus.
+  triggers:
+  - trigger: time
+    at: "17:00:00"
+  - trigger: state
+    entity_id: binary_sensor.praesenz
+    from: "off"
+    to: "on"
+  variables:
+    klimaanlage_entity: climate.schlafzimmer
+    klimaanlage_target_temperature: "{{ state_attr(klimaanlage_entity, 'temperature') }}"
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.praesenz
+    state: "on"
+  - condition: template
+    value_template: "{{ now().hour >= 17 }}"
+  - condition: numeric_state
+    entity_id: sensor.og_schlafzimmer_thermostat_ist_temp
+    above: 23
+  - condition: state
+    entity_id: climate.og_schlafzimmer_thermostat
+    state: cool
+  actions:
+  - action: climate.set_hvac_mode
+    target:
+      entity_id: "{{ klimaanlage_entity }}"
+    data:
+      hvac_mode: cool
+  - if:
+    - condition: template
+      value_template: "{{ klimaanlage_target_temperature | float(99) > 22 }}"
+    then:
+    - action: climate.set_temperature
+      target:
+        entity_id: "{{ klimaanlage_entity }}"
+      data:
+        temperature: 22
+        hvac_mode: cool
+  mode: single
