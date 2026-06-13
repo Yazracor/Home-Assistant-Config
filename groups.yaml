@@ -44,25 +44,55 @@ fassade_nord:
 hitzeschutz_automatik_jalousien:
   name: Hitzeschutz Automatik Jalousien
   entities:
-    - cover.eg_wohnzimmer_balkon
-    - cover.eg_kueche_balkon
-    - cover.og_schlafzimmer_front
-    - cover.og_bad_panorama_aussen
-    - cover.kg_zimmer_sinja_jalousie
-    - cover.kg_zimmer_silas_jalousie
-    - cover.og_treppe
+    - cover.eg_arbeitszimmer_garten
     - cover.eg_arbeitszimmer_vorgarten
     - cover.eg_wohnzimmer_panorama
+    - cover.eg_wohnzimmer_balkon
+    - cover.eg_kueche_balkon
     - cover.eg_kueche_seite
     - cover.eg_kueche_nebeneingang
+    - cover.kg_zimmer_sinja_jalousie
+    - cover.kg_zimmer_silas_jalousie
+    - cover.og_schlafzimmer_front
     - cover.og_schlafzimmer_panorama_aussen
-    - cover.og_flur_fenster
-    - cover.og_bad_balkon
-    - cover.og_bad_balkon_innen
-    - cover.eg_arbeitszimmer_garten
-    - cover.og_ankleide_fenster
     - cover.og_buro_fenster
+    - cover.og_ankleide_fenster
+    - cover.og_flur_fenster
+    - cover.og_treppe
     - cover.og_wc_fenster
+    - cover.og_bad_balkon_innen
+    - cover.og_bad_balkon
+    - cover.og_bad_panorama_aussen
+
+# Tag/Marker: diese Jalousien setzen bei manueller Bedienung den Hitzeschutz-Cooldown.
+hitzeschutz_manueller_block_jalousien:
+  name: Hitzeschutz Manueller Block Jalousien
+  entities:
+    - cover.eg_arbeitszimmer_garten
+    - cover.eg_arbeitszimmer_vorgarten
+    - cover.eg_wohnzimmer_panorama
+    - cover.eg_wohnzimmer_balkon
+    - cover.eg_kueche_balkon
+    - cover.eg_kueche_seite
+    - cover.eg_kueche_nebeneingang
+    - cover.aussenbereich_balkon_sonnensegel
+    - cover.kg_zimmer_sinja_jalousie
+    - cover.kg_zimmer_silas_jalousie
+    - cover.og_schlafzimmer_front_innen
+    - cover.og_schlafzimmer_panorama_innen
+    - cover.og_schlafzimmer_front
+    - cover.og_schlafzimmer_panorama_aussen
+    - cover.og_buro_fenster
+    - cover.og_ankleide_fenster
+    - cover.og_flur_fenster
+    - cover.og_treppe
+    - cover.og_wc_fenster
+    - cover.og_bad_balkon_innen
+    - cover.og_bad_balkon_rechts
+    - cover.og_bad_balkon_mitte
+    - cover.og_bad_balkon_links
+    - cover.og_bad_balkon
+    - cover.og_bad_panorama_aussen
 
 adaptive_helligkeit_lichter:
   name: Adaptive Helligkeit Lichter

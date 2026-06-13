@@ -644,13 +644,13 @@
     event_type: call_service
     id: service
   variables:
-    automatik_entity_ids: "{{ expand('group.hitzeschutz_automatik_jalousien') | map(attribute='entity_id') | list }}"
+    manual_block_entity_ids: "{{ expand('group.hitzeschutz_manueller_block_jalousien') | map(attribute='entity_id') | list }}"
     touched_cover_entities: >-
       {% from 'hitzeschutz_manual.jinja' import knx_cover_map %}
       {% from 'manual_control.jinja' import touched_entities %}
       {% set knx_cover_map = knx_cover_map | as_function %}
       {% set touched_entities = touched_entities | as_function %}
-      {{ touched_entities(trigger.id, trigger.event.data, trigger.event.context.user_id, automatik_entity_ids, knx_cover_map(), 'cover', false) | to_json }}
+      {{ touched_entities(trigger.id, trigger.event.data, trigger.event.context.user_id, manual_block_entity_ids, knx_cover_map(), 'cover', false) | to_json }}
   conditions:
   - condition: state
     entity_id: input_boolean.hitzeschutz_automatik_fahrbefehl_aktiv
