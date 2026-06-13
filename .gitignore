@@ -24,3 +24,5 @@ home-assistant_v2.db*
 .storage/androidtv_remote_cert.pem
 .storage/http.auth
 
+
+.storage/
