@@ -31,6 +31,7 @@ mkdir -p "$LOCAL"
 rsync -az --delete \
   --exclude '/auth' \
   --exclude '/auth_provider.homeassistant' \
+  --exclude '/homekit.*.state' \
   --exclude '/http.auth' \
   --exclude '/*.pem' \
   "$@" \
