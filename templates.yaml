@@ -1,4 +1,73 @@
 - trigger:
+    - platform: homeassistant
+      event: start
+      id: init
+    - platform: event
+      event_type: event_template_reloaded
+      id: init
+    - platform: event
+      event_type: hitzeschutz_manual_block_reset
+      id: reset
+    - platform: event
+      event_type: knx_event
+      id: knx
+    - platform: event
+      event_type: homekit_state_change
+      id: homekit
+    - platform: event
+      event_type: call_service
+      id: service
+  condition:
+    - condition: template
+      value_template: >-
+        {% if trigger.id in ['init', 'reset'] %}
+          {{ true }}
+        {% else %}
+          {% from 'hitzeschutz_manual_generated.jinja' import knx_cover_map %}
+          {% from 'manual_control.jinja' import touched_entities %}
+          {% set knx_cover_map = knx_cover_map | as_function %}
+          {% set touched_entities = touched_entities | as_function %}
+          {% set cover_entities = states.cover | map(attribute='entity_id') | reject('eq', 'cover.aussenbereich_garage_garagentor') | list %}
+          {{
+            is_state('input_boolean.hitzeschutz_automatik_fahrbefehl_aktiv', 'off')
+            and touched_entities(trigger.id, trigger.event.data, trigger.event.context.user_id, cover_entities, knx_cover_map(), 'cover', false) | count > 0
+          }}
+        {% endif %}
+  sensor:
+    - name: "Hitzeschutz Manueller Jalousie-Block"
+      unique_id: hitzeschutz_manueller_jalousie_block
+      state: >-
+        {% if trigger.id == 'init' %}
+          {{ this.state | default('1970-01-01T00:00:00+00:00', true) }}
+        {% else %}
+          {{ now().isoformat() }}
+        {% endif %}
+      attributes:
+        blocked_since: >-
+          {% set previous = this.attributes.blocked_since | default({}, true) %}
+          {% if trigger.id == 'init' %}
+            {{ previous | to_json }}
+          {% elif trigger.id == 'reset' %}
+            {{ {} | to_json }}
+          {% else %}
+            {% from 'hitzeschutz_manual_generated.jinja' import knx_cover_map %}
+            {% from 'manual_control.jinja' import touched_entities %}
+            {% set knx_cover_map = knx_cover_map | as_function %}
+            {% set touched_entities = touched_entities | as_function %}
+            {% set cover_entities = states.cover | map(attribute='entity_id') | reject('eq', 'cover.aussenbereich_garage_garagentor') | list %}
+            {% set touched = touched_entities(trigger.id, trigger.event.data, trigger.event.context.user_id, cover_entities, knx_cover_map(), 'cover', false) %}
+            {% set cutoff = (now() | as_timestamp) - 2 * 3600 %}
+            {% set ns = namespace(entries=[]) %}
+            {% for entity, timestamp in previous.items() if entity not in touched and timestamp | as_timestamp(0) >= cutoff %}
+              {% set ns.entries = ns.entries + [(entity, timestamp)] %}
+            {% endfor %}
+            {% for entity in touched %}
+              {% set ns.entries = ns.entries + [(entity, now().isoformat())] %}
+            {% endfor %}
+            {{ dict(ns.entries) | to_json }}
+          {% endif %}
+
+- trigger:
     - platform: event
       event_type: knx_event
   condition:

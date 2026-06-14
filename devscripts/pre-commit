@@ -1,0 +1,26 @@
+#!/bin/sh
+set -eu
+
+repo_root="$(git rev-parse --show-toplevel)"
+generated_file="custom_templates/hitzeschutz_manual_generated.jinja"
+
+cd "$repo_root"
+
+if git diff --cached --name-only | grep -q '^\.storage/'; then
+  echo "Refusing to commit .storage changes from this machine."
+  exit 1
+fi
+
+python3 tools/generate_hitzeschutz_manual_map.py
+
+if ! git ls-files --error-unmatch "$generated_file" >/dev/null 2>&1; then
+  echo "Generated file is not tracked yet: $generated_file"
+  echo "Review it, then stage it before committing."
+  exit 1
+fi
+
+if ! git diff --quiet -- "$generated_file"; then
+  echo "Generated file changed: $generated_file"
+  echo "Review it, then stage it before committing."
+  exit 1
+fi

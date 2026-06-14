@@ -217,10 +217,7 @@ hitzeschutz_jalousien_checks_pruefen:
               {% set automation_marker_ok = not check.require_automation_marker | default(true) or cover_entity in automatik_entity_ids %}
               {% set automatik_enabled = check.allow_automation | default(true) and (not check.respect_automation_switch | default(true) or is_state('switch.hitzeschutz_og_automatik', 'on')) %}
               {% set upper_floor_open_blocked = action_id == 'open' and now().hour < 10 and cover_entity in upper_floor_cover_entity_ids %}
-              {% from 'hitzeschutz_manual.jinja' import cooldown_helper %}
-              {% set cooldown_helper = cooldown_helper | as_function %}
-              {% set cooldown_entity = cooldown_helper(cover_entity) %}
-              {% set last_manual_ts = states(cooldown_entity) | as_timestamp(0) %}
+              {% set last_manual_ts = (state_attr('sensor.hitzeschutz_manueller_jalousie_block', 'blocked_since') | default({}, true)).get(cover_entity, '') | as_timestamp(0) %}
               {% set manual_cooldown_active = last_manual_ts > 0 and (now() | as_timestamp) - last_manual_ts < 2 * 3600 %}
               {% set manual_cooldown_ok = check.ignore_manual_cooldown | default(false) or not manual_cooldown_active %}
               {% if cover_state in ['unknown', 'unavailable'] %}
@@ -341,20 +338,7 @@ hitzeschutz_manuellen_jalousie_block_zuruecksetzen:
   alias: Hitzeschutz manuellen Jalousie-Block zuruecksetzen
   mode: single
   sequence:
-    - repeat:
-        for_each: >-
-          {{
-            states.input_datetime
-            | map(attribute='entity_id')
-            | select('match', '^input_datetime\.hitzeschutz_manual_')
-            | list
-          }}
-        sequence:
-          - action: input_datetime.set_datetime
-            target:
-              entity_id: "{{ repeat.item }}"
-            data:
-              datetime: "1970-01-01 00:00:00"
+    - event: hitzeschutz_manual_block_reset
 
 auto_jalousien:
   alias: Auto Jalousien
@@ -455,12 +439,8 @@ hitzeschutz_jalousie_fassade_pruefen:
               automatik_enabled: "{{ allow_automation | default(true) and (not respect_automation_switch | default(true) or is_state('switch.hitzeschutz_og_automatik', 'on')) }}"
               upper_floor_open_blocked: "{{ action_id == 'open' and now().hour < 10 and repeat.item in upper_floor_cover_entity_ids }}"
               automation_marker_ok: "{{ not require_automation_marker | default(true) or automatik_marked }}"
-              cooldown_helper: >-
-                {% from 'hitzeschutz_manual.jinja' import cooldown_helper %}
-                {% set cooldown_helper = cooldown_helper | as_function %}
-                {{ cooldown_helper(repeat.item) }}
               cover_manual_cooldown_active: >-
-                {% set last_ts = states(cooldown_helper) | as_timestamp(0) %}
+                {% set last_ts = (state_attr('sensor.hitzeschutz_manueller_jalousie_block', 'blocked_since') | default({}, true)).get(repeat.item, '') | as_timestamp(0) %}
                 {{ last_ts > 0 and (now() | as_timestamp) - last_ts < 2 * 3600 }}
               manual_cooldown_ok: "{{ ignore_manual_cooldown | default(false) or not cover_manual_cooldown_active }}"
           - choose:

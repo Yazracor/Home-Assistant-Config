@@ -630,48 +630,6 @@
             critical: 1
             volume: 1
   mode: single
-- id: hitzeschutz_manuelle_jalousie_bedienung_merken
-  alias: Hitzeschutz manuelle Jalousie Bedienung merken
-  description: Merkt pro Jalousie, wann sie zuletzt manuell bedient wurde.
-  triggers:
-  - trigger: event
-    event_type: knx_event
-    id: knx
-  - trigger: event
-    event_type: homekit_state_change
-    id: homekit
-  - trigger: event
-    event_type: call_service
-    id: service
-  variables:
-    manual_block_entity_ids: "{{ expand('group.hitzeschutz_manueller_block_jalousien') | map(attribute='entity_id') | list }}"
-    touched_cover_entities: >-
-      {% from 'hitzeschutz_manual.jinja' import knx_cover_map %}
-      {% from 'manual_control.jinja' import touched_entities %}
-      {% set knx_cover_map = knx_cover_map | as_function %}
-      {% set touched_entities = touched_entities | as_function %}
-      {{ touched_entities(trigger.id, trigger.event.data, trigger.event.context.user_id, manual_block_entity_ids, knx_cover_map(), 'cover', false) | to_json }}
-  conditions:
-  - condition: state
-    entity_id: input_boolean.hitzeschutz_automatik_fahrbefehl_aktiv
-    state: "off"
-  - condition: template
-    value_template: "{{ touched_cover_entities | from_json(default=[]) | count > 0 }}"
-  actions:
-  - repeat:
-      for_each: "{{ touched_cover_entities | from_json(default=[]) }}"
-      sequence:
-      - variables:
-          cooldown_helper: >-
-            {% from 'hitzeschutz_manual.jinja' import cooldown_helper %}
-            {% set cooldown_helper = cooldown_helper | as_function %}
-            {{ cooldown_helper(repeat.item) }}
-      - action: input_datetime.set_datetime
-        target:
-          entity_id: "{{ cooldown_helper }}"
-        data:
-          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
-  mode: queued
 - id: adaptive_helligkeit_manuelle_lichtbedienung_merken
   alias: Adaptive Helligkeit manuelle Lichtbedienung merken
   description: Merkt pro dimmbarem Licht, wann es zuletzt manuell oder extern bedient wurde.

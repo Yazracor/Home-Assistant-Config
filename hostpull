@@ -4,16 +4,26 @@ set -eu
 HA_HOST="${HA_HOST:-192.168.1.10}"
 HA_USER="${HA_USER:-}"
 HA_CONFIG_DIR="${HA_CONFIG_DIR:-/config}"
+HA_DB_PATH="${HA_DB_PATH:-${HA_CONFIG_DIR%/}/home-assistant_v2.db}"
+HA_REMOTE_SNAPSHOT_DIR="${HA_REMOTE_SNAPSHOT_DIR:-/tmp}"
+HA_LOCAL_DB_PATH="${HA_LOCAL_DB_PATH:-./home-assistant_v2.db}"
+HA_PULL_DB_SNAPSHOT="${HA_PULL_DB_SNAPSHOT:-1}"
 
 if [ -n "$HA_USER" ]; then
-  REMOTE="${HA_USER}@${HA_HOST}:${HA_CONFIG_DIR%/}/.storage/"
+  SSH_TARGET="${HA_USER}@${HA_HOST}"
 else
-  REMOTE="${HA_HOST}:${HA_CONFIG_DIR%/}/.storage/"
+  SSH_TARGET="${HA_HOST}"
 fi
+REMOTE="${SSH_TARGET}:${HA_CONFIG_DIR%/}/.storage/"
 LOCAL=".storage/"
 
 if ! command -v rsync >/dev/null 2>&1; then
   echo "rsync is required to pull .storage from ${REMOTE}" >&2
+  exit 1
+fi
+
+if [ "$HA_PULL_DB_SNAPSHOT" = "1" ] && ! command -v ssh >/dev/null 2>&1; then
+  echo "ssh is required to create a Home Assistant database snapshot on ${SSH_TARGET}" >&2
   exit 1
 fi
 
@@ -25,3 +35,20 @@ rsync -az --delete \
   --exclude '/*.pem' \
   "$@" \
   "$REMOTE" "$LOCAL"
+
+if [ "$HA_PULL_DB_SNAPSHOT" = "1" ]; then
+  timestamp="$(date -u '+%Y%m%dT%H%M%SZ')"
+  remote_snapshot="${HA_REMOTE_SNAPSHOT_DIR%/}/home-assistant_v2_${timestamp}.db"
+  local_db_tmp="${HA_LOCAL_DB_PATH}.tmp"
+
+  mkdir -p "$(dirname "$HA_LOCAL_DB_PATH")"
+
+  ssh "$SSH_TARGET" \
+    "mkdir -p '${HA_REMOTE_SNAPSHOT_DIR%/}' && sqlite3 '${HA_DB_PATH}' '.backup ${remote_snapshot}'"
+
+  rsync -az "${SSH_TARGET}:${remote_snapshot}" "$local_db_tmp"
+  mv "$local_db_tmp" "$HA_LOCAL_DB_PATH"
+  ssh "$SSH_TARGET" "rm -f '${remote_snapshot}'"
+
+  echo "Updated local Home Assistant database: $HA_LOCAL_DB_PATH"
+fi
