@@ -1,6 +1,7 @@
 __pycache__/
 *.py[cod]
 .knx-area-assignment.env
+.knx-area-assignment.log
 .knx-events*.log
 .ha-token
 .pending_knx_area_assignment
