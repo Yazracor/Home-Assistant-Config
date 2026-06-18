@@ -29,8 +29,8 @@ balkon,Balkon,aussenbereich,Sonnensegel;Balkon;Terrasse EG,,
 balkon_obergeschoss,Balkon Obergeschoss,aussenbereich,Aussenbeleuchtung OG;Balkon Obergeschoss,,
 terrasse,Terrasse,aussenbereich,Terrasse;Terrasse KG,,
 garage,Garage,aussenbereich,Garagentuer;Garagentor;Garage Innen,sensor.wifi_smart_switch_temperature,sensor.wifi_smart_switch_humidity
-eingangsbereich,Eingangsbereich,aussenbereich,Eingang;Vorgarten;Eingang Vordach;Treppe und Garage;Hof Bega Baumstrahler,,
+eingangsbereich,Eingangsbereich,aussenbereich,Eingang;Vorgarten;Eingang Vordach;Treppe und Garage;Hof Bega Baumstrahler,sensor.sonoff_snzb_02wd_temperatur_eingangsbereich,sensor.sonoff_snzb_02wd_feuchte_korrigiert
 teich,Teich,aussenbereich,Teich;Licht Teich;Unterwasserstrahler,,
 garten,Garten,aussenbereich,Garten;Aussenleuchten links;Aussenleuchten rechts;Wegebeleuchtung nach oben;Wegebeleuchtung nach unten,,
 wetterstation,Wetterstation,aussenbereich,Wetter;Windwächter;Windwaechter,,
-fassade,Fassade,aussenbereich,Fassaden;Hitzeschutz;Verschattung,
+fassade,Fassade,aussenbereich,Fassaden;Hitzeschutz;Verschattung,,
