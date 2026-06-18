@@ -18,21 +18,35 @@
   {% do returns(config(facade).get('azimuth')) %}
 {% endmacro %}
 
+{% macro facade_lux(facade, returns) %}
+  {% set config = facade_config | as_function %}
+  {% set facade_settings = config(facade) %}
+  {% set horizontal_lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
+  {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
+  {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
+  {% set delta = (((azimuth - facade_settings.azimuth + 180) % 360) - 180) | abs %}
+  {% set azimuth_factor = [0, 1 - (delta / 90)] | max %}
+  {% set elevation_rad = elevation * 3.141592653589793 / 180 %}
+  {% set horizontal_factor = [elevation_rad | sin, 0.15] | max %}
+  {% set vertical_factor = [elevation_rad | cos, 0] | max %}
+  {% set sensor_correction = [vertical_factor / horizontal_factor, 6] | min %}
+  {% do returns(horizontal_lux * azimuth_factor * sensor_correction) %}
+{% endmacro %}
+
 {% macro facade_active(facade, returns) %}
   {% set config = facade_config | as_function %}
+  {% set corrected_lux = facade_lux | as_function %}
   {% set facade_settings = config(facade) %}
   {% set lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
   {% set outside_temp = states('sensor.aussenbereich_wetterstation_temperatur') | float(0) %}
   {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
   {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
   {% set temp_threshold = 10000 if outside_temp >= 23 else 15000 if outside_temp >= 15 else 20000 if outside_temp >= 5 else 24000 %}
-  {% set elevation_factor = 0.8 if elevation > 60 else 1 %}
   {% set delta = (((azimuth - facade_settings.azimuth + 180) % 360) - 180) | abs %}
-  {% set load = lux * ([0, 1 - (delta / 90)] | max) * elevation_factor %}
+  {% set load = corrected_lux(facade) %}
   {% do returns(
     is_state('sun.sun', 'above_horizon')
-    and elevation > 8
-    and lux > facade_settings.min_lux
+    and load > facade_settings.min_lux
     and delta < facade_settings.max_delta
     and load > temp_threshold + facade_settings.temp_offset
   ) %}
