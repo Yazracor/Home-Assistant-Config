@@ -19,6 +19,30 @@
           stderr: {{ git_snapshot.stderr | default('') }}
           stdout: {{ git_snapshot.stdout | default('') }}
   mode: single
+- id: sonoff_snzb_02wd_humidity_offset_on_report
+  alias: Sonoff SNZB-02WD Feuchte-Offset bei Sensor-Report schreiben
+  description: Versucht den Geräte-Offset direkt nach einem neuen Messwert zu schreiben, wenn der Sensor kurz erreichbar sein könnte.
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.sonoff_snzb_02wd_humidity
+    - sensor.sonoff_snzb_02wd_temperature
+  conditions:
+  - condition: template
+    value_template: >-
+      {{
+        trigger.to_state is not none
+        and trigger.to_state.state not in ['unknown', 'unavailable']
+        and (states('number.sonoff_snzb_02wd_humidity_offset') | float(999) - 4.5) | abs > 0.05
+      }}
+  actions:
+  - action: number.set_value
+    continue_on_error: true
+    target:
+      entity_id: number.sonoff_snzb_02wd_humidity_offset
+    data:
+      value: 4.5
+  mode: single
 - id: '1780071059264'
   alias: Garage TTK Entfeuchter an
   description: Schaltet den TTK 75 Eco bei hoher Garagenfeuchte ein, solange es warm genug ist.
