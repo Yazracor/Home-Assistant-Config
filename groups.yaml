@@ -3,7 +3,6 @@
 fassade_west:
   name: Fassade West
   entities:
-    - cover.eg_wohnzimmer_balkon
     - cover.eg_kueche_balkon
     - cover.og_schlafzimmer_front
     - cover.og_bad_panorama_aussen
@@ -26,6 +25,7 @@ fassade_ost:
 fassade_sued:
   name: Fassade Süd
   entities:
+    - cover.eg_wohnzimmer_balkon
     - cover.eg_kueche_seite
     - cover.eg_kueche_nebeneingang
     - cover.og_schlafzimmer_panorama_aussen
