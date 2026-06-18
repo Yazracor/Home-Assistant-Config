@@ -307,27 +307,38 @@ hitzeschutz_jalousien_fassadenstatus_pruefen:
       default: false
       selector:
         boolean:
+    use_direct_facade_calculation:
+      required: false
+      default: false
+      selector:
+        boolean:
   sequence:
     - variables:
         checks: >-
+          {% from 'heat_protection.jinja' import facade_active %}
+          {% set facade_active = facade_active | as_function %}
           {% set facades = [
-            {'name': 'Fassade West', 'sensor': 'binary_sensor.hitzeschutz_fassade_west', 'group': 'group.fassade_west'},
-            {'name': 'Wohnzimmer Panorama', 'sensor': 'binary_sensor.hitzeschutz_fassade_wohnzimmer_panorama', 'group': 'group.fassade_wohnzimmer_panorama'},
-            {'name': 'Fassade Ost', 'sensor': 'binary_sensor.hitzeschutz_fassade_ost', 'group': 'group.fassade_ost'},
-            {'name': 'Fassade Sued', 'sensor': 'binary_sensor.hitzeschutz_fassade_sud', 'group': 'group.fassade_sued'},
-            {'name': 'Fassade Nord', 'sensor': 'binary_sensor.hitzeschutz_fassade_nord', 'group': 'group.fassade_nord'}
+            {'key': 'west', 'name': 'Fassade West', 'sensor': 'binary_sensor.hitzeschutz_fassade_west', 'group': 'group.fassade_west'},
+            {'key': 'wohnzimmer_panorama', 'name': 'Wohnzimmer Panorama', 'sensor': 'binary_sensor.hitzeschutz_fassade_wohnzimmer_panorama', 'group': 'group.fassade_wohnzimmer_panorama'},
+            {'key': 'ost', 'name': 'Fassade Ost', 'sensor': 'binary_sensor.hitzeschutz_fassade_ost', 'group': 'group.fassade_ost'},
+            {'key': 'sued', 'name': 'Fassade Sued', 'sensor': 'binary_sensor.hitzeschutz_fassade_sud', 'group': 'group.fassade_sued'},
+            {'key': 'nord', 'name': 'Fassade Nord', 'sensor': 'binary_sensor.hitzeschutz_fassade_nord', 'group': 'group.fassade_nord'}
           ] %}
           {% set ns = namespace(checks=[]) %}
-          {% for facade in facades if is_state(facade.sensor, facade_state) %}
-            {% set ns.checks = ns.checks + [{
-              'facade_name': facade.name,
-              'action_id': action_id,
-              'cover_entities': expand(facade.group) | map(attribute='entity_id') | list,
-              'allow_automation': allow_automation | default(false),
-              'respect_automation_switch': respect_automation_switch | default(true),
-              'require_automation_marker': require_automation_marker | default(true),
-              'ignore_manual_cooldown': ignore_manual_cooldown | default(false)
-            }] %}
+          {% for facade in facades %}
+            {% set direct_active = facade_active(facade.key) %}
+            {% set active = direct_active if use_direct_facade_calculation | default(false) else is_state(facade.sensor, 'on') %}
+            {% if (facade_state == 'on' and active) or (facade_state == 'off' and not active) %}
+              {% set ns.checks = ns.checks + [{
+                'facade_name': facade.name,
+                'action_id': action_id,
+                'cover_entities': expand(facade.group) | map(attribute='entity_id') | list,
+                'allow_automation': allow_automation | default(false),
+                'respect_automation_switch': respect_automation_switch | default(true),
+                'require_automation_marker': require_automation_marker | default(true),
+                'ignore_manual_cooldown': ignore_manual_cooldown | default(false)
+              }] %}
+            {% endif %}
           {% endfor %}
           {{ ns.checks | to_json }}
     - action: script.hitzeschutz_jalousien_checks_pruefen
@@ -354,6 +365,7 @@ auto_jalousien:
         respect_automation_switch: false
         require_automation_marker: false
         ignore_manual_cooldown: true
+        use_direct_facade_calculation: true
     - action: script.hitzeschutz_jalousien_fassadenstatus_pruefen
       data:
         facade_state: "off"
@@ -362,6 +374,7 @@ auto_jalousien:
         respect_automation_switch: false
         require_automation_marker: false
         ignore_manual_cooldown: true
+        use_direct_facade_calculation: true
 
 hitzeschutz_jalousie_fassade_pruefen:
   alias: Hitzeschutz Jalousie Fassade pruefen
