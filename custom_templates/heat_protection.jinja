@@ -1,16 +1,110 @@
 {% macro facade_configs(returns) %}
   {% do returns({
-    'west': {'azimuth': 295, 'max_delta': 90, 'min_lux': 25000, 'temp_offset': 0},
-    'wohnzimmer_panorama': {'azimuth': 275, 'max_delta': 90, 'min_lux': 25000, 'temp_offset': 0},
-    'ost': {'azimuth': 115, 'max_delta': 80, 'min_lux': 25000, 'temp_offset': 4000},
-    'sued': {'azimuth': 205, 'max_delta': 90, 'min_lux': 25000, 'temp_offset': 3000},
-    'nord': {'azimuth': 25, 'max_delta': 45, 'min_lux': 35000, 'temp_offset': 10000}
+    'west': {
+      'name': 'Fassade West',
+      'display_name': 'Westseite',
+      'sensor': 'binary_sensor.hitzeschutz_fassade_west',
+      'covers': [
+        'cover.eg_kueche_balkon',
+        'cover.og_schlafzimmer_front',
+        'cover.og_bad_panorama_aussen',
+        'cover.og_flur_fenster',
+        'cover.kg_zimmer_sinja_jalousie',
+        'cover.kg_zimmer_silas_jalousie'
+      ],
+      'azimuth': 295,
+      'max_delta': 90,
+      'min_lux': 25000,
+      'temp_offset': 0
+    },
+    'wohnzimmer_panorama': {
+      'name': 'Wohnzimmer Panorama',
+      'display_name': 'Wohnzimmer Panorama',
+      'sensor': 'binary_sensor.hitzeschutz_fassade_wohnzimmer_panorama',
+      'covers': ['cover.eg_wohnzimmer_panorama'],
+      'azimuth': 275,
+      'max_delta': 90,
+      'min_lux': 25000,
+      'temp_offset': 0
+    },
+    'sonnensegel': {
+      'name': 'Sonnensegel',
+      'display_name': 'Sonnensegel',
+      'sensor': 'binary_sensor.hitzeschutz_sonnensegel',
+      'covers': ['cover.aussenbereich_balkon_sonnensegel'],
+      'azimuth': 250,
+      'max_delta': 85,
+      'min_lux': 25000,
+      'temp_offset': 0,
+      'min_elevation': 15,
+      'horizontal_shade': true
+    },
+    'ost': {
+      'name': 'Fassade Ost',
+      'display_name': 'Ostseite',
+      'sensor': 'binary_sensor.hitzeschutz_fassade_ost',
+      'covers': [
+        'cover.og_treppe',
+        'cover.eg_arbeitszimmer_vorgarten'
+      ],
+      'azimuth': 115,
+      'max_delta': 80,
+      'min_lux': 25000,
+      'temp_offset': 4000
+    },
+    'sued': {
+      'name': 'Fassade Sued',
+      'display_name': 'Südseite',
+      'sensor': 'binary_sensor.hitzeschutz_fassade_sud',
+      'covers': [
+        'cover.eg_wohnzimmer_balkon',
+        'cover.eg_kueche_seite',
+        'cover.eg_kueche_nebeneingang',
+        'cover.og_schlafzimmer_panorama_aussen',
+        'cover.og_bad_balkon',
+        'cover.og_bad_balkon_innen',
+        'cover.eg_arbeitszimmer_garten'
+      ],
+      'azimuth': 205,
+      'max_delta': 90,
+      'min_lux': 25000,
+      'temp_offset': 3000
+    },
+    'nord': {
+      'name': 'Fassade Nord',
+      'display_name': 'Nordseite',
+      'sensor': 'binary_sensor.hitzeschutz_fassade_nord',
+      'covers': [
+        'cover.og_ankleide_fenster',
+        'cover.og_buro_fenster',
+        'cover.og_wc_fenster'
+      ],
+      'azimuth': 25,
+      'max_delta': 45,
+      'min_lux': 35000,
+      'temp_offset': 10000
+    }
   }) %}
 {% endmacro %}
 
 {% macro facade_config(facade, returns) %}
   {% set configs = facade_configs | as_function %}
   {% do returns(configs().get(facade, {})) %}
+{% endmacro %}
+
+{% macro facade_name(facade, returns) %}
+  {% set config = facade_config | as_function %}
+  {% do returns(config(facade).get('name', facade)) %}
+{% endmacro %}
+
+{% macro facade_display_name(facade, returns) %}
+  {% set config = facade_config | as_function %}
+  {% do returns(config(facade).get('display_name', config(facade).get('name', facade))) %}
+{% endmacro %}
+
+{% macro facade_covers(facade, returns) %}
+  {% set config = facade_config | as_function %}
+  {% do returns(config(facade).get('covers', [])) %}
 {% endmacro %}
 
 {% macro facade_azimuth(facade, returns) %}
@@ -30,7 +124,11 @@
   {% set horizontal_factor = [elevation_rad | sin, 0.15] | max %}
   {% set vertical_factor = [elevation_rad | cos, 0] | max %}
   {% set sensor_correction = [vertical_factor / horizontal_factor, 6] | min %}
-  {% do returns(horizontal_lux * azimuth_factor * sensor_correction) %}
+  {% if facade_settings.horizontal_shade | default(false) %}
+    {% do returns(horizontal_lux) %}
+  {% else %}
+    {% do returns(horizontal_lux * azimuth_factor * sensor_correction) %}
+  {% endif %}
 {% endmacro %}
 
 {% macro facade_active(facade, returns) %}
@@ -46,6 +144,7 @@
   {% set load = corrected_lux(facade) %}
   {% do returns(
     is_state('sun.sun', 'above_horizon')
+    and elevation > facade_settings.min_elevation | default(0)
     and load > facade_settings.min_lux
     and delta < facade_settings.max_delta
     and load > temp_threshold + facade_settings.temp_offset

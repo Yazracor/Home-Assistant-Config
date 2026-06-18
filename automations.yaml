@@ -2,26 +2,26 @@
   alias: Git snapshot after UI changes
   triggers:
   - trigger: time_pattern
-    minutes: /30
+    minutes: "/30"
   conditions: []
   actions:
   - action: shell_command.git_snapshot
     response_variable: git_snapshot
   - if:
     - condition: template
-      value_template: '{{ git_snapshot.returncode != 0 }}'
+      value_template: "{{ git_snapshot.returncode != 0 }}"
     then:
     - action: persistent_notification.create
       data:
         title: Git snapshot failed
-        message: 'git-snapshot.sh failed with return code {{ git_snapshot.returncode
-          }}. stderr: {{ git_snapshot.stderr | default('''') }} stdout: {{ git_snapshot.stdout
-          | default('''') }}'
+        message: >-
+          git-snapshot.sh failed with return code {{ git_snapshot.returncode }}.
+          stderr: {{ git_snapshot.stderr | default('') }}
+          stdout: {{ git_snapshot.stdout | default('') }}
   mode: single
 - id: '1780071059264'
   alias: Garage TTK Entfeuchter an
-  description: Schaltet den TTK 75 Eco bei hoher Garagenfeuchte ein, solange es warm
-    genug ist.
+  description: Schaltet den TTK 75 Eco bei hoher Garagenfeuchte ein, solange es warm genug ist.
   triggers:
   - type: humidity
     device_id: 93c766f0890f4945e595ada307cdd6be
@@ -41,11 +41,11 @@
       minutes: 10
       seconds: 0
   - trigger: time_pattern
-    minutes: /5
+    minutes: "/5"
   conditions:
   - condition: state
     entity_id: binary_sensor.garage_feuchte_ueber_60
-    state: 'on'
+    state: "on"
     for:
       hours: 0
       minutes: 10
@@ -66,28 +66,28 @@
   triggers:
   - trigger: state
     entity_id: binary_sensor.garage_feuchte_unter_55
-    to: 'on'
+    to: "on"
   - trigger: state
     entity_id: binary_sensor.garage_temperatur_unter_5
-    to: 'on'
+    to: "on"
     for:
       hours: 0
       minutes: 5
       seconds: 0
   - trigger: time_pattern
-    minutes: /5
+    minutes: "/5"
   conditions:
   - condition: state
     entity_id: switch.entfeuchter
-    state: 'on'
+    state: "on"
   - condition: or
     conditions:
     - condition: state
       entity_id: binary_sensor.garage_feuchte_unter_55
-      state: 'on'
+      state: "on"
     - condition: state
       entity_id: binary_sensor.garage_temperatur_unter_5
-      state: 'on'
+      state: "on"
       for:
         hours: 0
         minutes: 5
@@ -101,12 +101,11 @@
   mode: single
 - id: garage_ttr_entfeuchter_boost_an
   alias: Garage TTR Entfeuchter Boost an
-  description: Schaltet den TTR 57 zu, wenn der TTK in kalter Garage die Feuchte nicht
-    schnell genug senkt.
+  description: Schaltet den TTR 57 zu, wenn der TTK in kalter Garage die Feuchte nicht schnell genug senkt.
   triggers:
   - trigger: state
     entity_id: switch.entfeuchter
-    to: 'on'
+    to: "on"
     for:
       hours: 0
       minutes: 45
@@ -133,7 +132,7 @@
       minutes: 5
       seconds: 0
   - trigger: time_pattern
-    minutes: /15
+    minutes: "/15"
   conditions:
   - condition: numeric_state
     entity_id: sensor.wifi_smart_switch_humidity
@@ -147,7 +146,7 @@
       conditions:
       - condition: state
         entity_id: switch.entfeuchter
-        state: 'on'
+        state: "on"
         for:
           hours: 0
           minutes: 45
@@ -162,10 +161,10 @@
       conditions:
       - condition: state
         entity_id: switch.entfeuchter
-        state: 'on'
+        state: "on"
       - condition: state
         entity_id: binary_sensor.garage_feuchte_ueber_65
-        state: 'on'
+        state: "on"
         for:
           hours: 0
           minutes: 30
@@ -174,10 +173,13 @@
       conditions:
       - condition: state
         entity_id: switch.entfeuchter
-        state: 'on'
+        state: "on"
       - condition: template
-        value_template: "{{\n  states('sensor.entfeuchter_power') | float(999) < 100\n
-          \ and now() - states.sensor.entfeuchter_power.last_changed > timedelta(minutes=10)\n}}"
+        value_template: >-
+          {{
+            states('sensor.entfeuchter_power') | float(999) < 100
+            and now() - states.sensor.entfeuchter_power.last_changed > timedelta(minutes=10)
+          }}
   actions:
   - action: switch.turn_on
     metadata: {}
@@ -187,41 +189,40 @@
   mode: single
 - id: garage_ttr_entfeuchter_boost_aus
   alias: Garage TTR Entfeuchter Boost aus
-  description: Schaltet den TTR 57 mit Hysterese ab, wenn die Feuchte wieder passt
-    oder der TTK allein sinnvoller ist.
+  description: Schaltet den TTR 57 mit Hysterese ab, wenn die Feuchte wieder passt oder der TTK allein sinnvoller ist.
   triggers:
   - trigger: state
     entity_id: binary_sensor.garage_feuchte_unter_60
-    to: 'on'
+    to: "on"
     for:
       hours: 0
       minutes: 30
       seconds: 0
   - trigger: state
     entity_id: binary_sensor.garage_temperatur_ueber_13
-    to: 'on'
+    to: "on"
     for:
       hours: 0
       minutes: 30
       seconds: 0
   - trigger: state
     entity_id: switch.entfeuchter
-    to: 'off'
+    to: "off"
     for:
       hours: 0
       minutes: 2
       seconds: 0
   - trigger: time_pattern
-    minutes: /5
+    minutes: "/5"
   conditions:
   - condition: state
     entity_id: switch.ttr_57_entfeuchter
-    state: 'on'
+    state: "on"
   - condition: or
     conditions:
     - condition: state
       entity_id: binary_sensor.garage_feuchte_unter_60
-      state: 'on'
+      state: "on"
       for:
         hours: 0
         minutes: 30
@@ -230,7 +231,7 @@
       conditions:
       - condition: state
         entity_id: binary_sensor.garage_temperatur_ueber_13
-        state: 'on'
+        state: "on"
         for:
           hours: 0
           minutes: 30
@@ -242,14 +243,14 @@
       conditions:
       - condition: state
         entity_id: switch.entfeuchter
-        state: 'off'
+        state: "off"
         for:
           hours: 0
           minutes: 2
           seconds: 0
       - condition: template
-        value_template: '{{ states(''sensor.wifi_smart_switch_temperature'') | float(99)
-          >= 5 }}'
+        value_template: >-
+          {{ states('sensor.wifi_smart_switch_temperature') | float(99) >= 5 }}
   actions:
   - action: switch.turn_off
     metadata: {}
@@ -263,42 +264,47 @@
   triggers:
   - trigger: state
     entity_id: switch.entfeuchter
-    from: 'off'
-    to: 'on'
+    from: "off"
+    to: "on"
   - trigger: state
     entity_id: switch.ttr_57_entfeuchter
-    from: 'off'
-    to: 'on'
+    from: "off"
+    to: "on"
   conditions:
   - condition: state
     entity_id: switch.entfeuchter
-    state: 'on'
+    state: "on"
   - condition: state
     entity_id: switch.ttr_57_entfeuchter
-    state: 'on'
+    state: "on"
   actions:
   - action: input_number.set_value
     target:
       entity_id: input_number.garage_entfeuchtung_boost_startfeuchte
     data:
-      value: '{{ states(''sensor.wifi_smart_switch_humidity'') | float(0) }}'
+      value: "{{ states('sensor.wifi_smart_switch_humidity') | float(0) }}"
   mode: single
 - id: garage_entfeuchter_ohne_leistung_warnung
   alias: Garage Entfeuchter ohne Leistung Warnung
-  description: Meldet, wenn ein Entfeuchter eingeschaltet ist, aber keine relevante
-    Leistung zieht.
+  description: Meldet, wenn ein Entfeuchter eingeschaltet ist, aber keine relevante Leistung zieht.
   triggers:
   - trigger: template
-    value_template: "{{\n  is_state('switch.entfeuchter', 'on')\n  and states('sensor.entfeuchter_power')
-      | float(0) < 20\n}}"
+    value_template: >-
+      {{
+        is_state('switch.entfeuchter', 'on')
+        and states('sensor.entfeuchter_power') | float(0) < 20
+      }}
     for:
       hours: 0
       minutes: 10
       seconds: 0
     id: ttk
   - trigger: template
-    value_template: "{{\n  is_state('switch.ttr_57_entfeuchter', 'on')\n  and states('sensor.ttr_57_entfeuchter_leistung')
-      | float(0) < 20\n}}"
+    value_template: >-
+      {{
+        is_state('switch.ttr_57_entfeuchter', 'on')
+        and states('sensor.ttr_57_entfeuchter_leistung') | float(0) < 20
+      }}
     for:
       hours: 0
       minutes: 10
@@ -309,9 +315,12 @@
     metadata: {}
     data:
       title: Entfeuchter ohne Leistung
-      message: "{% if trigger.id == 'ttk' %}\n  TTK 75 Eco ist eingeschaltet, zieht
-        aber keine Leistung.\n{% else %}\n  TTR 57 ist eingeschaltet, zieht aber keine
-        Leistung.\n{% endif %}"
+      message: >-
+        {% if trigger.id == 'ttk' %}
+          TTK 75 Eco ist eingeschaltet, zieht aber keine Leistung.
+        {% else %}
+          TTR 57 ist eingeschaltet, zieht aber keine Leistung.
+        {% endif %}
       data:
         push:
           sound:
@@ -341,7 +350,7 @@
     id: offen_abwesend
   - trigger: state
     entity_id: binary_sensor.person_zuhause
-    to: 'off'
+    to: "off"
     id: abwesend
   conditions:
   - condition: or
@@ -356,7 +365,7 @@
         - abwesend
       - condition: state
         entity_id: binary_sensor.person_zuhause
-        state: 'off'
+        state: "off"
       - condition: state
         entity_id: cover.aussenbereich_garage_garagentor
         state:
@@ -385,6 +394,7 @@
           minutes: 30
           seconds: 0
           milliseconds: 0
+
   mode: single
 - id: garage_entfeuchter_startfeuchte_merker
   alias: Garage Entfeuchter Startfeuchte merken
@@ -392,53 +402,67 @@
   triggers:
   - trigger: state
     entity_id: switch.entfeuchter
-    from: 'off'
-    to: 'on'
+    from: "off"
+    to: "on"
   - trigger: state
     entity_id: switch.ttr_57_entfeuchter
-    from: 'off'
-    to: 'on'
+    from: "off"
+    to: "on"
   conditions:
   - condition: template
-    value_template: "{{\n  (\n  trigger.entity_id == 'switch.entfeuchter'\n  and not
-      is_state('switch.ttr_57_entfeuchter', 'on')\n  )\n  or (\n  trigger.entity_id
-      == 'switch.ttr_57_entfeuchter'\n  and not is_state('switch.entfeuchter', 'on')\n
-      \ )\n}}"
+    value_template: >-
+      {{
+        (
+        trigger.entity_id == 'switch.entfeuchter'
+        and not is_state('switch.ttr_57_entfeuchter', 'on')
+        )
+        or (
+        trigger.entity_id == 'switch.ttr_57_entfeuchter'
+        and not is_state('switch.entfeuchter', 'on')
+        )
+      }}
   actions:
   - action: input_number.set_value
     target:
       entity_id: input_number.garage_entfeuchtung_startfeuchte
     data:
-      value: '{{ states(''sensor.wifi_smart_switch_humidity'') | float(0) }}'
+      value: "{{ states('sensor.wifi_smart_switch_humidity') | float(0) }}"
   mode: single
 - id: garage_entfeuchter_trocknet_nicht_genug
   alias: Garage Entfeuchter trocknet nicht genug
-  description: Meldet, wenn die Garagenfeuchte nach mehreren Stunden Entfeuchtung
-    kaum sinkt.
+  description: Meldet, wenn die Garagenfeuchte nach mehreren Stunden Entfeuchtung kaum sinkt.
   triggers:
   - trigger: template
-    value_template: "{% set running = [\n  states.switch.entfeuchter,\n  states.switch.ttr_57_entfeuchter\n]
-      | selectattr('state', 'eq', 'on') | list %} {% set oldest_ts = running | map(attribute='last_changed')
-      | map('as_timestamp') | min if running | count > 0 else 0 %} {% set start =
-      states('input_number.garage_entfeuchtung_startfeuchte') | float(0) %} {% set
-      current = states('sensor.wifi_smart_switch_humidity') | float(0) %} {{\n  running
-      | count > 0\n  and oldest_ts > 0\n  and now() | as_timestamp - oldest_ts > 3
-      * 3600\n  and current > 60\n  and start - current < 3\n}}"
+    value_template: >-
+      {% set running = [
+        states.switch.entfeuchter,
+        states.switch.ttr_57_entfeuchter
+      ] | selectattr('state', 'eq', 'on') | list %}
+      {% set oldest_ts = running | map(attribute='last_changed') | map('as_timestamp') | min if running | count > 0 else 0 %}
+      {% set start = states('input_number.garage_entfeuchtung_startfeuchte') | float(0) %}
+      {% set current = states('sensor.wifi_smart_switch_humidity') | float(0) %}
+      {{
+        running | count > 0
+        and oldest_ts > 0
+        and now() | as_timestamp - oldest_ts > 3 * 3600
+        and current > 60
+        and start - current < 3
+      }}
   conditions:
   - condition: state
     entity_id: input_boolean.garage_entfeuchtung_warnung_aktiv
-    state: 'off'
+    state: "off"
   actions:
   - action: notify.mobile_app_torbens_iphone
     metadata: {}
     data:
       title: Garage trocknet kaum
-      message: 'Die Garagenfeuchte ist nach mehreren Stunden Entfeuchtung kaum gesunken:
-        Start {{ states(''input_number.garage_entfeuchtung_startfeuchte'') | float(0)
-        | round(1) }} %, jetzt {{ states(''sensor.wifi_smart_switch_humidity'') |
-        float(0) | round(1) }} %. Temperatur: {{ states(''sensor.wifi_smart_switch_temperature'')
-        | float(0) | round(1) }} °C. TTK: {{ states(''switch.entfeuchter'') }}, TTR:
-        {{ states(''switch.ttr_57_entfeuchter'') }}.'
+      message: >-
+        Die Garagenfeuchte ist nach mehreren Stunden Entfeuchtung kaum gesunken:
+        Start {{ states('input_number.garage_entfeuchtung_startfeuchte') | float(0) | round(1) }} %,
+        jetzt {{ states('sensor.wifi_smart_switch_humidity') | float(0) | round(1) }} %.
+        Temperatur: {{ states('sensor.wifi_smart_switch_temperature') | float(0) | round(1) }} °C.
+        TTK: {{ states('switch.entfeuchter') }}, TTR: {{ states('switch.ttr_57_entfeuchter') }}.
       data:
         push:
           sound:
@@ -449,31 +473,36 @@
   mode: single
 - id: garage_entfeuchter_beide_feuchte_steigt_warnung
   alias: Garage Entfeuchter beide Feuchte steigt Warnung
-  description: Meldet, wenn die Garagenfeuchte trotz beider laufender Entfeuchter
-    weiter steigt.
+  description: Meldet, wenn die Garagenfeuchte trotz beider laufender Entfeuchter weiter steigt.
   triggers:
   - trigger: template
-    value_template: "{% set start = states('input_number.garage_entfeuchtung_boost_startfeuchte')
-      | float(0) %} {% set current = states('sensor.wifi_smart_switch_humidity') |
-      float(0) %} {{\n  is_state('switch.entfeuchter', 'on')\n  and is_state('switch.ttr_57_entfeuchter',
-      'on')\n  and now() - states.switch.entfeuchter.last_changed > timedelta(hours=1)\n
-      \ and now() - states.switch.ttr_57_entfeuchter.last_changed > timedelta(hours=1)\n
-      \ and current > 60\n  and current - start >= 1\n}}"
+    value_template: >-
+      {% set start = states('input_number.garage_entfeuchtung_boost_startfeuchte') | float(0) %}
+      {% set current = states('sensor.wifi_smart_switch_humidity') | float(0) %}
+      {{
+        is_state('switch.entfeuchter', 'on')
+        and is_state('switch.ttr_57_entfeuchter', 'on')
+        and now() - states.switch.entfeuchter.last_changed > timedelta(hours=1)
+        and now() - states.switch.ttr_57_entfeuchter.last_changed > timedelta(hours=1)
+        and current > 60
+        and current - start >= 1
+      }}
   conditions:
   - condition: state
     entity_id: input_boolean.garage_entfeuchtung_warnung_aktiv
-    state: 'off'
+    state: "off"
   actions:
   - action: notify.mobile_app_torbens_iphone
     metadata: {}
     data:
       title: Garage wird trotz Boost feuchter
-      message: 'Die Garagenfeuchte steigt trotz TTK und TTR: Boost-Start {{ states(''input_number.garage_entfeuchtung_boost_startfeuchte'')
-        | float(0) | round(1) }} %, jetzt {{ states(''sensor.wifi_smart_switch_humidity'')
-        | float(0) | round(1) }} %. Temperatur: {{ states(''sensor.wifi_smart_switch_temperature'')
-        | float(0) | round(1) }} °C. TTK-Leistung: {{ states(''sensor.entfeuchter_power'')
-        | float(0) | round(0) }} W, TTR-Leistung: {{ states(''sensor.ttr_57_entfeuchter_leistung'')
-        | float(0) | round(0) }} W.'
+      message: >-
+        Die Garagenfeuchte steigt trotz TTK und TTR:
+        Boost-Start {{ states('input_number.garage_entfeuchtung_boost_startfeuchte') | float(0) | round(1) }} %,
+        jetzt {{ states('sensor.wifi_smart_switch_humidity') | float(0) | round(1) }} %.
+        Temperatur: {{ states('sensor.wifi_smart_switch_temperature') | float(0) | round(1) }} °C.
+        TTK-Leistung: {{ states('sensor.entfeuchter_power') | float(0) | round(0) }} W,
+        TTR-Leistung: {{ states('sensor.ttr_57_entfeuchter_leistung') | float(0) | round(0) }} W.
       data:
         push:
           sound:
@@ -484,12 +513,11 @@
   mode: single
 - id: garage_entfeuchter_feuchte_wieder_ok
   alias: Garage Entfeuchter Feuchte wieder ok
-  description: Meldet einmalig Entwarnung, wenn die Garagenfeuchte nach einer Entfeuchtungswarnung
-    wieder unter 60 Prozent liegt.
+  description: Meldet einmalig Entwarnung, wenn die Garagenfeuchte nach einer Entfeuchtungswarnung wieder unter 60 Prozent liegt.
   triggers:
   - trigger: state
     entity_id: binary_sensor.garage_feuchte_unter_60
-    to: 'on'
+    to: "on"
     for:
       hours: 0
       minutes: 5
@@ -497,15 +525,17 @@
   conditions:
   - condition: state
     entity_id: input_boolean.garage_entfeuchtung_warnung_aktiv
-    state: 'on'
+    state: "on"
   actions:
   - action: notify.mobile_app_torbens_iphone
     metadata: {}
     data:
       title: Garage wieder unter 60 Prozent
-      message: 'Die Garagenfeuchte ist wieder bei {{ states(''sensor.wifi_smart_switch_humidity'')
-        | float(0) | round(1) }} %. TTK: {{ states(''switch.entfeuchter'') }}, TTR:
-        {{ states(''switch.ttr_57_entfeuchter'') }}.'
+      message: >-
+        Die Garagenfeuchte ist wieder bei
+        {{ states('sensor.wifi_smart_switch_humidity') | float(0) | round(1) }} %.
+        TTK: {{ states('switch.entfeuchter') }},
+        TTR: {{ states('switch.ttr_57_entfeuchter') }}.
       data:
         push:
           sound:
@@ -519,43 +549,56 @@
   description: Schickt um 20 Uhr eine kompakte Zusammenfassung offener Punkte.
   triggers:
   - trigger: time
-    at: '20:00:00'
+    at: "20:00:00"
   variables:
     outdoor_lights:
-    - light.aussenbereich_eingangsbereich_eingang_vordach
-    - light.aussenbereich_balkon_licht
-    - light.aussenbereich_garten_aussenleuchten_rechts
-    - light.aussenbereich_balkon_balken
-    - light.aussenbereich_balkon_obergeschoss_licht
-    - light.aussenbereich_terrasse_licht
-    - light.aussenbereich_garage_licht
-    - light.aussenbereich_eingangsbereich_treppe_und_garage
-    - light.aussenbereich_eingangsbereich_hof_bega_baumstrahler
-    - light.aussenbereich_teich_licht
-    - light.aussenbereich_teich_unterwasserstrahler
-    - light.aussenbereich_garten_wegebeleuchtung_nach_oben
-    - light.aussenbereich_garten_aussenleuchten_links
-    digest_items: "{% set ns = namespace(items=[]) %} {% if is_state('cover.aussenbereich_garage_garagentor',
-      'open') %}\n  {% set ns.items = ns.items + ['- Garage ist offen'] %}\n{% endif
-      %} {% set lights_on = expand(outdoor_lights) | selectattr('state', 'eq', 'on')
-      | map(attribute='name') | list %} {% if lights_on | count > 0 %}\n  {% set ns.items
-      = ns.items + ['- Außenlicht an: ' ~ lights_on | join(', ')] %}\n{% endif %}
-      {% if is_state('switch.hitzeschutz_og_automatik', 'off') %}\n  {% set ns.items
-      = ns.items + ['- Hitzeschutz OG Automatik ist aus'] %}\n{% endif %} {% set humidity
-      = states('sensor.wifi_smart_switch_humidity') | float(0) %} {% if humidity >
-      65 %}\n  {% set ns.items = ns.items + ['- Garage feucht: ' ~ (humidity | round(0)
-      | string) ~ ' %'] %}\n{% endif %} {% set drying = is_state('switch.entfeuchter',
-      'on') or is_state('switch.ttr_57_entfeuchter', 'on') %} {% set start = states('input_number.garage_entfeuchtung_startfeuchte')
-      | float(0) %} {% if drying and start > 0 and start - humidity < 3 and humidity
-      > 60 %}\n  {% set ns.items = ns.items + ['- Garage trocknet kaum seit Entfeuchtungsstart']
-      %}\n{% endif %} {{ ns.items | to_json }}"
+      - light.aussenbereich_eingangsbereich_eingang_vordach
+      - light.aussenbereich_balkon_licht
+      - light.aussenbereich_garten_aussenleuchten_rechts
+      - light.aussenbereich_balkon_balken
+      - light.aussenbereich_balkon_obergeschoss_licht
+      - light.aussenbereich_terrasse_licht
+      - light.aussenbereich_garage_licht
+      - light.aussenbereich_eingangsbereich_treppe_und_garage
+      - light.aussenbereich_eingangsbereich_hof_bega_baumstrahler
+      - light.aussenbereich_teich_licht
+      - light.aussenbereich_teich_unterwasserstrahler
+      - light.aussenbereich_garten_wegebeleuchtung_nach_oben
+      - light.aussenbereich_garten_aussenleuchten_links
+    digest_items: >-
+      {% set ns = namespace(items=[]) %}
+      {% if is_state('cover.aussenbereich_garage_garagentor', 'open') %}
+        {% set ns.items = ns.items + ['- Garage ist offen'] %}
+      {% endif %}
+      {% set lights_on = expand(outdoor_lights) | selectattr('state', 'eq', 'on') | map(attribute='name') | list %}
+      {% if lights_on | count > 0 %}
+        {% set ns.items = ns.items + ['- Außenlicht an: ' ~ lights_on | join(', ')] %}
+      {% endif %}
+      {% if is_state('switch.hitzeschutz_og_automatik', 'off') %}
+        {% set ns.items = ns.items + ['- Hitzeschutz OG Automatik ist aus'] %}
+      {% endif %}
+      {% set humidity = states('sensor.wifi_smart_switch_humidity') | float(0) %}
+      {% if humidity > 65 %}
+        {% set ns.items = ns.items + ['- Garage feucht: ' ~ (humidity | round(0) | string) ~ ' %'] %}
+      {% endif %}
+      {% set drying = is_state('switch.entfeuchter', 'on') or is_state('switch.ttr_57_entfeuchter', 'on') %}
+      {% set start = states('input_number.garage_entfeuchtung_startfeuchte') | float(0) %}
+      {% if drying and start > 0 and start - humidity < 3 and humidity > 60 %}
+        {% set ns.items = ns.items + ['- Garage trocknet kaum seit Entfeuchtungsstart'] %}
+      {% endif %}
+      {{ ns.items | to_json }}
   actions:
   - action: notify.mobile_app_torbens_iphone
     metadata: {}
     data:
       title: Abendstatus Haus
-      message: "{% set items = digest_items | from_json %} {% if items | count > 0
-        %}\n  {{ items | join('\\n') }}\n{% else %}\n  Alles ruhig.\n{% endif %}"
+      message: >-
+        {% set items = digest_items | from_json %}
+        {% if items | count > 0 %}
+          {{ items | join('\n') }}
+        {% else %}
+          Alles ruhig.
+        {% endif %}
       data:
         push:
           sound:
@@ -567,8 +610,8 @@
   triggers:
   - trigger: state
     entity_id: binary_sensor.aussenbereich_wetterstation_niederschlag
-    from: 'off'
-    to: 'on'
+    from: "off"
+    to: "on"
   conditions:
   - condition: state
     entity_id: cover.aussenbereich_garage_garagentor
@@ -589,8 +632,7 @@
   mode: single
 - id: adaptive_helligkeit_manuelle_lichtbedienung_merken
   alias: Adaptive Helligkeit manuelle Lichtbedienung merken
-  description: Merkt pro dimmbarem Licht, wann es zuletzt manuell oder extern bedient
-    wurde.
+  description: Merkt pro dimmbarem Licht, wann es zuletzt manuell oder extern bedient wurde.
   triggers:
   - trigger: event
     event_type: knx_event
@@ -602,67 +644,65 @@
     event_type: call_service
     id: service
   variables:
-    adaptive_light_entities: '{{ expand(''group.adaptive_helligkeit_lichter'') | map(attribute=''entity_id'')
-      | list }}'
-    touched_light_entities: '{% from ''adaptive_lighting.jinja'' import knx_light_map
-      %} {% from ''manual_control.jinja'' import touched_entities %} {% set knx_light_map
-      = knx_light_map | as_function %} {% set touched_entities = touched_entities
-      | as_function %} {{ touched_entities(trigger.id, trigger.event.data, trigger.event.context.user_id,
-      adaptive_light_entities, knx_light_map(), ''light'', true) | to_json }}'
+    adaptive_light_entities: "{{ expand('group.adaptive_helligkeit_lichter') | map(attribute='entity_id') | list }}"
+    touched_light_entities: >-
+      {% from 'adaptive_lighting.jinja' import knx_light_map %}
+      {% from 'manual_control.jinja' import touched_entities %}
+      {% set knx_light_map = knx_light_map | as_function %}
+      {% set touched_entities = touched_entities | as_function %}
+      {{ touched_entities(trigger.id, trigger.event.data, trigger.event.context.user_id, adaptive_light_entities, knx_light_map(), 'light', true) | to_json }}
   conditions:
   - condition: template
-    value_template: '{{ touched_light_entities | from_json(default=[]) | count > 0
-      }}'
+    value_template: "{{ touched_light_entities | from_json(default=[]) | count > 0 }}"
   actions:
   - repeat:
-      for_each: '{{ touched_light_entities | from_json(default=[]) }}'
+      for_each: "{{ touched_light_entities | from_json(default=[]) }}"
       sequence:
       - variables:
-          manual_helper: '{% from ''adaptive_lighting.jinja'' import manual_helper
-            %} {% set manual_helper = manual_helper | as_function %} {{ manual_helper(repeat.item)
-            }}'
+          manual_helper: >-
+            {% from 'adaptive_lighting.jinja' import manual_helper %}
+            {% set manual_helper = manual_helper | as_function %}
+            {{ manual_helper(repeat.item) }}
       - action: input_datetime.set_datetime
         target:
-          entity_id: '{{ manual_helper }}'
+          entity_id: "{{ manual_helper }}"
         data:
-          datetime: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }}'
+          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
   mode: queued
 - id: adaptive_helligkeit_nachtlicht_beim_einschalten
   alias: Adaptive Helligkeit Nachtlicht beim Einschalten
-  description: Dimmt bestimmte Lichter nachts nach dem Einschalten auf 2 Prozent,
-    ohne manuelle Dimmung zu überschreiben.
+  description: Dimmt bestimmte Lichter nachts nach dem Einschalten auf 2 Prozent, ohne manuelle Dimmung zu überschreiben.
   triggers:
   - trigger: state
     entity_id:
     - light.eg_arbeitszimmer_decke
     - light.og_flur_decke
     - light.og_bad_decke
-    to: 'on'
+    to: "on"
   conditions:
   - condition: state
     entity_id: switch.schlafmodus
-    state: 'on'
+    state: "on"
   actions:
   - action: script.adaptive_helligkeit_nachtlicht_dimmen
     data:
-      light_entity: '{{ trigger.entity_id }}'
+      light_entity: "{{ trigger.entity_id }}"
   mode: single
 - id: schlafmodus_zeitplan
   alias: Schlafmodus Zeitplan
-  description: Schaltet den Schlafmodus abhängig von Arbeitstagen und freien Tagen
-    in Hessen.
+  description: Schaltet den Schlafmodus abhängig von Arbeitstagen und freien Tagen in Hessen.
   triggers:
   - trigger: time
-    at: '22:00:00'
+    at: "22:00:00"
     id: workday_tomorrow_on
   - trigger: time
-    at: 07:30:00
+    at: "07:30:00"
     id: workday_today_off
   - trigger: time
-    at: '23:00:00'
+    at: "23:00:00"
     id: free_tomorrow_on
   - trigger: time
-    at: 09:00:00
+    at: "09:00:00"
     id: free_today_off
   actions:
   - choose:
@@ -671,7 +711,7 @@
         id: workday_tomorrow_on
       - condition: state
         entity_id: binary_sensor.arbeitstag_morgen
-        state: 'on'
+        state: "on"
       sequence:
       - action: switch.turn_on
         target:
@@ -681,7 +721,7 @@
         id: workday_today_off
       - condition: state
         entity_id: binary_sensor.arbeitstag
-        state: 'on'
+        state: "on"
       sequence:
       - action: switch.turn_off
         target:
@@ -691,7 +731,7 @@
         id: free_tomorrow_on
       - condition: state
         entity_id: binary_sensor.arbeitstag_morgen
-        state: 'off'
+        state: "off"
       sequence:
       - action: switch.turn_on
         target:
@@ -701,7 +741,7 @@
         id: free_today_off
       - condition: state
         entity_id: binary_sensor.arbeitstag
-        state: 'off'
+        state: "off"
       sequence:
       - action: switch.turn_off
         target:
@@ -709,8 +749,7 @@
   mode: single
 - id: adaptive_helligkeit_lichter_nach_aussenhelligkeit
   alias: Adaptive Helligkeit Lichter nach Außenhelligkeit
-  description: Dimmt bereits eingeschaltete dimmbare Lichter passend zur Außenhelligkeit,
-    ohne manuelle Bedienung zu überschreiben.
+  description: Dimmt bereits eingeschaltete dimmbare Lichter passend zur Außenhelligkeit, ohne manuelle Bedienung zu überschreiben.
   triggers:
   - trigger: numeric_state
     entity_id: sensor.aussenbereich_wetterstation_helligkeit
@@ -737,24 +776,22 @@
     entity_id: sensor.aussenbereich_wetterstation_helligkeit
     above: 30000
   - trigger: time
-    at: 08:00:00
+    at: "08:00:00"
   - trigger: sun
     event: sunrise
   - trigger: time_pattern
-    minutes: /15
+    minutes: "/15"
   conditions:
   - condition: template
-    value_template: '{{ state_attr(''sun.sun'', ''elevation'') | float(-90) > -6 }}'
+    value_template: "{{ state_attr('sun.sun', 'elevation') | float(-90) > -6 }}"
   - condition: template
-    value_template: '{{ expand(''group.adaptive_helligkeit_lichter'') | selectattr(''state'',
-      ''eq'', ''on'') | list | count > 0 }}'
+    value_template: "{{ expand('group.adaptive_helligkeit_lichter') | selectattr('state', 'eq', 'on') | list | count > 0 }}"
   actions:
   - action: script.adaptive_helligkeit_lichter_anpassen
   mode: single
 - id: aussenbeleuchtung_tagsueber_ausschalten
   alias: Außenbeleuchtung tagsüber ausschalten
-  description: Schaltet vergessene Außenbeleuchtung bei Tageslicht aus, ohne die Dauerbeleuchtung
-    anzufassen.
+  description: Schaltet vergessene Außenbeleuchtung bei Tageslicht aus, ohne die Dauerbeleuchtung anzufassen.
   triggers:
   - trigger: sun
     event: sunrise
@@ -766,14 +803,23 @@
       minutes: 15
   conditions:
   - condition: template
-    value_template: "{{\n  expand([\n    'light.aussenbereich_eingangsbereich_eingang_vordach',\n
-      \   'light.aussenbereich_balkon_licht',\n    'light.aussenbereich_garten_aussenleuchten_rechts',\n
-      \   'light.aussenbereich_balkon_balken',\n    'light.aussenbereich_balkon_obergeschoss_licht',\n
-      \   'light.aussenbereich_terrasse_licht',\n    'light.aussenbereich_eingangsbereich_treppe_und_garage',\n
-      \   'light.aussenbereich_eingangsbereich_hof_bega_baumstrahler',\n    'light.aussenbereich_teich_licht',\n
-      \   'light.aussenbereich_teich_unterwasserstrahler',\n    'light.aussenbereich_garten_wegebeleuchtung_nach_oben',\n
-      \   'light.aussenbereich_garten_aussenleuchten_links'\n  ]) | selectattr('state',
-      'eq', 'on') | list | count > 0\n}}"
+    value_template: >-
+      {{
+        expand([
+          'light.aussenbereich_eingangsbereich_eingang_vordach',
+          'light.aussenbereich_balkon_licht',
+          'light.aussenbereich_garten_aussenleuchten_rechts',
+          'light.aussenbereich_balkon_balken',
+          'light.aussenbereich_balkon_obergeschoss_licht',
+          'light.aussenbereich_terrasse_licht',
+          'light.aussenbereich_eingangsbereich_treppe_und_garage',
+          'light.aussenbereich_eingangsbereich_hof_bega_baumstrahler',
+          'light.aussenbereich_teich_licht',
+          'light.aussenbereich_teich_unterwasserstrahler',
+          'light.aussenbereich_garten_wegebeleuchtung_nach_oben',
+          'light.aussenbereich_garten_aussenleuchten_links'
+        ]) | selectattr('state', 'eq', 'on') | list | count > 0
+      }}
   actions:
   - action: light.turn_off
     target:
@@ -793,88 +839,107 @@
   mode: single
 - id: solar_heat_protection_blind_recommendation
   alias: Hitzeschutz Jalousie OG Automatik und Empfehlung
-  description: Fährt tagsüber OG-Jalousien für solaren Wärmeschutz und meldet EG/KG
-    nur als Empfehlung.
+  description: Fährt tagsüber OG-Jalousien für solaren Wärmeschutz und meldet EG/KG nur als Empfehlung.
   triggers:
   - trigger: state
     entity_id: binary_sensor.hitzeschutz_fassade_west
-    from: 'off'
-    to: 'on'
+    from: "off"
+    to: "on"
     for:
       minutes: 10
     id: west_close
   - trigger: state
     entity_id: binary_sensor.hitzeschutz_fassade_wohnzimmer_panorama
-    from: 'off'
-    to: 'on'
+    from: "off"
+    to: "on"
     for:
       minutes: 10
     id: wohnzimmer_panorama_close
   - trigger: state
+    entity_id: binary_sensor.hitzeschutz_sonnensegel
+    from: "off"
+    to: "on"
+    for:
+      minutes: 10
+    id: sonnensegel_close
+  - trigger: state
     entity_id: binary_sensor.hitzeschutz_fassade_ost
-    from: 'off'
-    to: 'on'
+    from: "off"
+    to: "on"
     for:
       minutes: 10
     id: ost_close
   - trigger: state
     entity_id: binary_sensor.hitzeschutz_fassade_sud
-    from: 'off'
-    to: 'on'
+    from: "off"
+    to: "on"
     for:
       minutes: 10
     id: sued_close
   - trigger: state
     entity_id: binary_sensor.hitzeschutz_fassade_nord
-    from: 'off'
-    to: 'on'
+    from: "off"
+    to: "on"
     for:
       minutes: 10
     id: nord_close
   - trigger: state
     entity_id: binary_sensor.hitzeschutz_fassade_west
-    from: 'on'
-    to: 'off'
+    from: "on"
+    to: "off"
     for:
       minutes: 30
     id: west_open
   - trigger: state
     entity_id: binary_sensor.hitzeschutz_fassade_wohnzimmer_panorama
-    from: 'on'
-    to: 'off'
+    from: "on"
+    to: "off"
     for:
       minutes: 30
     id: wohnzimmer_panorama_open
   - trigger: state
+    entity_id: binary_sensor.hitzeschutz_sonnensegel
+    from: "on"
+    to: "off"
+    for:
+      minutes: 30
+    id: sonnensegel_open
+  - trigger: state
     entity_id: binary_sensor.hitzeschutz_fassade_ost
-    from: 'on'
-    to: 'off'
+    from: "on"
+    to: "off"
     for:
       minutes: 30
     id: ost_open
   - trigger: state
     entity_id: binary_sensor.hitzeschutz_fassade_sud
-    from: 'on'
-    to: 'off'
+    from: "on"
+    to: "off"
     for:
       minutes: 30
     id: sued_open
   - trigger: state
     entity_id: binary_sensor.hitzeschutz_fassade_nord
-    from: 'on'
-    to: 'off'
+    from: "on"
+    to: "off"
     for:
       minutes: 30
     id: nord_open
   variables:
-    facade_key: '{{ trigger.id.rsplit(''_'', 1)[0] }}'
-    action_id: '{{ trigger.id.rsplit(''_'', 1)[1] }}'
-    facade_group: '{{ ''group.fassade_'' ~ facade_key }}'
-    facade_name: "{% set mapping = {\n  'west': 'Fassade West',\n  'wohnzimmer_panorama':
-      'Wohnzimmer Panorama',\n  'ost': 'Fassade Ost',\n  'sued': 'Fassade Sued',\n
-      \ 'nord': 'Fassade Nord'\n} %} {{ mapping.get(facade_key, trigger.id) }}"
-    cover_entities: '{{ expand(facade_group) | map(attribute=''entity_id'') | list
-      }}'
+    facade_key: "{{ trigger.id.rsplit('_', 1)[0] }}"
+    action_id: "{{ trigger.id.rsplit('_', 1)[1] }}"
+    facade_name: >-
+      {% from 'heat_protection.jinja' import facade_name %}
+      {% set facade_name = facade_name | as_function %}
+      {{ facade_name(facade_key) }}
+    facade_display_name: >-
+      {% from 'heat_protection.jinja' import facade_display_name %}
+      {% set facade_display_name = facade_display_name | as_function %}
+      {{ facade_display_name(facade_key) }}
+    cover_entities: >-
+      {% from 'heat_protection.jinja' import facade_covers %}
+      {% set facade_covers = facade_covers | as_function %}
+      {{ facade_covers(facade_key) }}
   conditions:
   - condition: state
     entity_id: sun.sun
@@ -882,17 +947,23 @@
   actions:
   - action: script.hitzeschutz_jalousien_checks_pruefen
     data:
-      checks: "{{\n  [{\n    'facade_name': facade_name,\n    'action_id': action_id,\n
-        \   'cover_entities': cover_entities,\n    'allow_automation': true\n  }]
-        | to_json\n}}"
+      checks: >-
+        {{
+          [{
+            'facade_name': facade_name,
+            'facade_display_name': facade_display_name,
+            'action_id': action_id,
+            'cover_entities': cover_entities,
+            'allow_automation': true
+          }] | to_json
+        }}
   mode: single
 - id: solar_heat_protection_blind_notification_periodic
   alias: Hitzeschutz Jalousie Nachcheck Schließen
-  description: Prüft tagsüber stündlich geöffnete Jalousien an aktiven Hitzeschutz-Fassaden
-    und schließt ohne manuellen Override automatisch.
+  description: Prüft tagsüber stündlich geöffnete Jalousien an aktiven Hitzeschutz-Fassaden und schließt ohne manuellen Override automatisch.
   triggers:
   - trigger: time_pattern
-    minutes: '0'
+    minutes: "0"
   conditions:
   - condition: state
     entity_id: sun.sun
@@ -900,17 +971,16 @@
   actions:
   - action: script.hitzeschutz_jalousien_fassadenstatus_pruefen
     data:
-      facade_state: 'on'
+      facade_state: "on"
       action_id: close
       allow_automation: true
   mode: single
 - id: solar_heat_protection_blind_open_notification_hourly
   alias: Hitzeschutz Jalousie Nachcheck Öffnen
-  description: Prüft tagsüber stündlich geschlossene Jalousien an inaktiven Hitzeschutz-Fassaden
-    und öffnet ohne manuellen Override automatisch.
+  description: Prüft tagsüber stündlich geschlossene Jalousien an inaktiven Hitzeschutz-Fassaden und öffnet ohne manuellen Override automatisch.
   triggers:
   - trigger: time_pattern
-    minutes: '0'
+    minutes: "0"
   conditions:
   - condition: state
     entity_id: sun.sun
@@ -918,21 +988,20 @@
   actions:
   - action: script.hitzeschutz_jalousien_fassadenstatus_pruefen
     data:
-      facade_state: 'off'
+      facade_state: "off"
       action_id: open
       allow_automation: true
   mode: single
 - id: hitzeschutz_og_automatik_bei_sonnenaufgang_aktivieren
   alias: Hitzeschutz OG Automatik bei Sonnenaufgang aktivieren
-  description: Aktiviert die OG-Hitzeschutz-Automatik nach manueller Abschaltung am
-    nächsten Morgen wieder.
+  description: Aktiviert die OG-Hitzeschutz-Automatik nach manueller Abschaltung am nächsten Morgen wieder.
   triggers:
   - trigger: sun
     event: sunrise
   conditions:
   - condition: state
     entity_id: switch.hitzeschutz_og_automatik
-    state: 'off'
+    state: "off"
   actions:
   - action: switch.turn_on
     target:
@@ -940,28 +1009,29 @@
   mode: single
 - id: kueche_homepod_guten_morgen_erste_bedienung
   alias: Küche HomePod Guten Morgen bei erster Bedienung
-  description: Sagt morgens beim ersten Einschalten von Küchenlicht oder Tisch-Schalter
-    einmalig Guten Morgen.
+  description: Sagt morgens beim ersten Einschalten von Küchenlicht oder Tisch-Schalter einmalig Guten Morgen.
   triggers:
   - trigger: state
     entity_id: light.eg_kueche_decke
-    from: 'off'
-    to: 'on'
+    from: "off"
+    to: "on"
   - trigger: state
     entity_id: switch.eg_kueche_tisch
-    from: 'off'
-    to: 'on'
+    from: "off"
+    to: "on"
   conditions:
   - condition: time
-    after: 04:00:00
-    before: '11:00:00'
+    after: "04:00:00"
+    before: "11:00:00"
   - condition: template
-    value_template: "{{\n  this.attributes.last_triggered is none\n  or as_local(this.attributes.last_triggered).date()
-      != now().date()\n}}"
+    value_template: >-
+      {{
+        this.attributes.last_triggered is none
+        or as_local(this.attributes.last_triggered).date() != now().date()
+      }}
   actions:
   - variables:
-      previous_volume: '{{ state_attr(''media_player.homepod_kuche'', ''volume_level'')
-        }}'
+      previous_volume: "{{ state_attr('media_player.homepod_kuche', 'volume_level') }}"
   - action: media_player.volume_set
     target:
       entity_id: media_player.homepod_kuche
@@ -979,31 +1049,30 @@
       seconds: 5
   - if:
     - condition: template
-      value_template: '{{ previous_volume is number }}'
+      value_template: "{{ previous_volume is number }}"
     then:
     - action: media_player.volume_set
       target:
         entity_id: media_player.homepod_kuche
       data:
-        volume_level: '{{ previous_volume }}'
+        volume_level: "{{ previous_volume }}"
   mode: single
 - id: schlafzimmer_klimaanlage_abends_kuehlen
   alias: Schlafzimmer Klimaanlage abends kühlen
-  description: Schaltet die Schlafzimmer-Klimaanlage nach 17 Uhr bei Anwesenheit und
-    Wärme in den Kühlmodus.
+  description: Schaltet die Schlafzimmer-Klimaanlage nach 17 Uhr bei Anwesenheit und Wärme in den Kühlmodus.
   triggers:
   - trigger: time
-    at: '17:00:00'
+    at: "17:00:00"
   - trigger: state
     entity_id: binary_sensor.praesenz
-    from: 'off'
-    to: 'on'
+    from: "off"
+    to: "on"
   conditions:
   - condition: state
     entity_id: binary_sensor.praesenz
-    state: 'on'
+    state: "on"
   - condition: template
-    value_template: '{{ now().hour >= 17 }}'
+    value_template: "{{ now().hour >= 17 }}"
   - condition: numeric_state
     entity_id: sensor.og_schlafzimmer_thermostat_ist_temp
     above: 23
@@ -1018,8 +1087,7 @@
       hvac_mode: cool
   - if:
     - condition: template
-      value_template: '{{ state_attr(''climate.schlafzimmer'', ''temperature'') |
-        float(99) > 22 }}'
+      value_template: "{{ state_attr('climate.schlafzimmer', 'temperature') | float(99) > 22 }}"
     then:
     - action: climate.set_temperature
       target:

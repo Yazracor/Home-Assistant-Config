@@ -187,19 +187,12 @@ hitzeschutz_jalousien_checks_pruefen:
     - variables:
         check_items: "{{ checks | from_json if checks is string else checks }}"
         notification_payload: >-
-          {% set facade_names = {
-            'Fassade West': 'Westseite',
-            'Wohnzimmer Panorama': 'Wohnzimmer Panorama',
-            'Fassade Ost': 'Ostseite',
-            'Fassade Sued': 'Südseite',
-            'Fassade Süd': 'Südseite',
-            'Fassade Nord': 'Nordseite'
-          } %}
           {% set automatik_entity_ids = expand('group.hitzeschutz_automatik_jalousien') | map(attribute='entity_id') | list %}
           {% set upper_floor_cover_entity_ids = floor_entities('obergeschoss') | select('match', '^cover\.') | list %}
           {% set ns = namespace(summaries=[], items=[]) %}
           {% for check in check_items %}
             {% set facade_name = check.facade_name %}
+            {% set facade_label = check.facade_display_name | default(facade_name, true) %}
             {% set action_id = check.action_id %}
             {% set action_text = 'schließen' if action_id == 'close' else 'öffnen' %}
             {% set action_done = 'Schließen ausgelöst' if action_id == 'close' else 'Öffnen ausgelöst' %}
@@ -221,7 +214,7 @@ hitzeschutz_jalousien_checks_pruefen:
               {% set manual_cooldown_active = last_manual_ts > 0 and (now() | as_timestamp) - last_manual_ts < 2 * 3600 %}
               {% set manual_cooldown_ok = check.ignore_manual_cooldown | default(false) or not manual_cooldown_active %}
               {% if cover_state in ['unknown', 'unavailable'] %}
-                {% set facade.items = facade.items + ['- ' ~ facade_names.get(facade_name, facade_name) ~ ': ' ~ cover_name ~ ' übersprungen, nicht prüfbar (' ~ cover_state ~ ')'] %}
+                {% set facade.items = facade.items + ['- ' ~ facade_label ~ ': ' ~ cover_name ~ ' übersprungen, nicht prüfbar (' ~ cover_state ~ ')'] %}
               {% elif needs_change %}
                 {% set reasons = [] %}
                 {% if not automatik_enabled %}
@@ -237,14 +230,14 @@ hitzeschutz_jalousien_checks_pruefen:
                   {% set reasons = reasons + ['manueller Override aktiv'] %}
                 {% endif %}
                 {% if reasons | count == 0 %}
-                  {% set facade.items = facade.items + ['- ' ~ facade_names.get(facade_name, facade_name) ~ ': ' ~ cover_name ~ ' ' ~ action_done ~ ' (' ~ position_text ~ ')'] %}
+                  {% set facade.items = facade.items + ['- ' ~ facade_label ~ ': ' ~ cover_name ~ ' ' ~ action_done ~ ' (' ~ position_text ~ ')'] %}
                 {% else %}
-                  {% set facade.items = facade.items + ['- ' ~ facade_names.get(facade_name, facade_name) ~ ': ' ~ cover_name ~ ' ' ~ action_blocked ~ ' (' ~ position_text ~ '), Grund: ' ~ (reasons | join(', '))] %}
+                  {% set facade.items = facade.items + ['- ' ~ facade_label ~ ': ' ~ cover_name ~ ' ' ~ action_blocked ~ ' (' ~ position_text ~ '), Grund: ' ~ (reasons | join(', '))] %}
                 {% endif %}
               {% endif %}
             {% endfor %}
             {% if facade.items | count > 0 %}
-              {% set ns.summaries = ns.summaries + [facade_names.get(facade_name, facade_name) ~ ' ' ~ action_text] %}
+              {% set ns.summaries = ns.summaries + [facade_label ~ ' ' ~ action_text] %}
               {% set ns.items = ns.items + facade.items %}
             {% endif %}
           {% endfor %}
@@ -315,24 +308,19 @@ hitzeschutz_jalousien_fassadenstatus_pruefen:
   sequence:
     - variables:
         checks: >-
-          {% from 'heat_protection.jinja' import facade_active %}
+          {% from 'heat_protection.jinja' import facade_active, facade_configs %}
           {% set facade_active = facade_active | as_function %}
-          {% set facades = [
-            {'key': 'west', 'name': 'Fassade West', 'sensor': 'binary_sensor.hitzeschutz_fassade_west', 'group': 'group.fassade_west'},
-            {'key': 'wohnzimmer_panorama', 'name': 'Wohnzimmer Panorama', 'sensor': 'binary_sensor.hitzeschutz_fassade_wohnzimmer_panorama', 'group': 'group.fassade_wohnzimmer_panorama'},
-            {'key': 'ost', 'name': 'Fassade Ost', 'sensor': 'binary_sensor.hitzeschutz_fassade_ost', 'group': 'group.fassade_ost'},
-            {'key': 'sued', 'name': 'Fassade Sued', 'sensor': 'binary_sensor.hitzeschutz_fassade_sud', 'group': 'group.fassade_sued'},
-            {'key': 'nord', 'name': 'Fassade Nord', 'sensor': 'binary_sensor.hitzeschutz_fassade_nord', 'group': 'group.fassade_nord'}
-          ] %}
+          {% set facade_configs = facade_configs | as_function %}
           {% set ns = namespace(checks=[]) %}
-          {% for facade in facades %}
-            {% set direct_active = facade_active(facade.key) %}
+          {% for facade_key, facade in facade_configs().items() %}
+            {% set direct_active = facade_active(facade_key) %}
             {% set active = direct_active if use_direct_facade_calculation | default(false) else is_state(facade.sensor, 'on') %}
             {% if (facade_state == 'on' and active) or (facade_state == 'off' and not active) %}
               {% set ns.checks = ns.checks + [{
                 'facade_name': facade.name,
+                'facade_display_name': facade.display_name,
                 'action_id': action_id,
-                'cover_entities': expand(facade.group) | map(attribute='entity_id') | list,
+                'cover_entities': facade.covers,
                 'allow_automation': allow_automation | default(false),
                 'respect_automation_switch': respect_automation_switch | default(true),
                 'require_automation_marker': require_automation_marker | default(true),

@@ -318,6 +318,23 @@
           {{ facade_lux('west') | round(0) }}
 
     - <<: *hitzeschutz_facade_defaults
+      name: "Hitzeschutz Sonnensegel"
+      unique_id: hitzeschutz_sonnensegel
+      state: >-
+        {% from 'heat_protection.jinja' import facade_active %}
+        {% set facade_active = facade_active | as_function %}
+        {{ facade_active('sonnensegel') }}
+      attributes:
+        facade_azimuth: >-
+          {% from 'heat_protection.jinja' import facade_azimuth %}
+          {% set facade_azimuth = facade_azimuth | as_function %}
+          {{ facade_azimuth('sonnensegel') }}
+        estimated_facade_lux: >-
+          {% from 'heat_protection.jinja' import facade_lux %}
+          {% set facade_lux = facade_lux | as_function %}
+          {{ facade_lux('sonnensegel') | round(0) }}
+
+    - <<: *hitzeschutz_facade_defaults
       name: "Hitzeschutz Fassade Wohnzimmer Panorama"
       unique_id: hitzeschutz_fassade_wohnzimmer_panorama
       state: >-
