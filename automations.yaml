@@ -856,6 +856,13 @@
       minutes: 10
     id: wohnzimmer_panorama_close
   - trigger: state
+    entity_id: binary_sensor.hitzeschutz_sonnensegel
+    from: "off"
+    to: "on"
+    for:
+      minutes: 10
+    id: sonnensegel_close
+  - trigger: state
     entity_id: binary_sensor.hitzeschutz_fassade_ost
     from: "off"
     to: "on"
@@ -891,6 +898,13 @@
       minutes: 30
     id: wohnzimmer_panorama_open
   - trigger: state
+    entity_id: binary_sensor.hitzeschutz_sonnensegel
+    from: "on"
+    to: "off"
+    for:
+      minutes: 30
+    id: sonnensegel_open
+  - trigger: state
     entity_id: binary_sensor.hitzeschutz_fassade_ost
     from: "on"
     to: "off"
@@ -914,17 +928,18 @@
   variables:
     facade_key: "{{ trigger.id.rsplit('_', 1)[0] }}"
     action_id: "{{ trigger.id.rsplit('_', 1)[1] }}"
-    facade_group: "{{ 'group.fassade_' ~ facade_key }}"
     facade_name: >-
-      {% set mapping = {
-        'west': 'Fassade West',
-        'wohnzimmer_panorama': 'Wohnzimmer Panorama',
-        'ost': 'Fassade Ost',
-        'sued': 'Fassade Sued',
-        'nord': 'Fassade Nord'
-      } %}
-      {{ mapping.get(facade_key, trigger.id) }}
-    cover_entities: "{{ expand(facade_group) | map(attribute='entity_id') | list }}"
+      {% from 'heat_protection.jinja' import facade_name %}
+      {% set facade_name = facade_name | as_function %}
+      {{ facade_name(facade_key) }}
+    facade_display_name: >-
+      {% from 'heat_protection.jinja' import facade_display_name %}
+      {% set facade_display_name = facade_display_name | as_function %}
+      {{ facade_display_name(facade_key) }}
+    cover_entities: >-
+      {% from 'heat_protection.jinja' import facade_covers %}
+      {% set facade_covers = facade_covers | as_function %}
+      {{ facade_covers(facade_key) }}
   conditions:
   - condition: state
     entity_id: sun.sun
@@ -936,6 +951,7 @@
         {{
           [{
             'facade_name': facade_name,
+            'facade_display_name': facade_display_name,
             'action_id': action_id,
             'cover_entities': cover_entities,
             'allow_automation': true
