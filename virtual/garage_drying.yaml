@@ -18,15 +18,6 @@ input_number:
     step: 0.1
     unit_of_measurement: "%"
     icon: mdi:water-percent
-  sonoff_snzb_02wd_humidity_offset:
-    name: "Sonoff SNZB-02WD Feuchte Offset"
-    min: -20
-    max: 20
-    step: 0.1
-    unit_of_measurement: "%"
-    icon: mdi:water-percent
-    initial: 4.5
-
 template:
   - sensor:
       - name: "Sonoff SNZB-02WD Temperatur Eingangsbereich"
@@ -46,14 +37,36 @@ template:
         state_class: measurement
         unit_of_measurement: "%"
         availability: >-
-          {{ states('sensor.sonoff_snzb_02wd_humidity') not in ['unknown', 'unavailable'] }}
+          {{
+            states('sensor.sonoff_snzb_02wd_humidity') not in ['unknown', 'unavailable']
+            and states('sensor.sonoff_snzb_02wd_temperature') not in ['unknown', 'unavailable']
+          }}
         state: >-
-          {% set raw = states('sensor.sonoff_snzb_02wd_humidity') | float %}
-          {% set offset = states('input_number.sonoff_snzb_02wd_humidity_offset') | float(0) %}
-          {{ [0, [100, raw + offset] | min] | max | round(1) }}
+          {% set temperature = states('sensor.sonoff_snzb_02wd_temperature') | float %}
+          {% set relative_humidity = states('sensor.sonoff_snzb_02wd_humidity') | float %}
+          {% set saturation_pressure = 6.112 * (2.718281828459045 ** ((17.62 * temperature) / (243.12 + temperature))) %}
+          {% set vapor_pressure = relative_humidity / 100 * saturation_pressure %}
+          {% set absolute_humidity = 216.7 * vapor_pressure / (273.15 + temperature) %}
+          {% set corrected_absolute_humidity = 4.42081 + 0.66924 * absolute_humidity %}
+          {% set corrected_relative_humidity = 100 * corrected_absolute_humidity * (273.15 + temperature) / (216.7 * saturation_pressure) %}
+          {{ [0, [100, corrected_relative_humidity] | min] | max | round(1) }}
         attributes:
           raw_value: "{{ states('sensor.sonoff_snzb_02wd_humidity') }}"
-          offset: "{{ states('input_number.sonoff_snzb_02wd_humidity_offset') }}"
+          raw_temperature: "{{ states('sensor.sonoff_snzb_02wd_temperature') }}"
+          absolute_humidity_fit: "4.42081 + 0.66924 * absolute_humidity"
+          absolute_humidity: >-
+            {% set temperature = states('sensor.sonoff_snzb_02wd_temperature') | float %}
+            {% set relative_humidity = states('sensor.sonoff_snzb_02wd_humidity') | float %}
+            {% set saturation_pressure = 6.112 * (2.718281828459045 ** ((17.62 * temperature) / (243.12 + temperature))) %}
+            {% set vapor_pressure = relative_humidity / 100 * saturation_pressure %}
+            {{ (216.7 * vapor_pressure / (273.15 + temperature)) | round(2) }}
+          corrected_absolute_humidity: >-
+            {% set temperature = states('sensor.sonoff_snzb_02wd_temperature') | float %}
+            {% set relative_humidity = states('sensor.sonoff_snzb_02wd_humidity') | float %}
+            {% set saturation_pressure = 6.112 * (2.718281828459045 ** ((17.62 * temperature) / (243.12 + temperature))) %}
+            {% set vapor_pressure = relative_humidity / 100 * saturation_pressure %}
+            {% set absolute_humidity = 216.7 * vapor_pressure / (273.15 + temperature) %}
+            {{ (4.42081 + 0.66924 * absolute_humidity) | round(2) }}
 
   - binary_sensor:
       - name: "Garage Feuchte ueber 60"
