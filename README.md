@@ -112,10 +112,21 @@ HA_LOCAL_DB_PATH=./home-assistant_v2.db
 HA_PULL_RUNTIME_PATHS=1
 HA_RUNTIME_PATHS=".cloud .cache tts .ha_run.lock zigbee.db"
 HA_PULL_DB_SNAPSHOT=1
+HA_REMOTE_RSYNC="sudo -n rsync"
+HA_REMOTE_TEST="sudo -n test"
+HA_REMOTE_MKDIR="sudo -n mkdir"
+HA_REMOTE_SQLITE="sudo -n sqlite3"
+HA_REMOTE_RM="sudo -n rm"
 ```
 
 Mit `HA_PULL_RUNTIME_PATHS=0 ./hostpull` kann der Pull der host-lokalen
 Laufzeitpfade bei Bedarf übersprungen werden.
+
+Die `HA_REMOTE_*`-Defaults nutzen `sudo -n`, weil `/config` auf dem
+Home-Assistant-Host root-owned ist, während der SSH-Login als normaler Benutzer
+laufen kann. Wenn der SSH-Benutzer direkt lesen darf, können die Variablen auf
+die unprivilegierten Kommandos gesetzt werden, zum Beispiel
+`HA_REMOTE_RSYNC=rsync`.
 
 Mit `HA_PULL_DB_SNAPSHOT=0 ./hostpull` kann der Datenbank-Snapshot bei Bedarf
 übersprungen werden.

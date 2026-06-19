@@ -10,6 +10,11 @@ HA_LOCAL_DB_PATH="${HA_LOCAL_DB_PATH:-./home-assistant_v2.db}"
 HA_PULL_DB_SNAPSHOT="${HA_PULL_DB_SNAPSHOT:-1}"
 HA_PULL_RUNTIME_PATHS="${HA_PULL_RUNTIME_PATHS:-1}"
 HA_RUNTIME_PATHS="${HA_RUNTIME_PATHS:-.cloud .cache tts .ha_run.lock zigbee.db}"
+HA_REMOTE_RSYNC="${HA_REMOTE_RSYNC:-sudo -n rsync}"
+HA_REMOTE_TEST="${HA_REMOTE_TEST:-sudo -n test}"
+HA_REMOTE_MKDIR="${HA_REMOTE_MKDIR:-sudo -n mkdir}"
+HA_REMOTE_SQLITE="${HA_REMOTE_SQLITE:-sudo -n sqlite3}"
+HA_REMOTE_RM="${HA_REMOTE_RM:-sudo -n rm}"
 
 if [ -n "$HA_USER" ]; then
   SSH_TARGET="${HA_USER}@${HA_HOST}"
@@ -39,13 +44,15 @@ sync_runtime_path() {
   remote_path="${HA_CONFIG_DIR%/}/${rel_path}"
   local_path="./${rel_path}"
 
-  if ssh "$SSH_TARGET" "test -d '${remote_path}'"; then
+  if ssh "$SSH_TARGET" "${HA_REMOTE_TEST} -d '${remote_path}'"; then
     mkdir -p "$local_path"
-    rsync -az --delete "${SSH_TARGET}:${remote_path%/}/" "${local_path%/}/"
+    rsync -az --delete --rsync-path="$HA_REMOTE_RSYNC" \
+      "${SSH_TARGET}:${remote_path%/}/" "${local_path%/}/"
     echo "Updated local Home Assistant runtime directory: $local_path"
-  elif ssh "$SSH_TARGET" "test -f '${remote_path}'"; then
+  elif ssh "$SSH_TARGET" "${HA_REMOTE_TEST} -f '${remote_path}'"; then
     mkdir -p "$(dirname "$local_path")"
-    rsync -az "${SSH_TARGET}:${remote_path}" "$local_path"
+    rsync -az --rsync-path="$HA_REMOTE_RSYNC" \
+      "${SSH_TARGET}:${remote_path}" "$local_path"
     echo "Updated local Home Assistant runtime file: $local_path"
   else
     echo "Skipping missing Home Assistant runtime path: $remote_path" >&2
@@ -54,6 +61,7 @@ sync_runtime_path() {
 
 mkdir -p "$LOCAL"
 rsync -az --delete \
+  --rsync-path="$HA_REMOTE_RSYNC" \
   --exclude '/auth' \
   --exclude '/auth_provider.homeassistant' \
   --exclude '/homekit.*.state' \
@@ -76,11 +84,12 @@ if [ "$HA_PULL_DB_SNAPSHOT" = "1" ]; then
   mkdir -p "$(dirname "$HA_LOCAL_DB_PATH")"
 
   ssh "$SSH_TARGET" \
-    "mkdir -p '${HA_REMOTE_SNAPSHOT_DIR%/}' && sqlite3 '${HA_DB_PATH}' '.backup ${remote_snapshot}'"
+    "${HA_REMOTE_MKDIR} -p '${HA_REMOTE_SNAPSHOT_DIR%/}' && ${HA_REMOTE_SQLITE} '${HA_DB_PATH}' '.backup ${remote_snapshot}'"
 
-  rsync -az "${SSH_TARGET}:${remote_snapshot}" "$local_db_tmp"
+  rsync -az --rsync-path="$HA_REMOTE_RSYNC" \
+    "${SSH_TARGET}:${remote_snapshot}" "$local_db_tmp"
   mv "$local_db_tmp" "$HA_LOCAL_DB_PATH"
-  ssh "$SSH_TARGET" "rm -f '${remote_snapshot}'"
+  ssh "$SSH_TARGET" "${HA_REMOTE_RM} -f '${remote_snapshot}'"
 
   echo "Updated local Home Assistant database: $HA_LOCAL_DB_PATH"
 fi
