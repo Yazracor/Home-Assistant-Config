@@ -3,8 +3,10 @@
 
 from __future__ import annotations
 
+import argparse
 import csv
 import re
+import sys
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
@@ -290,13 +292,38 @@ def render(knx_map: dict[str, set[str]]) -> str:
     return "\n".join(lines)
 
 
-def main() -> None:
+def build_output() -> str:
     covers, address_to_entity, unique_id_to_entity = read_cover_registry()
     knx_map, entity_addresses, entity_labels = read_knx_cover_addresses(address_to_entity)
     add_virtual_cover_addresses(knx_map, entity_addresses, unique_id_to_entity)
     add_central_addresses(knx_map, covers, entity_labels)
-    OUTPUT.write_text(render(knx_map), encoding="utf-8")
+    return render(knx_map)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Fail if the generated template is not up to date, without writing it.",
+    )
+    args = parser.parse_args()
+
+    generated = build_output()
+    if args.check:
+        current = OUTPUT.read_text(encoding="utf-8") if OUTPUT.exists() else ""
+        if current != generated:
+            relative_output = OUTPUT.relative_to(ROOT)
+            print(
+                f"{relative_output} is out of date; run tools/generate_hitzeschutz_manual_map.py",
+                file=sys.stderr,
+            )
+            return 1
+        return 0
+
+    OUTPUT.write_text(generated, encoding="utf-8")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

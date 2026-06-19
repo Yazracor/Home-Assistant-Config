@@ -1,5 +1,7 @@
 #!/bin/sh
-python3 tools/generate_hitzeschutz_manual_map.py || exit 1
+set -eu
+
+python3 tools/generate_hitzeschutz_manual_map.py --check
 
 docker run --rm \
   -v "$(pwd):/config" \

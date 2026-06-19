@@ -73,7 +73,8 @@ template:
         unique_id: garage_feuchte_ueber_60
         device_class: moisture
         state: "{{ states('sensor.wifi_smart_switch_humidity') | float(0) > 60 }}"
-      - name: "Garage Feuchte ueber 65"
+      # Keep unique_id stable for existing HomeKit/entity-registry mappings.
+      - name: "Garage Feuchte ueber 63"
         unique_id: garage_feuchte_ueber_65
         device_class: moisture
         state: "{{ states('sensor.wifi_smart_switch_humidity') | float(0) > 63 }}"
@@ -85,7 +86,7 @@ template:
         unique_id: garage_feuchte_unter_58
         device_class: moisture
         state: "{{ states('sensor.wifi_smart_switch_humidity') | float(999) < 58 }}"
-      - name: "Garage Feuchte unter 60"
+      - name: "Garage Feuchte bis 59"
         unique_id: garage_feuchte_unter_60
         device_class: moisture
         state: "{{ states('sensor.wifi_smart_switch_humidity') | float(999) <= 59 }}"
