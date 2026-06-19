@@ -329,10 +329,29 @@
           {% from 'heat_protection.jinja' import facade_azimuth %}
           {% set facade_azimuth = facade_azimuth | as_function %}
           {{ facade_azimuth('sonnensegel') }}
+        floor_shadow_axis_azimuth: 205
+        south_wall_axis_azimuth: 205
+        west_wall_axis_azimuth: 295
         estimated_facade_lux: >-
           {% from 'heat_protection.jinja' import facade_lux %}
           {% set facade_lux = facade_lux | as_function %}
           {{ facade_lux('sonnensegel') | round(0) }}
+        shadow_coverage: >-
+          {% from 'heat_protection.jinja' import horizontal_shade_coverage %}
+          {% set horizontal_shade_coverage = horizontal_shade_coverage | as_function %}
+          {{ (horizontal_shade_coverage('sonnensegel') * 100) | round(1) }}
+        floor_shadow_coverage: >-
+          {% from 'heat_protection.jinja' import floor_shadow_coverage %}
+          {% set floor_shadow_coverage = floor_shadow_coverage | as_function %}
+          {{ (floor_shadow_coverage('sonnensegel') * 100) | round(1) }}
+        south_wall_shadow_coverage: >-
+          {% from 'heat_protection.jinja' import wall_shadow_coverage %}
+          {% set wall_shadow_coverage = wall_shadow_coverage | as_function %}
+          {{ (wall_shadow_coverage('sonnensegel', 205) * 100) | round(1) }}
+        west_wall_shadow_coverage: >-
+          {% from 'heat_protection.jinja' import wall_shadow_coverage %}
+          {% set wall_shadow_coverage = wall_shadow_coverage | as_function %}
+          {{ (wall_shadow_coverage('sonnensegel', 295) * 100) | round(1) }}
 
     - <<: *hitzeschutz_facade_defaults
       name: "Hitzeschutz Fassade Wohnzimmer Panorama"

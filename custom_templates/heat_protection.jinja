@@ -37,6 +37,12 @@
       'min_lux': 25000,
       'temp_offset': 0,
       'min_elevation': 15,
+      'shade_size_m': 6,
+      'shade_height_m': 3,
+      'shade_floor_axis_azimuth': 205,
+      'shade_wall_reference_drop_m': 1.5,
+      'shade_wall_axes': [205, 295],
+      'min_shadow_coverage': 0,
       'horizontal_shade': true
     },
     'ost': {
@@ -112,6 +118,58 @@
   {% do returns(config(facade).get('azimuth')) %}
 {% endmacro %}
 
+{% macro horizontal_shadow_coverage(facade, axis, drop, returns) %}
+  {% set config = facade_config | as_function %}
+  {% set facade_settings = config(facade) %}
+  {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
+  {% if not facade_settings.horizontal_shade | default(false) or elevation <= 0 %}
+    {% do returns(0) %}
+  {% else %}
+    {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
+    {% set size = facade_settings.shade_size_m | default(6) | float(6) %}
+    {% set drop = drop | float(0) %}
+    {% set elevation_rad = elevation * 3.141592653589793 / 180 %}
+    {% set axis_delta_rad = (((azimuth - (axis | float(0)) + 180) % 360) - 180) * 3.141592653589793 / 180 %}
+    {% set shadow_offset = drop / (elevation_rad | tan) %}
+    {% set offset_x = (shadow_offset * (axis_delta_rad | cos)) | abs %}
+    {% set offset_y = (shadow_offset * (axis_delta_rad | sin)) | abs %}
+    {% set overlap_x = [0, size - offset_x] | max %}
+    {% set overlap_y = [0, size - offset_y] | max %}
+    {% do returns(overlap_x * overlap_y / (size * size)) %}
+  {% endif %}
+{% endmacro %}
+
+{% macro floor_shadow_coverage(facade, returns) %}
+  {% set config = facade_config | as_function %}
+  {% set facade_settings = config(facade) %}
+  {% set coverage = horizontal_shadow_coverage | as_function %}
+  {% set axis = facade_settings.shade_floor_axis_azimuth | default(facade_settings.azimuth) %}
+  {% set drop = facade_settings.shade_height_m | default(3) %}
+  {% do returns(coverage(facade, axis, drop)) %}
+{% endmacro %}
+
+{% macro wall_shadow_coverage(facade, axis, returns) %}
+  {% set config = facade_config | as_function %}
+  {% set facade_settings = config(facade) %}
+  {% set coverage = horizontal_shadow_coverage | as_function %}
+  {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
+  {% set delta = (((azimuth - (axis | float(0)) + 180) % 360) - 180) | abs %}
+  {% set drop = facade_settings.shade_wall_reference_drop_m | default(1.5) %}
+  {% do returns(coverage(facade, axis, drop) if delta < 90 else 0) %}
+{% endmacro %}
+
+{% macro horizontal_shade_coverage(facade, returns) %}
+  {% set config = facade_config | as_function %}
+  {% set facade_settings = config(facade) %}
+  {% set floor_coverage = floor_shadow_coverage | as_function %}
+  {% set wall_coverage = wall_shadow_coverage | as_function %}
+  {% set ns = namespace(value=floor_coverage(facade)) %}
+  {% for axis in facade_settings.shade_wall_axes | default([]) %}
+    {% set ns.value = [ns.value, wall_coverage(facade, axis)] | max %}
+  {% endfor %}
+  {% do returns(ns.value) %}
+{% endmacro %}
+
 {% macro facade_lux(facade, returns) %}
   {% set config = facade_config | as_function %}
   {% set facade_settings = config(facade) %}
@@ -142,11 +200,18 @@
   {% set temp_threshold = 10000 if outside_temp >= 23 else 15000 if outside_temp >= 15 else 20000 if outside_temp >= 5 else 24000 %}
   {% set delta = (((azimuth - facade_settings.azimuth + 180) % 360) - 180) | abs %}
   {% set load = corrected_lux(facade) %}
-  {% do returns(
+  {% set shade_coverage = horizontal_shade_coverage | as_function %}
+  {% set sun_and_light_ok = (
     is_state('sun.sun', 'above_horizon')
-    and elevation > facade_settings.min_elevation | default(0)
+    and elevation > (facade_settings.min_elevation | default(0))
     and load > facade_settings.min_lux
-    and delta < facade_settings.max_delta
     and load > temp_threshold + facade_settings.temp_offset
   ) %}
+  {% set facade_rule_active = sun_and_light_ok and delta < facade_settings.max_delta %}
+  {% set floor_rule_active = (
+    facade_settings.horizontal_shade | default(false)
+    and sun_and_light_ok
+    and shade_coverage(facade) > facade_settings.min_shadow_coverage | default(0)
+  ) %}
+  {% do returns((not facade_settings.horizontal_shade | default(false) and facade_rule_active) or floor_rule_active) %}
 {% endmacro %}
