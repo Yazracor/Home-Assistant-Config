@@ -141,10 +141,11 @@ def dpt9(payload) -> float | None:
     if not isinstance(payload, list) or len(payload) != 2:
         return None
     raw = (payload[0] << 8) | payload[1]
-    sign = -1 if raw & 0x8000 else 1
     exponent = (raw >> 11) & 0x0F
     mantissa = raw & 0x07FF
-    return sign * 0.01 * mantissa * (2**exponent)
+    if mantissa & 0x0400:
+        mantissa -= 0x0800
+    return 0.01 * mantissa * (2**exponent)
 
 
 def normalize_event(event: dict) -> dict:

@@ -374,7 +374,7 @@ def apply_devices(storage: Path, device_area: dict[str, str | None], device_name
         return 0, 0
     path = storage / 'core.device_registry'
     if not path.exists():
-        return 0
+        raise FileNotFoundError(f'{path} nicht gefunden; Device-Zuordnungen koennen nicht angewendet werden.')
     with path.open(encoding='utf-8') as f:
         store = json.load(f)
     area_changed = 0

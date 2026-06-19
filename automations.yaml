@@ -483,7 +483,7 @@
   mode: single
 - id: garage_entfeuchter_feuchte_wieder_ok
   alias: Garage Entfeuchter Feuchte wieder ok
-  description: Meldet einmalig Entwarnung, wenn die Garagenfeuchte nach einer Entfeuchtungswarnung wieder unter 60 Prozent liegt.
+  description: Meldet einmalig Entwarnung, wenn die Garagenfeuchte nach einer Entfeuchtungswarnung wieder bis 59 Prozent liegt.
   triggers:
   - trigger: state
     entity_id: binary_sensor.garage_feuchte_unter_60
@@ -500,7 +500,7 @@
   - action: notify.mobile_app_torbens_iphone
     metadata: {}
     data:
-      title: Garage wieder unter 60 Prozent
+      title: Garage wieder bis 59 Prozent
       message: >-
         Die Garagenfeuchte ist wieder bei
         {{ states('sensor.wifi_smart_switch_humidity') | float(0) | round(1) }} %.
