@@ -21,6 +21,8 @@
       - binary_sensor.haushaltshilfe_anwesend
       - binary_sensor.gast_im_haus
       - binary_sensor.manuelle_bedienung_aktiv
+      - sensor.sonoff_snzb_02wd_temperatur_eingangsbereich
+      - sensor.sonoff_snzb_02wd_feuchte_korrigiert
       - script.auto_jalousien
     exclude_entities:
       - media_player.homepod_kuche
