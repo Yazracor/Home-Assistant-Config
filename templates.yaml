@@ -296,12 +296,7 @@
         source_entity: binary_sensor.aleksandramorawska_aleksandramorawska_wlan
         legacy_source_entity: binary_sensor.radius_presence_aleksandramorawska
 
-    - <<: &hitzeschutz_facade_defaults
-        delay_on:
-          minutes: 5
-        delay_off:
-          minutes: 5
-      name: "Hitzeschutz Fassade West"
+    - name: "Hitzeschutz Fassade West"
       unique_id: hitzeschutz_fassade_west
       state: >-
         {% from 'heat_protection.jinja' import facade_active %}
@@ -317,8 +312,7 @@
           {% set facade_lux = facade_lux | as_function %}
           {{ facade_lux('west') | round(0) }}
 
-    - <<: *hitzeschutz_facade_defaults
-      name: "Hitzeschutz Sonnensegel"
+    - name: "Hitzeschutz Sonnensegel"
       unique_id: hitzeschutz_sonnensegel
       state: >-
         {% from 'heat_protection.jinja' import facade_active %}
@@ -353,8 +347,7 @@
           {% set wall_shadow_coverage = wall_shadow_coverage | as_function %}
           {{ (wall_shadow_coverage('sonnensegel', 295) * 100) | round(1) }}
 
-    - <<: *hitzeschutz_facade_defaults
-      name: "Hitzeschutz Fassade Wohnzimmer Panorama"
+    - name: "Hitzeschutz Fassade Wohnzimmer Panorama"
       unique_id: hitzeschutz_fassade_wohnzimmer_panorama
       state: >-
         {% from 'heat_protection.jinja' import facade_active %}
@@ -370,8 +363,7 @@
           {% set facade_lux = facade_lux | as_function %}
           {{ facade_lux('wohnzimmer_panorama') | round(0) }}
 
-    - <<: *hitzeschutz_facade_defaults
-      name: "Hitzeschutz Fassade Ost"
+    - name: "Hitzeschutz Fassade Ost"
       unique_id: hitzeschutz_fassade_ost
       state: >-
         {% from 'heat_protection.jinja' import facade_active %}
@@ -387,8 +379,7 @@
           {% set facade_lux = facade_lux | as_function %}
           {{ facade_lux('ost') | round(0) }}
 
-    - <<: *hitzeschutz_facade_defaults
-      name: "Hitzeschutz Fassade Süd"
+    - name: "Hitzeschutz Fassade Süd"
       unique_id: hitzeschutz_fassade_sued
       state: >-
         {% from 'heat_protection.jinja' import facade_active %}
@@ -404,8 +395,7 @@
           {% set facade_lux = facade_lux | as_function %}
           {{ facade_lux('sued') | round(0) }}
 
-    - <<: *hitzeschutz_facade_defaults
-      name: "Hitzeschutz Fassade Nord"
+    - name: "Hitzeschutz Fassade Nord"
       unique_id: hitzeschutz_fassade_nord
       state: >-
         {% from 'heat_protection.jinja' import facade_active %}

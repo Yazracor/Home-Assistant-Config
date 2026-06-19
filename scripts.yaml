@@ -345,6 +345,15 @@ auto_jalousien:
   mode: single
   sequence:
     - action: script.hitzeschutz_manuellen_jalousie_block_zuruecksetzen
+    - action: homeassistant.update_entity
+      target:
+        entity_id:
+          - binary_sensor.hitzeschutz_fassade_west
+          - binary_sensor.hitzeschutz_fassade_wohnzimmer_panorama
+          - binary_sensor.hitzeschutz_sonnensegel
+          - binary_sensor.hitzeschutz_fassade_ost
+          - binary_sensor.hitzeschutz_fassade_sud
+          - binary_sensor.hitzeschutz_fassade_nord
     - action: script.hitzeschutz_jalousien_fassadenstatus_pruefen
       data:
         facade_state: "on"
@@ -353,7 +362,6 @@ auto_jalousien:
         respect_automation_switch: false
         require_automation_marker: false
         ignore_manual_cooldown: true
-        use_direct_facade_calculation: true
     - action: script.hitzeschutz_jalousien_fassadenstatus_pruefen
       data:
         facade_state: "off"
@@ -362,7 +370,6 @@ auto_jalousien:
         respect_automation_switch: false
         require_automation_marker: false
         ignore_manual_cooldown: true
-        use_direct_facade_calculation: true
 
 hitzeschutz_jalousie_fassade_pruefen:
   alias: Hitzeschutz Jalousie Fassade pruefen
