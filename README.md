@@ -76,25 +76,30 @@ In Alpine-basierten Hook-Umgebungen installiert der Runner fehlendes Python
 automatisch mit `apk add --no-cache python3`. Das kann mit
 `KNX_AREA_ASSIGNMENT_AUTO_INSTALL_PYTHON=0` deaktiviert werden.
 
-Der Installer setzt außerdem `git config pull.rebase false`. Commits auf der
-Home-Assistant-Instanz sind deaktiviert; Änderungen sollen auf der Workstation
-reviewt und committed werden.
+Der Installer setzt außerdem `git config pull.rebase false`, damit der
+`post-merge`-Hook nach einem Pull läuft, und `git config merge.autoEdit false`,
+damit Git für automatische Merge-Commits keinen Editor öffnet. Wenn Änderungen
+auf der Home-Assistant-Instanz entstehen, zum Beispiel über die UI in
+`automations.yaml`, sollen nur die passenden Konfigurationsdateien committed
+werden. Laufzeitdaten, Caches und lokale Zustände bleiben außerhalb von Git.
 
-## Lokaler Pull von `.storage` und Datenbank-Snapshot
+## Lokaler Pull von Laufzeitdaten und Datenbank-Snapshot
 
-Das lokale Script `./hostpull` zieht die `.storage`-Dateien vom
-Home-Assistant-Host und erstellt zusätzlich einen konsistenten SQLite-Snapshot
-der Datenbank auf dem Host:
+Das lokale Script `./hostpull` zieht die `.storage`-Dateien sowie ausgewählte
+host-lokale Laufzeitpfade vom Home-Assistant-Host und erstellt zusätzlich einen
+konsistenten SQLite-Snapshot der Datenbank auf dem Host:
 
 ```bash
 ./hostpull
 ```
 
-Standardmäßig wird per SSH `sqlite3 /config/home-assistant_v2.db ".backup ..."`
-auf dem Host ausgeführt. Die konsistente Backup-Datei wird anschließend lokal
-als `./home-assistant_v2.db` ins Config-Verzeichnis geschrieben. Diese Datei ist
-per `.gitignore` ausgeschlossen und kann von lokalen Prüf- und Analyse-Skripten
-direkt verwendet werden.
+Standardmäßig werden `.cloud/`, `.cache/`, `tts/`, `.ha_run.lock` und
+`zigbee.db` zusätzlich zu `.storage/` per SSH gespiegelt. Danach wird per SSH
+`sqlite3 /config/home-assistant_v2.db ".backup ..."` auf dem Host ausgeführt.
+Die konsistente Backup-Datei wird anschließend lokal als
+`./home-assistant_v2.db` ins Config-Verzeichnis geschrieben. Diese Dateien sind
+per `.gitignore` ausgeschlossen und können von lokalen Prüf- und
+Analyse-Skripten direkt verwendet werden.
 
 Relevante Umgebungsvariablen:
 
@@ -104,8 +109,13 @@ HA_USER=
 HA_CONFIG_DIR=/config
 HA_DB_PATH=/config/home-assistant_v2.db
 HA_LOCAL_DB_PATH=./home-assistant_v2.db
+HA_PULL_RUNTIME_PATHS=1
+HA_RUNTIME_PATHS=".cloud .cache tts .ha_run.lock zigbee.db"
 HA_PULL_DB_SNAPSHOT=1
 ```
+
+Mit `HA_PULL_RUNTIME_PATHS=0 ./hostpull` kann der Pull der host-lokalen
+Laufzeitpfade bei Bedarf übersprungen werden.
 
 Mit `HA_PULL_DB_SNAPSHOT=0 ./hostpull` kann der Datenbank-Snapshot bei Bedarf
 übersprungen werden.

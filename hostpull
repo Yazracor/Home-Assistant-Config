@@ -8,6 +8,8 @@ HA_DB_PATH="${HA_DB_PATH:-${HA_CONFIG_DIR%/}/home-assistant_v2.db}"
 HA_REMOTE_SNAPSHOT_DIR="${HA_REMOTE_SNAPSHOT_DIR:-/tmp}"
 HA_LOCAL_DB_PATH="${HA_LOCAL_DB_PATH:-./home-assistant_v2.db}"
 HA_PULL_DB_SNAPSHOT="${HA_PULL_DB_SNAPSHOT:-1}"
+HA_PULL_RUNTIME_PATHS="${HA_PULL_RUNTIME_PATHS:-1}"
+HA_RUNTIME_PATHS="${HA_RUNTIME_PATHS:-.cloud .cache tts .ha_run.lock zigbee.db}"
 
 if [ -n "$HA_USER" ]; then
   SSH_TARGET="${HA_USER}@${HA_HOST}"
@@ -27,6 +29,29 @@ if [ "$HA_PULL_DB_SNAPSHOT" = "1" ] && ! command -v ssh >/dev/null 2>&1; then
   exit 1
 fi
 
+if [ "$HA_PULL_RUNTIME_PATHS" = "1" ] && ! command -v ssh >/dev/null 2>&1; then
+  echo "ssh is required to pull runtime paths from ${SSH_TARGET}" >&2
+  exit 1
+fi
+
+sync_runtime_path() {
+  rel_path="$1"
+  remote_path="${HA_CONFIG_DIR%/}/${rel_path}"
+  local_path="./${rel_path}"
+
+  if ssh "$SSH_TARGET" "test -d '${remote_path}'"; then
+    mkdir -p "$local_path"
+    rsync -az --delete "${SSH_TARGET}:${remote_path%/}/" "${local_path%/}/"
+    echo "Updated local Home Assistant runtime directory: $local_path"
+  elif ssh "$SSH_TARGET" "test -f '${remote_path}'"; then
+    mkdir -p "$(dirname "$local_path")"
+    rsync -az "${SSH_TARGET}:${remote_path}" "$local_path"
+    echo "Updated local Home Assistant runtime file: $local_path"
+  else
+    echo "Skipping missing Home Assistant runtime path: $remote_path" >&2
+  fi
+}
+
 mkdir -p "$LOCAL"
 rsync -az --delete \
   --exclude '/auth' \
@@ -36,6 +61,12 @@ rsync -az --delete \
   --exclude '/*.pem' \
   "$@" \
   "$REMOTE" "$LOCAL"
+
+if [ "$HA_PULL_RUNTIME_PATHS" = "1" ]; then
+  for runtime_path in $HA_RUNTIME_PATHS; do
+    sync_runtime_path "$runtime_path"
+  done
+fi
 
 if [ "$HA_PULL_DB_SNAPSHOT" = "1" ]; then
   timestamp="$(date -u '+%Y%m%dT%H%M%SZ')"
