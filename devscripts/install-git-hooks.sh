@@ -7,6 +7,7 @@ post_merge_hook="$hooks_dir/post-merge"
 pre_commit_hook="$hooks_dir/pre-commit"
 
 git config pull.rebase false
+git config merge.autoEdit false
 cat > "$post_merge_hook" <<EOF
 #!/bin/sh
 set -eu
@@ -30,3 +31,4 @@ echo "Hook delegates to versioned script: $repo_root/devscripts/pre-commit"
 echo "Hook log will be written to: $hooks_dir/post-merge.log"
 echo "After a pull, the hook starts: $repo_root/devscripts/apply-pending-knx-area-assignments.sh"
 echo "Configured git pull strategy: merge (pull.rebase=false)"
+echo "Configured git merge editor prompt: disabled (merge.autoEdit=false)"
