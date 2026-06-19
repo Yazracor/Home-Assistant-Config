@@ -177,7 +177,8 @@
   {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
   {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
   {% set delta = (((azimuth - facade_settings.azimuth + 180) % 360) - 180) | abs %}
-  {% set azimuth_factor = [0, 1 - (delta / 90)] | max %}
+  {% set delta_rad = delta * 3.141592653589793 / 180 %}
+  {% set azimuth_factor = [0, delta_rad | cos] | max %}
   {% set elevation_rad = elevation * 3.141592653589793 / 180 %}
   {% set horizontal_factor = [elevation_rad | sin, 0.15] | max %}
   {% set vertical_factor = [elevation_rad | cos, 0] | max %}
