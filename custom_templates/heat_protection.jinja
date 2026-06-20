@@ -172,7 +172,19 @@
 
 {% macro facade_lux(facade, returns) %}
   {% set horizontal_lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
-  {% do returns(horizontal_lux) %}
+  {% set config = facade_config | as_function %}
+  {% set facade_settings = config(facade) %}
+  {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
+  {% if facade_settings.horizontal_shade | default(false) or elevation <= 0 %}
+    {% do returns(horizontal_lux) %}
+  {% else %}
+    {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
+    {% set delta = (((azimuth - facade_settings.azimuth + 180) % 360) - 180) | abs %}
+    {% set elevation_rad = elevation * 3.141592653589793 / 180 %}
+    {% set delta_rad = delta * 3.141592653589793 / 180 %}
+    {% set facade_factor = ((delta_rad | cos) / (elevation_rad | tan)) if delta < 90 else 0 %}
+    {% do returns(horizontal_lux * ([0, facade_factor, 6] | sort)[1]) %}
+  {% endif %}
 {% endmacro %}
 
 {% macro facade_active(facade, returns) %}
