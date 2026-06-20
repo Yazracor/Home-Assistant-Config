@@ -927,7 +927,8 @@
             'allow_automation': true
           }] | to_json
         }}
-  mode: single
+  mode: queued
+  max: 10
 - id: solar_heat_protection_blind_notification_periodic
   alias: Hitzeschutz Jalousie Nachcheck Schließen
   description: Prüft tagsüber stündlich geöffnete Jalousien an aktiven Hitzeschutz-Fassaden und schließt ohne manuellen Override automatisch.
