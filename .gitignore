@@ -17,7 +17,7 @@ known_devices.yaml
 home-assistant.log*
 home-assistant_v2.db*
 .ha_run.lock
-zigbee.db
+zigbee.db*
 
 # Home Assistant host-local runtime, cache, credentials, and generated media
 .cloud/
