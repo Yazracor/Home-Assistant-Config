@@ -13,9 +13,7 @@
         'cover.kg_zimmer_silas_jalousie'
       ],
       'azimuth': 295,
-      'max_delta': 90,
-      'min_lux': 25000,
-      'temp_offset': 0
+      'max_delta': 90
     },
     'wohnzimmer_panorama': {
       'name': 'Wohnzimmer Panorama',
@@ -23,9 +21,7 @@
       'sensor': 'binary_sensor.hitzeschutz_fassade_wohnzimmer_panorama',
       'covers': ['cover.eg_wohnzimmer_panorama'],
       'azimuth': 275,
-      'max_delta': 90,
-      'min_lux': 25000,
-      'temp_offset': 0
+      'max_delta': 90
     },
     'sonnensegel': {
       'name': 'Sonnensegel',
@@ -34,8 +30,6 @@
       'covers': ['cover.aussenbereich_balkon_sonnensegel'],
       'azimuth': 250,
       'max_delta': 85,
-      'min_lux': 25000,
-      'temp_offset': 0,
       'min_elevation': 15,
       'shade_size_m': 6,
       'shade_height_m': 3,
@@ -54,9 +48,7 @@
         'cover.eg_arbeitszimmer_vorgarten'
       ],
       'azimuth': 115,
-      'max_delta': 80,
-      'min_lux': 25000,
-      'temp_offset': 4000
+      'max_delta': 80
     },
     'sued': {
       'name': 'Fassade Sued',
@@ -72,9 +64,7 @@
         'cover.eg_arbeitszimmer_garten'
       ],
       'azimuth': 205,
-      'max_delta': 90,
-      'min_lux': 25000,
-      'temp_offset': 3000
+      'max_delta': 90
     },
     'nord': {
       'name': 'Fassade Nord',
@@ -86,9 +76,7 @@
         'cover.og_wc_fenster'
       ],
       'azimuth': 25,
-      'max_delta': 45,
-      'min_lux': 35000,
-      'temp_offset': 10000
+      'max_delta': 45
     }
   }) %}
 {% endmacro %}
@@ -170,39 +158,41 @@
   {% do returns(ns.value) %}
 {% endmacro %}
 
-{% macro facade_lux(facade, returns) %}
+{% macro sun_lux_threshold(returns) %}
+  {% do returns(30000) %}
+{% endmacro %}
+
+{% macro sun_lux(returns) %}
   {% set horizontal_lux = states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) %}
-  {% set config = facade_config | as_function %}
-  {% set facade_settings = config(facade) %}
   {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
-  {% if facade_settings.horizontal_shade | default(false) or elevation <= 0 %}
-    {% do returns(horizontal_lux) %}
+  {% if elevation <= 0 %}
+    {% do returns(0) %}
   {% else %}
-    {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
-    {% set delta = (((azimuth - facade_settings.azimuth + 180) % 360) - 180) | abs %}
     {% set elevation_rad = elevation * 3.141592653589793 / 180 %}
-    {% set delta_rad = delta * 3.141592653589793 / 180 %}
-    {% set facade_factor = ((delta_rad | cos) / (elevation_rad | tan)) if delta < 90 else 0 %}
-    {% do returns(horizontal_lux * ([0, facade_factor, 6] | sort)[1]) %}
+    {% set normalized_lux = horizontal_lux / (elevation_rad | sin) %}
+    {% do returns(([0, normalized_lux, 120000] | sort)[1]) %}
   {% endif %}
+{% endmacro %}
+
+{% macro facade_lux(facade, returns) %}
+  {% set normalized_lux = sun_lux | as_function %}
+  {% do returns(normalized_lux()) %}
 {% endmacro %}
 
 {% macro facade_active(facade, returns) %}
   {% set config = facade_config | as_function %}
-  {% set corrected_lux = facade_lux | as_function %}
+  {% set corrected_lux = sun_lux | as_function %}
+  {% set threshold = sun_lux_threshold | as_function %}
   {% set facade_settings = config(facade) %}
-  {% set outside_temp = states('sensor.aussenbereich_wetterstation_temperatur') | float(0) %}
   {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
   {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
-  {% set temp_threshold = 10000 if outside_temp >= 23 else 15000 if outside_temp >= 15 else 20000 if outside_temp >= 5 else 24000 %}
   {% set delta = (((azimuth - facade_settings.azimuth + 180) % 360) - 180) | abs %}
-  {% set load = corrected_lux(facade) %}
+  {% set load = corrected_lux() %}
   {% set shade_coverage = horizontal_shade_coverage | as_function %}
   {% set sun_and_light_ok = (
     is_state('sun.sun', 'above_horizon')
     and elevation > (facade_settings.min_elevation | default(0))
-    and load > facade_settings.min_lux
-    and load > temp_threshold + facade_settings.temp_offset
+    and load > threshold()
   ) %}
   {% set facade_rule_active = (
     sun_and_light_ok

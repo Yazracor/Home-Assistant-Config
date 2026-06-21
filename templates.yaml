@@ -307,10 +307,10 @@
           {% from 'heat_protection.jinja' import facade_azimuth %}
           {% set facade_azimuth = facade_azimuth | as_function %}
           {{ facade_azimuth('west') }}
-        estimated_facade_lux: >-
-          {% from 'heat_protection.jinja' import facade_lux %}
-          {% set facade_lux = facade_lux | as_function %}
-          {{ facade_lux('west') | round(0) }}
+        estimated_sun_lux: &hitzeschutz_estimated_sun_lux >-
+          {% from 'heat_protection.jinja' import sun_lux %}
+          {% set sun_lux = sun_lux | as_function %}
+          {{ sun_lux() | round(0) }}
 
     - name: "Hitzeschutz Sonnensegel"
       unique_id: hitzeschutz_sonnensegel
@@ -326,10 +326,7 @@
         floor_shadow_axis_azimuth: 205
         south_wall_axis_azimuth: 205
         west_wall_axis_azimuth: 295
-        estimated_facade_lux: >-
-          {% from 'heat_protection.jinja' import facade_lux %}
-          {% set facade_lux = facade_lux | as_function %}
-          {{ facade_lux('sonnensegel') | round(0) }}
+        estimated_sun_lux: *hitzeschutz_estimated_sun_lux
         shadow_coverage: >-
           {% from 'heat_protection.jinja' import horizontal_shade_coverage %}
           {% set horizontal_shade_coverage = horizontal_shade_coverage | as_function %}
@@ -358,10 +355,7 @@
           {% from 'heat_protection.jinja' import facade_azimuth %}
           {% set facade_azimuth = facade_azimuth | as_function %}
           {{ facade_azimuth('wohnzimmer_panorama') }}
-        estimated_facade_lux: >-
-          {% from 'heat_protection.jinja' import facade_lux %}
-          {% set facade_lux = facade_lux | as_function %}
-          {{ facade_lux('wohnzimmer_panorama') | round(0) }}
+        estimated_sun_lux: *hitzeschutz_estimated_sun_lux
 
     - name: "Hitzeschutz Fassade Ost"
       unique_id: hitzeschutz_fassade_ost
@@ -374,10 +368,7 @@
           {% from 'heat_protection.jinja' import facade_azimuth %}
           {% set facade_azimuth = facade_azimuth | as_function %}
           {{ facade_azimuth('ost') }}
-        estimated_facade_lux: >-
-          {% from 'heat_protection.jinja' import facade_lux %}
-          {% set facade_lux = facade_lux | as_function %}
-          {{ facade_lux('ost') | round(0) }}
+        estimated_sun_lux: *hitzeschutz_estimated_sun_lux
 
     - name: "Hitzeschutz Fassade Süd"
       unique_id: hitzeschutz_fassade_sued
@@ -390,10 +381,7 @@
           {% from 'heat_protection.jinja' import facade_azimuth %}
           {% set facade_azimuth = facade_azimuth | as_function %}
           {{ facade_azimuth('sued') }}
-        estimated_facade_lux: >-
-          {% from 'heat_protection.jinja' import facade_lux %}
-          {% set facade_lux = facade_lux | as_function %}
-          {{ facade_lux('sued') | round(0) }}
+        estimated_sun_lux: *hitzeschutz_estimated_sun_lux
 
     - name: "Hitzeschutz Fassade Nord"
       unique_id: hitzeschutz_fassade_nord
@@ -406,7 +394,4 @@
           {% from 'heat_protection.jinja' import facade_azimuth %}
           {% set facade_azimuth = facade_azimuth | as_function %}
           {{ facade_azimuth('nord') }}
-        estimated_facade_lux: >-
-          {% from 'heat_protection.jinja' import facade_lux %}
-          {% set facade_lux = facade_lux | as_function %}
-          {{ facade_lux('nord') | round(0) }}
+        estimated_sun_lux: *hitzeschutz_estimated_sun_lux
