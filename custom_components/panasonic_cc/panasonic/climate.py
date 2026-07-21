@@ -1,6 +1,7 @@
-"""Panasonic climate entity."""
+"""Panasonic climate entities."""
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from typing import Any
 
@@ -12,12 +13,20 @@ from homeassistant.components.climate import (
 )
 from homeassistant.const import UnitOfTemperature, ATTR_TEMPERATURE
 from homeassistant.components.climate.const import ClimateEntityFeature
+from homeassistant.core import HomeAssistant
+from homeassistant.config_entries import ConfigEntry
 
-from ..base import PanasonicDataEntity
-from ..coordinator import PanasonicDeviceCoordinator
 from aio_panasonic_comfort_cloud import PanasonicDeviceParameters, ChangeRequestBuilder, constants
 
 from ..const import (
+    CONF_USE_PANASONIC_PRESET_NAMES,
+    DEFAULT_USE_PANASONIC_PRESET_NAMES,
+    DOMAIN,
+)
+from .base import PanasonicDataEntity
+from .coordinator import PanasonicDeviceCoordinator
+from .const import (
+    DATA_COORDINATORS,
     SUPPORT_FLAGS,
     PRESET_8_15,
     PRESET_NONE,
@@ -26,6 +35,8 @@ from ..const import (
     PRESET_QUIET,
     PRESET_POWERFUL,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -254,19 +265,30 @@ class PanasonicClimateEntity(PanasonicDataEntity, ClimateEntity):
 
     async def async_turn_on(self) -> None:
         """Set the climate state to on."""
-        builder = self.coordinator.get_change_request_builder()
-        builder.set_power_mode(constants.Power.On)
-        await self.coordinator.async_apply_changes(builder)
-        await self.coordinator.async_request_refresh()
-        self.async_write_ha_state()
+        try:
+            builder = self.coordinator.get_change_request_builder()
+            builder.set_power_mode(constants.Power.On)
+            await self.coordinator.async_apply_changes(builder)
+            await self.coordinator.async_schedule_refresh()
+        except Exception:
+            _LOGGER.exception(
+                "Failed to turn on device %s",
+                self.coordinator.device_id,
+            )
 
     async def async_turn_off(self) -> None:
         """Set the climate state to off."""
-        builder = self.coordinator.get_change_request_builder()
-        builder.set_power_mode(constants.Power.Off)
-        await self.coordinator.async_apply_changes(builder)
-        self._attr_hvac_mode = HVACMode.OFF
-        self.async_write_ha_state()
+        try:
+            builder = self.coordinator.get_change_request_builder()
+            builder.set_power_mode(constants.Power.Off)
+            await self.coordinator.async_apply_changes(builder)
+            await self.coordinator.async_schedule_refresh()
+            self._attr_hvac_mode = HVACMode.OFF
+        except Exception:
+            _LOGGER.exception(
+                "Failed to turn off device %s",
+                self.coordinator.device_id,
+            )
 
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
         """Set new HVAC mode."""
@@ -276,34 +298,57 @@ class PanasonicClimateEntity(PanasonicDataEntity, ClimateEntity):
         if not (op_mode := convert_hvac_mode_to_operation_mode(hvac_mode)):
             raise ValueError(f"Invalid hvac mode {hvac_mode}")
 
-        builder = self.coordinator.get_change_request_builder()
-        await self._async_exit_summer_house_mode(builder)
-        builder.set_hvac_mode(op_mode)
-        await self.coordinator.async_apply_changes(builder)
-        self._update_attributes(builder)
+        try:
+            builder = self.coordinator.get_change_request_builder()
+            await self._async_exit_summer_house_mode(builder)
+            builder.set_hvac_mode(op_mode)
+            await self.coordinator.async_apply_changes(builder)
+            await self.coordinator.async_schedule_refresh()
+            self._update_attributes(builder)
+        except Exception:
+            _LOGGER.exception(
+                "Failed to set HVAC mode %s on device %s",
+                hvac_mode,
+                self.coordinator.device_id,
+            )
 
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set the climate temperature."""
-        builder = self.coordinator.get_change_request_builder()
-        if temp := kwargs.get(ATTR_TEMPERATURE):
-            builder.set_target_temperature(temp)
-        if mode := kwargs.get("hvac_mode"):
-            if op_mode := convert_hvac_mode_to_operation_mode(mode):
-                builder.set_hvac_mode(op_mode)
-            else:
-                mode = None
-        await self.coordinator.async_apply_changes(builder)
-        self._update_attributes(builder)
+        try:
+            builder = self.coordinator.get_change_request_builder()
+            if temp := kwargs.get(ATTR_TEMPERATURE):
+                builder.set_target_temperature(temp)
+            if mode := kwargs.get("hvac_mode"):
+                if op_mode := convert_hvac_mode_to_operation_mode(mode):
+                    builder.set_hvac_mode(op_mode)
+                else:
+                    mode = None
+            await self.coordinator.async_apply_changes(builder)
+            await self.coordinator.async_schedule_refresh()
+            self._update_attributes(builder)
+        except Exception:
+            _LOGGER.exception(
+                "Failed to set temperature on device %s",
+                self.coordinator.device_id,
+            )
 
     async def async_set_fan_mode(self, fan_mode: str) -> None:
         """Set new fan mode."""
         if self.fan_modes is None or fan_mode not in self.fan_modes:
             raise ValueError(f"Unsupported fan_mode '{fan_mode}'")
 
-        builder = self.coordinator.get_change_request_builder()
-        builder.set_fan_speed(fan_mode)
-        await self.coordinator.async_apply_changes(builder)
-        self._update_attributes(builder)
+        try:
+            builder = self.coordinator.get_change_request_builder()
+            builder.set_fan_speed(fan_mode)
+            await self.coordinator.async_apply_changes(builder)
+            await self.coordinator.async_schedule_refresh()
+            self._update_attributes(builder)
+        except Exception:
+            _LOGGER.exception(
+                "Failed to set fan mode %s on device %s",
+                fan_mode,
+                self.coordinator.device_id,
+            )
 
     async def _async_enter_summer_house_mode(self, builder: ChangeRequestBuilder):
         """Enter summer house mode."""
@@ -357,38 +402,81 @@ class PanasonicClimateEntity(PanasonicDataEntity, ClimateEntity):
         if self.preset_modes is None or preset_mode not in self.preset_modes:
             raise ValueError(f"Unsupported preset_mode '{preset_mode}'")
 
-        builder = self.coordinator.get_change_request_builder()
-        await self._async_exit_summer_house_mode(builder)
-        builder.set_eco_mode(constants.EcoMode.Auto)
-        if preset_mode in (PRESET_QUIET, PRESET_ECO):
-            builder.set_eco_mode(constants.EcoMode.Quiet)
-        elif preset_mode in (PRESET_POWERFUL, PRESET_BOOST):
-            builder.set_eco_mode(constants.EcoMode.Powerful)
-        elif preset_mode == PRESET_8_15:
-            await self._async_enter_summer_house_mode(builder)
-        await self.coordinator.async_apply_changes(builder)
-        await self.coordinator.async_request_refresh()
+        try:
+            builder = self.coordinator.get_change_request_builder()
+            await self._async_exit_summer_house_mode(builder)
+            builder.set_eco_mode(constants.EcoMode.Auto)
+            if preset_mode in (PRESET_QUIET, PRESET_ECO):
+                builder.set_eco_mode(constants.EcoMode.Quiet)
+            elif preset_mode in (PRESET_POWERFUL, PRESET_BOOST):
+                builder.set_eco_mode(constants.EcoMode.Powerful)
+            elif preset_mode == PRESET_8_15:
+                await self._async_enter_summer_house_mode(builder)
+            await self.coordinator.async_apply_changes(builder)
+            await self.coordinator.async_schedule_refresh()
+        except Exception:
+            _LOGGER.exception(
+                "Failed to set preset mode %s on device %s",
+                preset_mode,
+                self.coordinator.device_id,
+            )
 
     async def async_set_swing_mode(self, swing_mode: str) -> None:
         """Set new swing mode."""
         if self.swing_modes is None or swing_mode not in self.swing_modes:
             raise ValueError(f"Unsupported swing mode '{swing_mode}'")
 
-        builder = self.coordinator.get_change_request_builder()
-        builder.set_vertical_swing(swing_mode)
-        await self.coordinator.async_apply_changes(builder)
-        self._update_attributes(builder)
+        try:
+            builder = self.coordinator.get_change_request_builder()
+            builder.set_vertical_swing(swing_mode)
+            await self.coordinator.async_apply_changes(builder)
+            await self.coordinator.async_schedule_refresh()
+            self._update_attributes(builder)
+        except Exception:
+            _LOGGER.exception(
+                "Failed to set swing mode %s on device %s",
+                swing_mode,
+                self.coordinator.device_id,
+            )
 
     async def async_set_swing_horizontal_mode(self, swing_horizontal_mode: str) -> None:
         """Set new horizontal swing mode."""
         if self.swing_horizontal_modes is None or swing_horizontal_mode not in self.swing_horizontal_modes:
             raise ValueError(f"Unsupported swing mode '{swing_horizontal_mode}'")
 
-        builder = self.coordinator.get_change_request_builder()
-        builder.set_horizontal_swing(swing_horizontal_mode)
-        await self.coordinator.async_apply_changes(builder)
-        self._update_attributes(builder)
+        try:
+            builder = self.coordinator.get_change_request_builder()
+            builder.set_horizontal_swing(swing_horizontal_mode)
+            await self.coordinator.async_apply_changes(builder)
+            await self.coordinator.async_schedule_refresh()
+            self._update_attributes(builder)
+        except Exception:
+            _LOGGER.exception(
+                "Failed to set horizontal swing mode %s on device %s",
+                swing_horizontal_mode,
+                self.coordinator.device_id,
+            )
 
     async def async_set_horizontal_swing_mode(self, swing_mode: str) -> None:
         """Set horizontal swing mode via service call."""
         await self.async_set_swing_horizontal_mode(swing_mode)
+
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: Any,
+) -> None:
+    """Set up the Panasonic climate entities."""
+    entities = []
+    data_coordinators = hass.data[DOMAIN][DATA_COORDINATORS]
+    use_panasonic_preset_names = entry.options.get(
+        CONF_USE_PANASONIC_PRESET_NAMES, DEFAULT_USE_PANASONIC_PRESET_NAMES
+    )
+    for coordinator in data_coordinators:
+        entities.append(
+            PanasonicClimateEntity(
+                coordinator, PANASONIC_CLIMATE_DESCRIPTION, use_panasonic_preset_names
+            )
+        )
+    async_add_entities(entities)
