@@ -1070,7 +1070,7 @@
         hvac_mode: cool
   mode: single
 - id: '1781723252042'
-  alias: Garagenlichr Zigbee
+  alias: Garagenlicht Zigbee
   description: ''
   triggers:
   - device_id: dac40d5456ce0e3abaed830022c059a6
