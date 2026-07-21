@@ -300,6 +300,14 @@ hitzeschutz_jalousien_fassadenstatus_pruefen:
       default: false
       selector:
         boolean:
+    min_facade_state_seconds:
+      required: false
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 86400
+          mode: box
     use_direct_facade_calculation:
       required: false
       default: false
@@ -312,10 +320,14 @@ hitzeschutz_jalousien_fassadenstatus_pruefen:
           {% set facade_active = facade_active | as_function %}
           {% set facade_configs = facade_configs | as_function %}
           {% set ns = namespace(checks=[]) %}
+          {% set min_state_seconds = min_facade_state_seconds | default(0) | int(0) %}
           {% for facade_key, facade in facade_configs().items() %}
             {% set direct_active = facade_active(facade_key) %}
             {% set active = direct_active if use_direct_facade_calculation | default(false) else is_state(facade.sensor, 'on') %}
-            {% if (facade_state == 'on' and active) or (facade_state == 'off' and not active) %}
+            {% set state_matches = (facade_state == 'on' and active) or (facade_state == 'off' and not active) %}
+            {% set facade_state_age = (now() | as_timestamp) - (states[facade.sensor].last_changed | as_timestamp(0)) %}
+            {% set state_age_ok = min_state_seconds <= 0 or (not use_direct_facade_calculation | default(false) and facade_state_age >= min_state_seconds) %}
+            {% if state_matches and state_age_ok %}
               {% set ns.checks = ns.checks + [{
                 'facade_name': facade.name,
                 'facade_display_name': facade.display_name,

@@ -945,6 +945,7 @@
       facade_state: "on"
       action_id: close
       allow_automation: true
+      min_facade_state_seconds: 600
   mode: single
 - id: solar_heat_protection_blind_open_notification_hourly
   alias: Hitzeschutz Jalousie Nachcheck Öffnen
@@ -962,6 +963,7 @@
       facade_state: "off"
       action_id: open
       allow_automation: true
+      min_facade_state_seconds: 1800
   mode: single
 - id: hitzeschutz_og_automatik_bei_sonnenaufgang_aktivieren
   alias: Hitzeschutz OG Automatik bei Sonnenaufgang aktivieren
