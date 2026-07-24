@@ -28,6 +28,7 @@
       - media_player.homepod_kuche
       - media_player.medienzimmer
       - media_player.samsung_fernseher
+      - media_player.wohnzimmer_samsung_fernseher
       - media_player.schlafzimmer_airport_schlafzimmer
       - media_player.sinja_homepod
       - media_player.silas_homepod
@@ -36,6 +37,7 @@
       - media_player.wohnzimmer_3
       - remote.homepod_kuche
       - remote.samsung_fernseher
+      - remote.wohnzimmer_samsung_fernseher
       - remote.schlafzimmer_airport_schlafzimmer
       - remote.sinja_homepod
       - remote.silas_homepod
@@ -63,4 +65,4 @@
   mode: accessory
   filter:
     include_entities:
-      - media_player.samsung_fernseher
+      - media_player.wohnzimmer_samsung_fernseher

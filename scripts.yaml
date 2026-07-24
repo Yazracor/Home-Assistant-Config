@@ -189,6 +189,11 @@ hitzeschutz_jalousien_checks_pruefen:
         notification_payload: >-
           {% set automatik_entity_ids = expand('group.hitzeschutz_automatik_jalousien') | map(attribute='entity_id') | list %}
           {% set upper_floor_cover_entity_ids = floor_entities('obergeschoss') | select('match', '^cover\.') | list %}
+          {% set living_room_cover_entity_ids = [
+            'cover.eg_wohnzimmer_panorama',
+            'cover.eg_wohnzimmer_balkon'
+          ] %}
+          {% set living_room_tv_active = states('media_player.wohnzimmer_samsung_fernseher') not in ['off', 'unknown', 'unavailable'] %}
           {% set ns = namespace(summaries=[], items=[]) %}
           {% for check in check_items %}
             {% set facade_name = check.facade_name %}
@@ -210,6 +215,7 @@ hitzeschutz_jalousien_checks_pruefen:
               {% set automation_marker_ok = not check.require_automation_marker | default(true) or cover_entity in automatik_entity_ids %}
               {% set automatik_enabled = check.allow_automation | default(true) and (not check.respect_automation_switch | default(true) or is_state('switch.hitzeschutz_og_automatik', 'on')) %}
               {% set upper_floor_open_blocked = action_id == 'open' and now().hour < 10 and cover_entity in upper_floor_cover_entity_ids %}
+              {% set living_room_tv_blocked = check.respect_living_room_tv | default(true) and living_room_tv_active and cover_entity in living_room_cover_entity_ids %}
               {% set last_manual_ts = (state_attr('sensor.hitzeschutz_manueller_jalousie_block', 'blocked_since') | default({}, true)).get(cover_entity, '') | as_timestamp(0) %}
               {% set manual_cooldown_active = last_manual_ts > 0 and (now() | as_timestamp) - last_manual_ts < 2 * 3600 %}
               {% set manual_cooldown_ok = check.ignore_manual_cooldown | default(false) or not manual_cooldown_active %}
@@ -225,6 +231,9 @@ hitzeschutz_jalousien_checks_pruefen:
                 {% endif %}
                 {% if upper_floor_open_blocked %}
                   {% set reasons = reasons + ['Obergeschoss vor 10:00'] %}
+                {% endif %}
+                {% if living_room_tv_blocked %}
+                  {% set reasons = reasons + ['Fernseher im Wohnzimmer an'] %}
                 {% endif %}
                 {% if not manual_cooldown_ok %}
                   {% set reasons = reasons + ['manueller Override aktiv'] %}
@@ -254,6 +263,7 @@ hitzeschutz_jalousien_checks_pruefen:
               respect_automation_switch: "{{ repeat.item.respect_automation_switch | default(true) }}"
               require_automation_marker: "{{ repeat.item.require_automation_marker | default(true) }}"
               ignore_manual_cooldown: "{{ repeat.item.ignore_manual_cooldown | default(false) }}"
+              respect_living_room_tv: "{{ repeat.item.respect_living_room_tv | default(true) }}"
     - if:
         - condition: template
           value_template: "{{ (notification_payload | from_json)['details'] | count > 0 }}"
@@ -300,6 +310,11 @@ hitzeschutz_jalousien_fassadenstatus_pruefen:
       default: false
       selector:
         boolean:
+    respect_living_room_tv:
+      required: false
+      default: true
+      selector:
+        boolean:
     min_facade_state_seconds:
       required: false
       default: 0
@@ -336,7 +351,8 @@ hitzeschutz_jalousien_fassadenstatus_pruefen:
                 'allow_automation': allow_automation | default(false),
                 'respect_automation_switch': respect_automation_switch | default(true),
                 'require_automation_marker': require_automation_marker | default(true),
-                'ignore_manual_cooldown': ignore_manual_cooldown | default(false)
+                'ignore_manual_cooldown': ignore_manual_cooldown | default(false),
+                'respect_living_room_tv': respect_living_room_tv | default(true)
               }] %}
             {% endif %}
           {% endfor %}
@@ -374,6 +390,7 @@ auto_jalousien:
         respect_automation_switch: false
         require_automation_marker: false
         ignore_manual_cooldown: true
+        respect_living_room_tv: false
     - action: script.hitzeschutz_jalousien_fassadenstatus_pruefen
       data:
         facade_state: "off"
@@ -382,6 +399,7 @@ auto_jalousien:
         respect_automation_switch: false
         require_automation_marker: false
         ignore_manual_cooldown: true
+        respect_living_room_tv: false
 
 hitzeschutz_jalousie_fassade_pruefen:
   alias: Hitzeschutz Jalousie Fassade pruefen
@@ -422,12 +440,21 @@ hitzeschutz_jalousie_fassade_pruefen:
       default: false
       selector:
         boolean:
+    respect_living_room_tv:
+      required: false
+      default: true
+      selector:
+        boolean:
   sequence:
     - variables:
         action_text: "{{ 'Schliessen' if action_id == 'close' else 'Oeffnen' }}"
         cover_entity_ids: "{{ cover_entities if cover_entities is iterable and cover_entities is not string else [] }}"
         automatik_entity_ids: "{{ expand('group.hitzeschutz_automatik_jalousien') | map(attribute='entity_id') | list }}"
         upper_floor_cover_entity_ids: "{{ floor_entities('obergeschoss') | select('match', '^cover\\.') | list }}"
+        living_room_cover_entity_ids:
+          - cover.eg_wohnzimmer_panorama
+          - cover.eg_wohnzimmer_balkon
+        living_room_tv_active: "{{ states('media_player.wohnzimmer_samsung_fernseher') not in ['off', 'unknown', 'unavailable'] }}"
     - if:
         - condition: template
           value_template: "{{ cover_entity_ids | count == 0 }}"
@@ -458,6 +485,7 @@ hitzeschutz_jalousie_fassade_pruefen:
               automatik_marked: "{{ repeat.item in automatik_entity_ids }}"
               automatik_enabled: "{{ allow_automation | default(true) and (not respect_automation_switch | default(true) or is_state('switch.hitzeschutz_og_automatik', 'on')) }}"
               upper_floor_open_blocked: "{{ action_id == 'open' and now().hour < 10 and repeat.item in upper_floor_cover_entity_ids }}"
+              living_room_tv_blocked: "{{ respect_living_room_tv | default(true) and living_room_tv_active and repeat.item in living_room_cover_entity_ids }}"
               automation_marker_ok: "{{ not require_automation_marker | default(true) or automatik_marked }}"
               cover_manual_cooldown_active: >-
                 {% set last_ts = (state_attr('sensor.hitzeschutz_manueller_jalousie_block', 'blocked_since') | default({}, true)).get(repeat.item, '') | as_timestamp(0) %}
@@ -474,7 +502,7 @@ hitzeschutz_jalousie_fassade_pruefen:
                       message: "{{ cover_entity }} ist {{ cover_state }} und wurde fuer {{ action_text }} {{ facade_name }} uebersprungen."
               - conditions:
                   - condition: template
-                    value_template: "{{ needs_change and automation_marker_ok and automatik_enabled and not upper_floor_open_blocked and manual_cooldown_ok }}"
+                    value_template: "{{ needs_change and automation_marker_ok and automatik_enabled and not upper_floor_open_blocked and not living_room_tv_blocked and manual_cooldown_ok }}"
                 sequence:
                   - action: script.hitzeschutz_jalousie_automatisieren
                     data:
