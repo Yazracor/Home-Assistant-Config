@@ -809,111 +809,63 @@
   mode: single
 - id: solar_heat_protection_blind_recommendation
   alias: Hitzeschutz Jalousie OG Automatik und Empfehlung
-  description: Fährt tagsüber OG-Jalousien für solaren Wärmeschutz und meldet EG/KG nur als Empfehlung.
+  description: Fährt OG-Jalousien bei geometrischen Fassadenwechseln sofort und bei Helligkeitswechseln gedämpft; EG/KG werden nur gemeldet.
   triggers:
   - trigger: state
-    entity_id: binary_sensor.hitzeschutz_fassade_west
+    entity_id: &hitzeschutz_fassadensensoren
+    - binary_sensor.hitzeschutz_fassade_west
+    - binary_sensor.hitzeschutz_fassade_wohnzimmer_panorama
+    - binary_sensor.hitzeschutz_sonnensegel
+    - binary_sensor.hitzeschutz_fassade_ost
+    - binary_sensor.hitzeschutz_fassade_sud
+    - binary_sensor.hitzeschutz_fassade_nord
     from: "off"
     to: "on"
     for:
       minutes: 10
-    id: west_close
+    id: light_close
   - trigger: state
-    entity_id: binary_sensor.hitzeschutz_fassade_wohnzimmer_panorama
-    from: "off"
-    to: "on"
-    for:
-      minutes: 10
-    id: wohnzimmer_panorama_close
-  - trigger: state
-    entity_id: binary_sensor.hitzeschutz_sonnensegel
-    from: "off"
-    to: "on"
-    for:
-      minutes: 10
-    id: sonnensegel_close
-  - trigger: state
-    entity_id: binary_sensor.hitzeschutz_fassade_ost
-    from: "off"
-    to: "on"
-    for:
-      minutes: 10
-    id: ost_close
-  - trigger: state
-    entity_id: binary_sensor.hitzeschutz_fassade_sud
-    from: "off"
-    to: "on"
-    for:
-      minutes: 10
-    id: sued_close
-  - trigger: state
-    entity_id: binary_sensor.hitzeschutz_fassade_nord
-    from: "off"
-    to: "on"
-    for:
-      minutes: 10
-    id: nord_close
-  - trigger: state
-    entity_id: binary_sensor.hitzeschutz_fassade_west
+    entity_id: *hitzeschutz_fassadensensoren
     from: "on"
     to: "off"
     for:
       minutes: 30
-    id: west_open
+    id: light_open
   - trigger: state
-    entity_id: binary_sensor.hitzeschutz_fassade_wohnzimmer_panorama
-    from: "on"
-    to: "off"
-    for:
-      minutes: 30
-    id: wohnzimmer_panorama_open
+    entity_id: *hitzeschutz_fassadensensoren
+    attribute: sun_exposed
+    from: false
+    to: true
+    id: sun_close
   - trigger: state
-    entity_id: binary_sensor.hitzeschutz_sonnensegel
-    from: "on"
-    to: "off"
-    for:
-      minutes: 30
-    id: sonnensegel_open
-  - trigger: state
-    entity_id: binary_sensor.hitzeschutz_fassade_ost
-    from: "on"
-    to: "off"
-    for:
-      minutes: 30
-    id: ost_open
-  - trigger: state
-    entity_id: binary_sensor.hitzeschutz_fassade_sud
-    from: "on"
-    to: "off"
-    for:
-      minutes: 30
-    id: sued_open
-  - trigger: state
-    entity_id: binary_sensor.hitzeschutz_fassade_nord
-    from: "on"
-    to: "off"
-    for:
-      minutes: 30
-    id: nord_open
+    entity_id: *hitzeschutz_fassadensensoren
+    attribute: sun_exposed
+    from: true
+    to: false
+    id: sun_open
   variables:
-    facade_key: "{{ trigger.id.rsplit('_', 1)[0] }}"
     action_id: "{{ trigger.id.rsplit('_', 1)[1] }}"
-    facade_name: >-
-      {% from 'heat_protection.jinja' import facade_name %}
-      {% set facade_name = facade_name | as_function %}
-      {{ facade_name(facade_key) }}
-    facade_display_name: >-
-      {% from 'heat_protection.jinja' import facade_display_name %}
-      {% set facade_display_name = facade_display_name | as_function %}
-      {{ facade_display_name(facade_key) }}
-    cover_entities: >-
-      {% from 'heat_protection.jinja' import facade_covers %}
-      {% set facade_covers = facade_covers | as_function %}
-      {{ facade_covers(facade_key) }}
+    facade: >-
+      {% from 'heat_protection.jinja' import facade_config_for_sensor %}
+      {% set facade_config_for_sensor = facade_config_for_sensor | as_function %}
+      {{ facade_config_for_sensor(trigger.entity_id) }}
+    facade_name: "{{ facade.name }}"
+    facade_display_name: "{{ facade.display_name }}"
+    cover_entities: "{{ facade.covers }}"
   conditions:
-  - condition: state
-    entity_id: sun.sun
-    state: above_horizon
+  - condition: template
+    value_template: >-
+      {{
+        is_state('sun.sun', 'above_horizon')
+        or (trigger.id.startswith('sun_') and action_id == 'open')
+      }}
+  - condition: template
+    value_template: >-
+      {{
+        not trigger.id.startswith('sun_')
+        or (action_id == 'close' and trigger.to_state.state == 'on')
+        or (action_id == 'open' and trigger.to_state.state == 'off')
+      }}
   actions:
   - action: script.hitzeschutz_jalousien_checks_pruefen
     data:

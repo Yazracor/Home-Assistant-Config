@@ -86,6 +86,17 @@
   {% do returns(configs().get(facade, {})) %}
 {% endmacro %}
 
+{% macro facade_config_for_sensor(sensor, returns) %}
+  {% set configs = facade_configs | as_function %}
+  {% set ns = namespace(config={}) %}
+  {% for config in configs().values() %}
+    {% if config.sensor == sensor %}
+      {% set ns.config = config %}
+    {% endif %}
+  {% endfor %}
+  {% do returns(ns.config) %}
+{% endmacro %}
+
 {% macro facade_name(facade, returns) %}
   {% set config = facade_config | as_function %}
   {% do returns(config(facade).get('name', facade)) %}
@@ -179,29 +190,32 @@
   {% do returns(normalized_lux()) %}
 {% endmacro %}
 
-{% macro facade_active(facade, returns) %}
+{% macro facade_sun_exposed(facade, returns) %}
   {% set config = facade_config | as_function %}
-  {% set corrected_lux = sun_lux | as_function %}
-  {% set threshold = sun_lux_threshold | as_function %}
   {% set facade_settings = config(facade) %}
   {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %}
   {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
   {% set delta = (((azimuth - facade_settings.azimuth + 180) % 360) - 180) | abs %}
-  {% set load = corrected_lux() %}
   {% set shade_coverage = horizontal_shade_coverage | as_function %}
-  {% set sun_and_light_ok = (
+  {% set sun_position_ok = (
     is_state('sun.sun', 'above_horizon')
     and elevation > (facade_settings.min_elevation | default(0))
-    and load > threshold()
   ) %}
   {% set facade_rule_active = (
-    sun_and_light_ok
+    sun_position_ok
     and delta < facade_settings.max_delta
   ) %}
   {% set floor_rule_active = (
     facade_settings.horizontal_shade | default(false)
-    and sun_and_light_ok
+    and sun_position_ok
     and shade_coverage(facade) > facade_settings.min_shadow_coverage | default(0)
   ) %}
   {% do returns((not facade_settings.horizontal_shade | default(false) and facade_rule_active) or floor_rule_active) %}
+{% endmacro %}
+
+{% macro facade_active(facade, returns) %}
+  {% set sun_exposed = facade_sun_exposed | as_function %}
+  {% set corrected_lux = sun_lux | as_function %}
+  {% set threshold = sun_lux_threshold | as_function %}
+  {% do returns(sun_exposed(facade) and corrected_lux() > threshold()) %}
 {% endmacro %}
