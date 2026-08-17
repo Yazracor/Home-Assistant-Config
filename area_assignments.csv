@@ -232,4 +232,6 @@ cover,Garagentor,cover.aussenbereich_garage_garagentor,knx_garagentor_virtual_co
 switch,TTK 75 Eco Entfeuchter,switch.entfeuchter,D885ACEABE90-switch:0,garage,Garage,aussenbereich,Außenbereich,Shelly Power Strip,Kompressor-Entfeuchter an Steckdose "Entfeuchter".
 switch,TTR 57 Entfeuchter,switch.ttr_57_entfeuchter,D885ACEABE90-switch:2,garage,Garage,aussenbereich,Außenbereich,Shelly Power Strip,"Adsorptions-Entfeuchter an ehemals als ""Licht"" benannter Steckdose. legacy_entity_ids=switch.licht device_name=""TTR 57 Entfeuchter"""
 sensor,TTR 57 Entfeuchter Leistung,sensor.ttr_57_entfeuchter_leistung,D885ACEABE90-switch:2-power,garage,Garage,aussenbereich,Außenbereich,Shelly Power Strip,"Leistungssensor des TTR 57. legacy_entity_ids=sensor.licht_power"
+media_player,Sinja HomePod,media_player.sinja_homepod,42:1E:AB:FE:BA:1B,zimmer_sinja,Zimmer Sinja,kellergeschoss,Kellergeschoss,Apple TV integration,HomePod Mini in Zimmer Sinja.
+media_player,Silas HomePod,media_player.silas_homepod,AE:67:13:C4:83:7A,zimmer_silas,Zimmer Silas,kellergeschoss,Kellergeschoss,Apple TV integration,HomePod Mini in Zimmer Silas.
 switch,Tisch,switch.eg_kueche_tisch,knx_esstisch_tisch_virtual_switch,kueche,Küche,erdgeschoss,Erdgeschoss,virtual template,FHEM-Dummy-Nachbau: sendet DPT1 auf 6/4/10 und bleibt für HomeKit/Sprachsteuerung aus. legacy_entity_ids=switch.tisch

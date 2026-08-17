@@ -1,2 +1,4 @@
 area_id,replacement_area_id,reason
 esszimmer,kueche,Esszimmer ist kein eigener Raum; der Bereich gehört zur Küche.
+sinja,zimmer_sinja,Personenbereich ist kein eigener Raum; vorhandene Zuordnungen gehören zu Zimmer Sinja.
+silas,zimmer_silas,Personenbereich ist kein eigener Raum; vorhandene Zuordnungen gehören zu Zimmer Silas.
