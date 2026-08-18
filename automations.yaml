@@ -1038,3 +1038,19 @@
       entity_id: light.aussenbereich_garage_licht
     data: {}
   mode: single
+- id: radius_sso_ip_matching_failed
+  alias: RADIUS SSO IP-Zuordnung fehlgeschlagen
+  description: >-
+    Sends the delayed FreeRADIUS alert to the phone; short DHCP races are
+    intentionally filtered on the RADIUS server.
+  triggers:
+  - trigger: mqtt
+    topic: radius/sso/alert
+  conditions: []
+  actions:
+  - action: notify.mobile_app_torbens_iphone
+    data:
+      title: "{{ trigger.payload_json.title | default('RADIUS SSO') }}"
+      message: "{{ trigger.payload_json.message | default(trigger.payload) }}"
+  mode: queued
+  max: 10
