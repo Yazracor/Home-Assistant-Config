@@ -164,12 +164,15 @@ supervisor_api() {
       --max-time 600 \
       -X POST \
       -H "Authorization: Bearer $supervisor_token" \
+      -H "Content-Type: application/json" \
+      --data '{}' \
       "$url"
   elif command -v wget >/dev/null 2>&1; then
     wget -qO- \
       --timeout=600 \
       --header="Authorization: Bearer $supervisor_token" \
-      --post-data='' \
+      --header="Content-Type: application/json" \
+      --post-data='{}' \
       "$url"
   else
     echo "Neither curl nor wget is available for Supervisor API calls." >&2
