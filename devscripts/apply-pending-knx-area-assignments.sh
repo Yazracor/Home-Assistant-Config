@@ -160,13 +160,22 @@ supervisor_api() {
   action="$1"
   url="$supervisor_endpoint/core/$action"
   if command -v curl >/dev/null 2>&1; then
-    curl --fail-with-body --silent --show-error \
+    if curl --fail-with-body --silent --show-error \
       --max-time 600 \
       -X POST \
       -H "Authorization: Bearer $supervisor_token" \
       -H "Content-Type: application/json" \
       --data '{}' \
-      "$url"
+      "$url"; then
+      return 0
+    fi
+    echo "Supervisor jobs at failed core action:"
+    curl --fail-with-body --silent --show-error \
+      --max-time 30 \
+      -H "Authorization: Bearer $supervisor_token" \
+      "$supervisor_endpoint/jobs/info" || true
+    echo
+    return 1
   elif command -v wget >/dev/null 2>&1; then
     wget -qO- \
       --timeout=600 \
