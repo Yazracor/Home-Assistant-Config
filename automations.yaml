@@ -1060,3 +1060,22 @@
       message: "{{ trigger.payload_json.message | default(trigger.payload) }}"
   mode: queued
   max: 10
+- id: epaper_guest_display_auto_jalousien
+  alias: E-Paper Auto Jalousien
+  description: >-
+    Runs the existing blind automation when the guest-display button sends its
+    MQTT request, then acknowledges completion to the display.
+  triggers:
+  - trigger: mqtt
+    topic: epaper/guest-display/action/request
+    payload: run
+  conditions: []
+  actions:
+  - action: script.auto_jalousien
+  - action: mqtt.publish
+    data:
+      topic: epaper/guest-display/action/result
+      payload: ok
+      qos: 0
+      retain: false
+  mode: single
