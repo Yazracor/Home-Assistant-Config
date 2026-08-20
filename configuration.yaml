@@ -22,3 +22,30 @@ homekit: !include homekit.yaml
 
 # KNX entities converted from FHEM/ETS
 knx: !include knx.yaml
+
+mqtt:
+  sensor:
+    - name: E-Paper Guest Display Battery
+      unique_id: epaper_guest_display_battery
+      state_topic: epaper/guest-display/battery
+      value_template: "{{ value_json.percentage }}"
+      device_class: battery
+      unit_of_measurement: "%"
+      state_class: measurement
+      entity_category: diagnostic
+      device:
+        identifiers:
+          - epaper_guest_display
+        name: E-Paper Guest Display
+    - name: E-Paper Guest Display Battery Voltage
+      unique_id: epaper_guest_display_battery_voltage
+      state_topic: epaper/guest-display/battery
+      value_template: "{{ value_json.voltage_mv }}"
+      device_class: voltage
+      unit_of_measurement: mV
+      state_class: measurement
+      entity_category: diagnostic
+      device:
+        identifiers:
+          - epaper_guest_display
+        name: E-Paper Guest Display
