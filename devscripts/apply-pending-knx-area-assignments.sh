@@ -160,7 +160,7 @@ supervisor_api() {
   action="$1"
   url="$supervisor_endpoint/core/$action"
   if command -v curl >/dev/null 2>&1; then
-    curl --fail --silent --show-error \
+    curl --fail-with-body --silent --show-error \
       --max-time 600 \
       -X POST \
       -H "Authorization: Bearer $supervisor_token" \
