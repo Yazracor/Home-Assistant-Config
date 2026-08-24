@@ -1,0 +1,22 @@
+command_line:
+  - sensor:
+      name: Home Assistant config update pending
+      unique_id: home_assistant_config_update_pending
+      command: 'if [ -e /config/.pending_knx_area_assignment ]; then printf "1\n"; else printf "0\n"; fi'
+      scan_interval: 60
+  - sensor:
+      name: Home Assistant area update running
+      unique_id: home_assistant_area_update_running
+      command: 'if [ -e /config/.pending_knx_area_assignment.lock ]; then printf "1\n"; else printf "0\n"; fi'
+      scan_interval: 60
+
+zabbix:
+  host: zabbix.van-hees.name
+  path: /
+  ssl: false
+  publish_states_host: Home Assistant
+  publish_string_states: false
+  include:
+    entities:
+      - sensor.home_assistant_config_update_pending
+      - sensor.home_assistant_area_update_running
