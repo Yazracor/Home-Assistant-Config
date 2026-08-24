@@ -2,12 +2,22 @@ command_line:
   - sensor:
       name: Home Assistant config update pending
       unique_id: home_assistant_config_update_pending
-      command: 'if [ -e /config/.pending_knx_area_assignment ]; then printf "1\n"; else printf "0\n"; fi'
+      command: >-
+        if [ -e /config/.pending_knx_area_assignment ]; then state=1; else state=0; fi;
+        printf '{"value":%s,"checked_at":%s}\n' "$state" "$(date +%s)"
+      value_template: "{{ value_json.value }}"
+      json_attributes:
+        - checked_at
       scan_interval: 60
   - sensor:
       name: Home Assistant area update running
       unique_id: home_assistant_area_update_running
-      command: 'if [ -e /config/.pending_knx_area_assignment.lock ]; then printf "1\n"; else printf "0\n"; fi'
+      command: >-
+        if [ -e /config/.pending_knx_area_assignment.lock ]; then state=1; else state=0; fi;
+        printf '{"value":%s,"checked_at":%s}\n' "$state" "$(date +%s)"
+      value_template: "{{ value_json.value }}"
+      json_attributes:
+        - checked_at
       scan_interval: 60
 
 zabbix:
