@@ -125,7 +125,7 @@
   mode: single
 - id: garage_ttr_entfeuchter_boost_an
   alias: Garage TTR Entfeuchter Boost an
-  description: Schaltet den TTR 57 zu, wenn der TTK in kalter Garage die Feuchte nicht schnell genug senkt.
+  description: Schaltet den TTR 57 bei hoher oder lang anhaltender Feuchte, TTK-Ausfall oder kalter Garage zu.
   triggers:
   - trigger: state
     entity_id: switch.entfeuchter
@@ -134,9 +134,9 @@
       hours: 0
       minutes: 45
       seconds: 0
-  - trigger: numeric_state
-    entity_id: sensor.entfeuchter_power
-    below: 100
+  - trigger: state
+    entity_id: binary_sensor.garage_ttk_leistung_unter_100
+    to: "on"
     for:
       hours: 0
       minutes: 10
@@ -148,6 +148,13 @@
       hours: 0
       minutes: 45
       seconds: 0
+  - trigger: state
+    entity_id: binary_sensor.garage_feuchte_ueber_60
+    to: "on"
+    for:
+      hours: 3
+      minutes: 0
+      seconds: 0
   - trigger: numeric_state
     entity_id: sensor.wifi_smart_switch_temperature
     below: 5
@@ -156,22 +163,84 @@
       minutes: 5
       seconds: 0
   - trigger: time_pattern
-    minutes: "/15"
+    minutes: "/5"
   conditions:
   - condition: state
-    entity_id: switch.entfeuchter
-    state: "on"
-    for:
-      hours: 0
-      minutes: 45
-      seconds: 0
-  - condition: state
-    entity_id: binary_sensor.garage_feuchte_ueber_65
-    state: "on"
-    for:
-      hours: 0
-      minutes: 45
-      seconds: 0
+    entity_id: switch.ttr_57_entfeuchter
+    state: "off"
+  - condition: or
+    conditions:
+    - condition: and
+      conditions:
+      - condition: state
+        entity_id: switch.entfeuchter
+        state: "on"
+        for:
+          hours: 0
+          minutes: 45
+          seconds: 0
+      - condition: state
+        entity_id: binary_sensor.garage_feuchte_ueber_65
+        state: "on"
+        for:
+          hours: 0
+          minutes: 45
+          seconds: 0
+    - condition: and
+      conditions:
+      - condition: state
+        entity_id: switch.entfeuchter
+        state: "on"
+        for:
+          hours: 0
+          minutes: 45
+          seconds: 0
+      - condition: state
+        entity_id: binary_sensor.garage_feuchte_ueber_60
+        state: "on"
+        for:
+          hours: 3
+          minutes: 0
+          seconds: 0
+    - condition: and
+      conditions:
+      - condition: state
+        entity_id: switch.entfeuchter
+        state: "on"
+        for:
+          hours: 0
+          minutes: 45
+          seconds: 0
+      - condition: state
+        entity_id: binary_sensor.garage_feuchte_ueber_60
+        state: "on"
+        for:
+          hours: 0
+          minutes: 10
+          seconds: 0
+      - condition: state
+        entity_id: binary_sensor.garage_ttk_leistung_unter_100
+        state: "on"
+        for:
+          hours: 0
+          minutes: 10
+          seconds: 0
+    - condition: and
+      conditions:
+      - condition: state
+        entity_id: binary_sensor.garage_temperatur_unter_5
+        state: "on"
+        for:
+          hours: 0
+          minutes: 5
+          seconds: 0
+      - condition: state
+        entity_id: binary_sensor.garage_feuchte_ueber_60
+        state: "on"
+        for:
+          hours: 0
+          minutes: 10
+          seconds: 0
   actions:
   - action: switch.turn_on
     metadata: {}
@@ -181,7 +250,7 @@
   mode: single
 - id: garage_ttr_entfeuchter_boost_aus
   alias: Garage TTR Entfeuchter Boost aus
-  description: Schaltet den TTR 57 mit Hysterese ab, wenn die Feuchte wieder passt oder der TTK stoppt.
+  description: Schaltet den TTR 57 mit Hysterese ab, wenn die Feuchte wieder passt.
   triggers:
   - trigger: state
     entity_id: binary_sensor.garage_feuchte_unter_60
@@ -190,37 +259,19 @@
       hours: 0
       minutes: 30
       seconds: 0
-  - trigger: state
-    entity_id: switch.entfeuchter
-    to: "off"
-    for:
-      hours: 0
-      minutes: 2
-      seconds: 0
   - trigger: time_pattern
     minutes: "/5"
   conditions:
   - condition: state
     entity_id: switch.ttr_57_entfeuchter
     state: "on"
-  - condition: or
-    conditions:
-    - condition: state
-      entity_id: binary_sensor.garage_feuchte_unter_60
-      state: "on"
-      for:
-        hours: 0
-        minutes: 30
-        seconds: 0
-    - condition: and
-      conditions:
-      - condition: state
-        entity_id: switch.entfeuchter
-        state: "off"
-        for:
-          hours: 0
-          minutes: 2
-          seconds: 0
+  - condition: state
+    entity_id: binary_sensor.garage_feuchte_unter_60
+    state: "on"
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 0
   actions:
   - action: switch.turn_off
     metadata: {}

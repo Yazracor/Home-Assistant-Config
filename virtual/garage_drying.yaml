@@ -98,3 +98,13 @@ template:
         unique_id: garage_temperatur_ueber_13
         device_class: heat
         state: "{{ states('sensor.wifi_smart_switch_temperature') | float(-99) > 13 }}"
+      - name: "Garage TTK Leistung unter 100"
+        unique_id: garage_ttk_leistung_unter_100
+        device_class: problem
+        availability: >-
+          {{ states('sensor.entfeuchter_power') not in ['unknown', 'unavailable'] }}
+        state: >-
+          {{
+            is_state('switch.entfeuchter', 'on')
+            and states('sensor.entfeuchter_power') | float(0) < 100
+          }}

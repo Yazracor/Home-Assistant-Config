@@ -31,3 +31,14 @@ template:
 
         stop_cover:
           - action: script.garagentor_impuls
+
+sensor:
+  - platform: history_stats
+    name: "Garage Garagentor Offen-Dauer Stunde"
+    unique_id: garage_garagentor_offen_dauer_stunde
+    entity_id: binary_sensor.aussenbereich_garage_garagentor_status
+    state: "on"
+    type: time
+    start: "{{ (as_timestamp(now()) // 3600) * 3600 }}"
+    end: "{{ now() }}"
+    state_class: total_increasing
