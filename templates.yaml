@@ -51,12 +51,13 @@
             {{ {} | to_json }}
           {% else %}
             {% from 'hitzeschutz_manual_generated.jinja' import knx_cover_map %}
-            {% from 'manual_control.jinja' import touched_entities %}
+            {% from 'manual_control.jinja' import manual_override_seconds, touched_entities %}
             {% set knx_cover_map = knx_cover_map | as_function %}
+            {% set manual_override_seconds = manual_override_seconds | as_function %}
             {% set touched_entities = touched_entities | as_function %}
             {% set cover_entities = states.cover | map(attribute='entity_id') | reject('eq', 'cover.aussenbereich_garage_garagentor') | list %}
             {% set touched = touched_entities(trigger.id, trigger.event.data, trigger.event.context.user_id, cover_entities, knx_cover_map(), 'cover', false) %}
-            {% set cutoff = (now() | as_timestamp) - 2 * 3600 %}
+            {% set cutoff = (now() | as_timestamp) - manual_override_seconds() %}
             {% set ns = namespace(entries=[]) %}
             {% for entity, timestamp in previous.items() if entity not in touched and timestamp | as_timestamp(0) >= cutoff %}
               {% set ns.entries = ns.entries + [(entity, timestamp)] %}

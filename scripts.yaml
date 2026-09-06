@@ -187,6 +187,8 @@ hitzeschutz_jalousien_checks_pruefen:
     - variables:
         check_items: "{{ checks | from_json if checks is string else checks }}"
         notification_payload: >-
+          {% from 'manual_control.jinja' import manual_override_seconds %}
+          {% set manual_override_seconds = manual_override_seconds | as_function %}
           {% set automatik_entity_ids = expand('group.hitzeschutz_automatik_jalousien') | map(attribute='entity_id') | list %}
           {% set upper_floor_cover_entity_ids = floor_entities('obergeschoss') | select('match', '^cover\.') | list %}
           {% set living_room_cover_entity_ids = [
@@ -217,7 +219,7 @@ hitzeschutz_jalousien_checks_pruefen:
               {% set upper_floor_open_blocked = action_id == 'open' and now().hour < 10 and cover_entity in upper_floor_cover_entity_ids %}
               {% set living_room_tv_blocked = check.respect_living_room_tv | default(true) and living_room_tv_active and cover_entity in living_room_cover_entity_ids %}
               {% set last_manual_ts = (state_attr('sensor.hitzeschutz_manueller_jalousie_block', 'blocked_since') | default({}, true)).get(cover_entity, '') | as_timestamp(0) %}
-              {% set manual_cooldown_active = last_manual_ts > 0 and (now() | as_timestamp) - last_manual_ts < 2 * 3600 %}
+              {% set manual_cooldown_active = last_manual_ts > 0 and (now() | as_timestamp) - last_manual_ts < manual_override_seconds() %}
               {% set manual_cooldown_ok = check.ignore_manual_cooldown | default(false) or not manual_cooldown_active %}
               {% if cover_state in ['unknown', 'unavailable'] %}
                 {% set facade.items = facade.items + ['- ' ~ facade_label ~ ': ' ~ cover_name ~ ' übersprungen, nicht prüfbar (' ~ cover_state ~ ')'] %}
@@ -488,8 +490,10 @@ hitzeschutz_jalousie_fassade_pruefen:
               living_room_tv_blocked: "{{ respect_living_room_tv | default(true) and living_room_tv_active and repeat.item in living_room_cover_entity_ids }}"
               automation_marker_ok: "{{ not require_automation_marker | default(true) or automatik_marked }}"
               cover_manual_cooldown_active: >-
+                {% from 'manual_control.jinja' import manual_override_seconds %}
+                {% set manual_override_seconds = manual_override_seconds | as_function %}
                 {% set last_ts = (state_attr('sensor.hitzeschutz_manueller_jalousie_block', 'blocked_since') | default({}, true)).get(repeat.item, '') | as_timestamp(0) %}
-                {{ last_ts > 0 and (now() | as_timestamp) - last_ts < 2 * 3600 }}
+                {{ last_ts > 0 and (now() | as_timestamp) - last_ts < manual_override_seconds() }}
               manual_cooldown_ok: "{{ ignore_manual_cooldown | default(false) or not cover_manual_cooldown_active }}"
           - choose:
               - conditions:

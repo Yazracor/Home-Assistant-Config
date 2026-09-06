@@ -10,7 +10,7 @@ input_boolean:
 
 template:
   - switch:
-      - name: "Hitzeschutz OG Automatik"
+      - name: "Hitzeschutz Jalousien Automatik"
         unique_id: hitzeschutz_og_automatik_homekit_switch
         icon: mdi:blinds
         state: "{{ is_state('input_boolean.hitzeschutz_og_automatik_aktiv', 'on') }}"

@@ -859,8 +859,8 @@
       - light.aussenbereich_garten_aussenleuchten_links
   mode: single
 - id: solar_heat_protection_blind_recommendation
-  alias: Hitzeschutz Jalousie OG Automatik und Empfehlung
-  description: Fährt OG-Jalousien bei geometrischen Fassadenwechseln sofort und bei Helligkeitswechseln gedämpft; EG/KG werden nur gemeldet.
+  alias: Hitzeschutz Jalousien Automatik und Benachrichtigung
+  description: Fährt markierte Jalousien bei geometrischen Fassadenwechseln sofort und bei Helligkeitswechseln gedämpft; automatisches Öffnen im OG erst ab 10:00 Uhr.
   triggers:
   - trigger: state
     entity_id: &hitzeschutz_fassadensensoren
@@ -933,8 +933,8 @@
   mode: queued
   max: 10
 - id: solar_heat_protection_blind_notification_periodic
-  alias: Hitzeschutz Jalousie Nachcheck Schließen
-  description: Prüft tagsüber stündlich geöffnete Jalousien an aktiven Hitzeschutz-Fassaden und schließt ohne manuellen Override automatisch.
+  alias: Hitzeschutz Jalousien Nachcheck Schließen
+  description: Prüft bei Tageslicht stündlich geöffnete, markierte Jalousien an aktiven Hitzeschutz-Fassaden und schließt sie ohne aktiven manuellen Override automatisch.
   triggers:
   - trigger: time_pattern
     minutes: "0"
@@ -951,8 +951,8 @@
       min_facade_state_seconds: 600
   mode: single
 - id: solar_heat_protection_blind_open_notification_hourly
-  alias: Hitzeschutz Jalousie Nachcheck Öffnen
-  description: Prüft tagsüber stündlich geschlossene Jalousien an inaktiven Hitzeschutz-Fassaden und öffnet ohne manuellen Override automatisch.
+  alias: Hitzeschutz Jalousien Nachcheck Öffnen
+  description: Prüft bei Tageslicht stündlich geschlossene, markierte Jalousien an inaktiven Hitzeschutz-Fassaden und öffnet sie ohne aktiven manuellen Override automatisch; im OG erst ab 10:00 Uhr.
   triggers:
   - trigger: time_pattern
     minutes: "0"
@@ -969,8 +969,8 @@
       min_facade_state_seconds: 1800
   mode: single
 - id: hitzeschutz_og_automatik_bei_sonnenaufgang_aktivieren
-  alias: Hitzeschutz OG Automatik bei Sonnenaufgang aktivieren
-  description: Aktiviert die OG-Hitzeschutz-Automatik nach manueller Abschaltung am nächsten Morgen wieder.
+  alias: Hitzeschutz Jalousien Automatik bei Sonnenaufgang aktivieren
+  description: Aktiviert die Hitzeschutz-Automatik für die markierten Jalousien nach manueller Abschaltung am nächsten Morgen wieder.
   triggers:
   - trigger: sun
     event: sunrise

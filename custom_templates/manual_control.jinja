@@ -1,3 +1,7 @@
+{% macro manual_override_seconds(returns) %}
+  {% do returns(4 * 3600) %}
+{% endmacro %}
+
 {% macro touched_entities(trigger_id, event_data, context_user_id, allowed_entities, knx_map, domain, require_brightness, returns) %}
   {% set ns = namespace(items=[]) %}
   {% set allowed = allowed_entities | from_json(default=allowed_entities) if allowed_entities is string else allowed_entities %}
