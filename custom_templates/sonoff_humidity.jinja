@@ -1,0 +1,34 @@
+{# Fits from the June-September 2026 comparison, excluding outages and 4-12 August.
+   Input RH includes the existing device offset of +4.5; do not apply it again.
+   Keep at most one sample per two minutes, plus the sample bracketing three hours.
+   A missing sampling interval or explicit reset restarts the static warm-up.
+#}
+{% macro humidity_correction(samples, reset, sample, timestamp, temperature, humidity, returns) %}
+  {% set valid = is_number(temperature) and is_number(humidity) %}
+  {% set history = samples if samples is sequence and samples is not string else [] %}
+  {% if reset or not valid or (history | count > 0 and (timestamp - history[-1][0] > 300 or timestamp < history[-1][0])) %}
+    {% set history = [] %}
+  {% endif %}
+  {% set ns = namespace(samples=[], corrected=none, mode='unavailable', humidity_rate=none, temperature_rate=none) %}
+  {% if valid %}
+    {% set t = temperature | float %}
+    {% set h = humidity | float %}
+    {% for point in history if point[0] >= timestamp - 10920 %}
+      {% set ns.samples = ns.samples + [point] %}
+    {% endfor %}
+    {% if ns.samples | count == 0 or (sample and timestamp - ns.samples[-1][0] >= 119) %}
+      {% set ns.samples = ns.samples + [[timestamp, t, h]] %}
+    {% endif %}
+    {% set ns.corrected = 1.30520012 * h - 19.90080882 %}
+    {% set ns.mode = 'static' %}
+    {% if ns.samples | count > 1 and timestamp - ns.samples[0][0] >= 10800 %}
+      {% set hours = (timestamp - ns.samples[0][0]) / 3600 %}
+      {% set ns.humidity_rate = (h - ns.samples[0][2]) / hours %}
+      {% set ns.temperature_rate = (t - ns.samples[0][1]) / hours %}
+      {% set ns.corrected = -16.74305725 + 1.25246217 * h + 1.75082689 * ns.humidity_rate + 0.78235964 * ns.temperature_rate %}
+      {% set ns.mode = 'dynamic' %}
+    {% endif %}
+    {% set ns.corrected = ([0, [100, ns.corrected] | min] | max) | round(1) %}
+  {% endif %}
+  {% do returns(dict(value=ns.corrected, samples=ns.samples, mode=ns.mode, humidity_rate=ns.humidity_rate, temperature_rate=ns.temperature_rate)) %}
+{% endmacro %}

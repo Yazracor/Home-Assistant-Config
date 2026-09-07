@@ -31,44 +31,74 @@ template:
         attributes:
           source: sensor.sonoff_snzb_02wd_temperature
 
-      - name: "Sonoff SNZB-02WD Feuchte korrigiert"
-        unique_id: sonoff_snzb_02wd_humidity_corrected
+      - name: "Garage Aussenluft Feuchte bei Garagentemperatur"
+        unique_id: garage_outside_air_humidity_at_garage_temperature
         device_class: humidity
         state_class: measurement
         unit_of_measurement: "%"
         availability: >-
           {{
-            states('sensor.sonoff_snzb_02wd_humidity') not in ['unknown', 'unavailable']
-            and states('sensor.sonoff_snzb_02wd_temperature') not in ['unknown', 'unavailable']
+            is_number(states('sensor.sonoff_snzb_02wd_feuchte_korrigiert'))
+            and is_number(state_attr('sensor.sonoff_snzb_02wd_feuchte_korrigiert', 'raw_temperature'))
+            and is_number(states('sensor.wifi_smart_switch_temperature'))
           }}
         state: >-
-          {% set temperature = states('sensor.sonoff_snzb_02wd_temperature') | float %}
-          {% set relative_humidity = states('sensor.sonoff_snzb_02wd_humidity') | float %}
-          {% set saturation_pressure = 6.112 * (2.718281828459045 ** ((17.62 * temperature) / (243.12 + temperature))) %}
-          {% set vapor_pressure = relative_humidity / 100 * saturation_pressure %}
-          {% set absolute_humidity = 216.7 * vapor_pressure / (273.15 + temperature) %}
-          {% set corrected_absolute_humidity = 4.42081 + 0.66924 * absolute_humidity %}
-          {% set corrected_relative_humidity = 100 * corrected_absolute_humidity * (273.15 + temperature) / (216.7 * saturation_pressure) %}
-          {{ [0, [100, corrected_relative_humidity] | min] | max | round(1) }}
+          {% set humidity = states('sensor.sonoff_snzb_02wd_feuchte_korrigiert') | float(0) %}
+          {% set outside = state_attr('sensor.sonoff_snzb_02wd_feuchte_korrigiert', 'raw_temperature') | float(0) %}
+          {% set garage = states('sensor.wifi_smart_switch_temperature') | float(0) %}
+          {% set projected = humidity * (2.718281828459045 ** (17.62 * outside / (243.12 + outside) - 17.62 * garage / (243.12 + garage))) %}
+          {{ ([0, [100, projected] | min] | max) | round(1) }}
+
+  # Preserve the existing correction sensor's name and unique_id / entity registry entry.
+  - triggers:
+      - trigger: time_pattern
+        minutes: "/2"
+        id: sample
+      - trigger: state
+        entity_id:
+          - sensor.sonoff_snzb_02wd_humidity
+          - sensor.sonoff_snzb_02wd_temperature
+        to: null
+        id: source
+      - trigger: homeassistant
+        event: start
+        id: reset
+      - trigger: event
+        event_type: event_template_reloaded
+        id: reset
+    variables:
+      correction: >-
+        {% from 'sonoff_humidity.jinja' import humidity_correction %}
+        {% set reset = trigger.id == 'reset'
+          or states('sensor.sonoff_snzb_02wd_feuchte_korrigiert') in ['unknown', 'unavailable']
+          or (trigger.id == 'source' and (trigger.from_state is none or not is_number(trigger.from_state.state))) %}
+        {{ (humidity_correction | as_function)(
+          state_attr('sensor.sonoff_snzb_02wd_feuchte_korrigiert', 'samples'),
+          reset, trigger.id == 'sample', as_timestamp(now()),
+          states('sensor.sonoff_snzb_02wd_temperature'),
+          states('sensor.sonoff_snzb_02wd_humidity')) }}
+    sensor:
+      - name: "Sonoff SNZB-02WD Feuchte korrigiert"
+        unique_id: sonoff_snzb_02wd_humidity_corrected
+        device_class: humidity
+        state_class: measurement
+        unit_of_measurement: "%"
+        availability: "{{ correction.value is not none }}"
+        state: "{{ correction.value }}"
         attributes:
           raw_value: "{{ states('sensor.sonoff_snzb_02wd_humidity') }}"
           raw_temperature: "{{ states('sensor.sonoff_snzb_02wd_temperature') }}"
-          absolute_humidity_fit: "4.42081 + 0.66924 * absolute_humidity"
-          absolute_humidity: >-
-            {% set temperature = states('sensor.sonoff_snzb_02wd_temperature') | float %}
-            {% set relative_humidity = states('sensor.sonoff_snzb_02wd_humidity') | float %}
-            {% set saturation_pressure = 6.112 * (2.718281828459045 ** ((17.62 * temperature) / (243.12 + temperature))) %}
-            {% set vapor_pressure = relative_humidity / 100 * saturation_pressure %}
-            {{ (216.7 * vapor_pressure / (273.15 + temperature)) | round(2) }}
-          corrected_absolute_humidity: >-
-            {% set temperature = states('sensor.sonoff_snzb_02wd_temperature') | float %}
-            {% set relative_humidity = states('sensor.sonoff_snzb_02wd_humidity') | float %}
-            {% set saturation_pressure = 6.112 * (2.718281828459045 ** ((17.62 * temperature) / (243.12 + temperature))) %}
-            {% set vapor_pressure = relative_humidity / 100 * saturation_pressure %}
-            {% set absolute_humidity = 216.7 * vapor_pressure / (273.15 + temperature) %}
-            {{ (4.42081 + 0.66924 * absolute_humidity) | round(2) }}
+          correction_mode: "{{ correction.mode }}"
+          humidity_change_per_hour: "{{ correction.humidity_rate }}"
+          temperature_change_per_hour: "{{ correction.temperature_rate }}"
+          samples: "{{ correction.samples }}"
 
   - binary_sensor:
+      - name: "Garage Feuchte ueber 58"
+        unique_id: garage_feuchte_ueber_58
+        device_class: moisture
+        availability: "{{ is_number(states('sensor.wifi_smart_switch_humidity')) }}"
+        state: "{{ states('sensor.wifi_smart_switch_humidity') | float(0) > 58 }}"
       - name: "Garage Feuchte ueber 60"
         unique_id: garage_feuchte_ueber_60
         device_class: moisture

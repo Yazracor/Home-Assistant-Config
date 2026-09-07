@@ -45,14 +45,14 @@
   mode: single
 - id: '1780071059264'
   alias: Garage TTK Entfeuchter an
-  description: Schaltet den TTK 75 Eco bei hoher Garagenfeuchte ein, solange es warm genug ist.
+  description: Schaltet den TTK 75 Eco nach 10 Minuten ueber 58 Prozent ein, solange es warm genug ist.
   triggers:
   - type: humidity
     device_id: 93c766f0890f4945e595ada307cdd6be
     entity_id: 40beacf828453f91eabae791ad7f8989
     domain: sensor
     trigger: device
-    above: 60
+    above: 58
     for:
       hours: 0
       minutes: 10
@@ -68,7 +68,7 @@
     minutes: "/5"
   conditions:
   - condition: state
-    entity_id: binary_sensor.garage_feuchte_ueber_60
+    entity_id: binary_sensor.garage_feuchte_ueber_58
     state: "on"
     for:
       hours: 0
