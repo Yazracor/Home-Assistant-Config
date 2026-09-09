@@ -302,7 +302,7 @@
       state: >-
         {% from 'heat_protection.jinja' import facade_active %}
         {% set facade_active = facade_active | as_function %}
-        {{ facade_active('west') }}
+        {{ facade_active('west', was_active=this.state == 'on') }}
       attributes:
         facade_azimuth: >-
           {% from 'heat_protection.jinja' import facade_azimuth %}
@@ -322,7 +322,7 @@
       state: >-
         {% from 'heat_protection.jinja' import facade_active %}
         {% set facade_active = facade_active | as_function %}
-        {{ facade_active('sonnensegel') }}
+        {{ facade_active('sonnensegel', was_active=this.state == 'on') }}
       attributes:
         facade_azimuth: >-
           {% from 'heat_protection.jinja' import facade_azimuth %}
@@ -358,7 +358,7 @@
       state: >-
         {% from 'heat_protection.jinja' import facade_active %}
         {% set facade_active = facade_active | as_function %}
-        {{ facade_active('wohnzimmer_panorama') }}
+        {{ facade_active('wohnzimmer_panorama', was_active=this.state == 'on') }}
       attributes:
         facade_azimuth: >-
           {% from 'heat_protection.jinja' import facade_azimuth %}
@@ -375,7 +375,7 @@
       state: >-
         {% from 'heat_protection.jinja' import facade_active %}
         {% set facade_active = facade_active | as_function %}
-        {{ facade_active('ost') }}
+        {{ facade_active('ost', was_active=this.state == 'on') }}
       attributes:
         facade_azimuth: >-
           {% from 'heat_protection.jinja' import facade_azimuth %}
@@ -392,7 +392,7 @@
       state: >-
         {% from 'heat_protection.jinja' import facade_active %}
         {% set facade_active = facade_active | as_function %}
-        {{ facade_active('sued') }}
+        {{ facade_active('sued', was_active=this.state == 'on') }}
       attributes:
         facade_azimuth: >-
           {% from 'heat_protection.jinja' import facade_azimuth %}
@@ -409,7 +409,7 @@
       state: >-
         {% from 'heat_protection.jinja' import facade_active %}
         {% set facade_active = facade_active | as_function %}
-        {{ facade_active('nord') }}
+        {{ facade_active('nord', was_active=this.state == 'on') }}
       attributes:
         facade_azimuth: >-
           {% from 'heat_protection.jinja' import facade_azimuth %}

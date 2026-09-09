@@ -169,8 +169,8 @@
   {% do returns(ns.value) %}
 {% endmacro %}
 
-{% macro sun_lux_threshold(returns) %}
-  {% do returns(30000) %}
+{% macro sun_lux_threshold(returns, was_active=false) %}
+  {% do returns(20000 if was_active else 30000) %}
 {% endmacro %}
 
 {% macro sun_lux(returns) %}
@@ -180,7 +180,9 @@
     {% do returns(0) %}
   {% else %}
     {% set elevation_rad = elevation * 3.141592653589793 / 180 %}
-    {% set normalized_lux = horizontal_lux / (elevation_rad | sin) %}
+    {# Maximal Faktor 4: Streulicht bei tiefstehender Sonne nicht unbegrenzt verstärken. #}
+    {% set correction_divisor = [elevation_rad | sin, 0.25] | max %}
+    {% set normalized_lux = horizontal_lux / correction_divisor %}
     {% do returns(([0, normalized_lux, 120000] | sort)[1]) %}
   {% endif %}
 {% endmacro %}
@@ -213,9 +215,12 @@
   {% do returns((not facade_settings.horizontal_shade | default(false) and facade_rule_active) or floor_rule_active) %}
 {% endmacro %}
 
-{% macro facade_active(facade, returns) %}
+{% macro facade_active(facade, returns, was_active=none) %}
+  {# Sensoren übergeben this.state; direkte Script-Prüfungen nutzen den Fassadensensor. #}
+  {% set config = facade_config | as_function %}
+  {% set previously_active = is_state(config(facade).sensor, 'on') if was_active is none else was_active %}
   {% set sun_exposed = facade_sun_exposed | as_function %}
   {% set corrected_lux = sun_lux | as_function %}
   {% set threshold = sun_lux_threshold | as_function %}
-  {% do returns(sun_exposed(facade) and corrected_lux() > threshold()) %}
+  {% do returns(sun_exposed(facade) and corrected_lux() >= threshold(was_active=previously_active)) %}
 {% endmacro %}
