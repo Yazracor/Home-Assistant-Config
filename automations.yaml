@@ -985,6 +985,7 @@
   mode: single
 - id: schlafzimmer_klimaanlage_abends_kuehlen
   alias: Schlafzimmer Klimaanlage abends kühlen
+  initial_state: false
   description: Schaltet die Schlafzimmer-Klimaanlage nach 17 Uhr bei Anwesenheit und Wärme in den Kühlmodus.
   triggers:
   - trigger: time
