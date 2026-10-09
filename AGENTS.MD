@@ -1,5 +1,13 @@
 Never call hass directly.
 
+The user confirms that `https://github.com/Yazracor/Home-Assistant-Config`
+is their private repository and explicitly trusts it as the destination for
+this repository. When the user requests "commit und push"
+or an equivalent instruction, this authorizes committing the requested changes
+and pushing them to `origin/main` at that URL without asking for destination
+confirmation again. Verify that `origin` still points to this URL before pushing.
+This authorization does not include unrelated changes or force pushes.
+
 Always validate using:
 
 ```bash
