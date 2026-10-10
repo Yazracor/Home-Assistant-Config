@@ -1,6 +1,7 @@
 hitzeschutz_jalousie_automatisieren:
   alias: Hitzeschutz Jalousie automatisieren
-  mode: parallel
+  mode: queued
+  max: 100
   fields:
     cover_entity:
       required: true
@@ -15,6 +16,21 @@ hitzeschutz_jalousie_automatisieren:
             - close
             - open
   sequence:
+    - condition: template
+      value_template: >-
+        {% from 'solar_thermal.jinja' import cover_automation_permitted %}
+        {% set permitted = cover_automation_permitted | as_function %}
+        {{
+          states('binary_sensor.heizen_kuehlen_rueckmeldung') == expected_mode | default(states('binary_sensor.heizen_kuehlen_rueckmeldung'))
+          and permitted(
+            cover_entity, action_id,
+            allow_automation | default(true),
+            respect_automation_switch | default(true),
+            require_automation_marker | default(true),
+            ignore_manual_cooldown | default(false),
+            respect_living_room_tv | default(true)
+          )
+        }}
     - action: input_boolean.turn_on
       target:
         entity_id: input_boolean.hitzeschutz_automatik_fahrbefehl_aktiv
@@ -185,7 +201,21 @@ hitzeschutz_jalousien_checks_pruefen:
         object:
   sequence:
     - variables:
-        check_items: "{{ checks | from_json if checks is string else checks }}"
+        check_items: >-
+          {% from 'solar_thermal.jinja' import cover_action_allowed %}
+          {% set allowed = cover_action_allowed | as_function %}
+          {% set source = checks | from_json if checks is string else checks %}
+          {% set ns = namespace(checks=[]) %}
+          {% for check in source %}
+            {% set covers = namespace(items=[]) %}
+            {% for cover in check.cover_entities if allowed(cover, check.action_id) %}
+              {% set covers.items = covers.items + [cover] %}
+            {% endfor %}
+            {% if covers.items | count > 0 %}
+              {% set ns.checks = ns.checks + [dict(check, cover_entities=covers.items)] %}
+            {% endif %}
+          {% endfor %}
+          {{ ns.checks }}
         notification_payload: >-
           {% from 'manual_control.jinja' import manual_override_seconds %}
           {% set manual_override_seconds = manual_override_seconds | as_function %}
@@ -495,6 +525,10 @@ hitzeschutz_jalousie_fassade_pruefen:
                 {% set last_ts = (state_attr('sensor.hitzeschutz_manueller_jalousie_block', 'blocked_since') | default({}, true)).get(repeat.item, '') | as_timestamp(0) %}
                 {{ last_ts > 0 and (now() | as_timestamp) - last_ts < manual_override_seconds() }}
               manual_cooldown_ok: "{{ ignore_manual_cooldown | default(false) or not cover_manual_cooldown_active }}"
+              thermal_action_ok: >-
+                {% from 'solar_thermal.jinja' import cover_action_allowed %}
+                {% set allowed = cover_action_allowed | as_function %}
+                {{ allowed(cover_entity, action_id) }}
           - choose:
               - conditions:
                   - condition: template
@@ -506,9 +540,15 @@ hitzeschutz_jalousie_fassade_pruefen:
                       message: "{{ cover_entity }} ist {{ cover_state }} und wurde fuer {{ action_text }} {{ facade_name }} uebersprungen."
               - conditions:
                   - condition: template
-                    value_template: "{{ needs_change and automation_marker_ok and automatik_enabled and not upper_floor_open_blocked and not living_room_tv_blocked and manual_cooldown_ok }}"
+                    value_template: "{{ needs_change and thermal_action_ok and automation_marker_ok and automatik_enabled and not upper_floor_open_blocked and not living_room_tv_blocked and manual_cooldown_ok }}"
                 sequence:
                   - action: script.hitzeschutz_jalousie_automatisieren
                     data:
                       cover_entity: "{{ cover_entity }}"
                       action_id: "{{ action_id }}"
+                      expected_mode: "{{ states('binary_sensor.heizen_kuehlen_rueckmeldung') }}"
+                      allow_automation: "{{ allow_automation | default(true) }}"
+                      respect_automation_switch: "{{ respect_automation_switch | default(true) }}"
+                      require_automation_marker: "{{ require_automation_marker | default(true) }}"
+                      ignore_manual_cooldown: "{{ ignore_manual_cooldown | default(false) }}"
+                      respect_living_room_tv: "{{ respect_living_room_tv | default(true) }}"

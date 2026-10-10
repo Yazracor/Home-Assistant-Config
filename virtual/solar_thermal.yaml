@@ -1,0 +1,107 @@
+# Direkte Heizungsunterstuetzung; bestehende Kuehlungsautomatik bleibt erhalten.
+template:
+  - sensor:
+      - name: Hitzeschutz Clear Sky Index
+        unique_id: hitzeschutz_clear_sky_index
+        default_entity_id: sensor.hitzeschutz_clear_sky_index
+        icon: mdi:weather-sunny
+        state_class: measurement
+        availability: >-
+          {% from 'solar_thermal.jinja' import clear_sky_index %}
+          {% set index = clear_sky_index | as_function %}
+          {{ index() is number }}
+        state: >-
+          {% from 'solar_thermal.jinja' import clear_sky_index %}
+          {% set index = clear_sky_index | as_function %}
+          {{ index() | round(3) if index() is number else none }}
+        attributes:
+          expected_clear_sky_lux: >-
+            {% from 'solar_thermal.jinja' import clear_sky_lux %}
+            {% set lux = clear_sky_lux | as_function %}
+            {{ lux() | round(0) if lux() is number else none }}
+          calibration: Recorder + Open-Meteo ERA5 2026-09-01 bis 2026-10-04
+          interpretation: Luxbasierter Sonnenindikator; kein Bewoelkungsprozentwert
+
+  - triggers:
+      - trigger: time_pattern
+        minutes: "*"
+      - trigger: homeassistant
+        event: start
+    actions:
+      - variables:
+          controller: >-
+            {% from 'solar_thermal.jinja' import controller_snapshot %}
+            {% set snapshot = controller_snapshot | as_function %}
+            {{ snapshot(this.attributes if this is defined else {}) }}
+    sensor:
+      - name: Hitzeschutz Thermik
+        unique_id: hitzeschutz_thermik
+        default_entity_id: sensor.hitzeschutz_thermik
+        device_class: timestamp
+        icon: mdi:home-thermometer
+        state: "{{ now().isoformat() }}"
+        attributes:
+          samples: "{{ controller.samples }}"
+          rooms: "{{ controller.rooms }}"
+          decisions: "{{ controller.decisions }}"
+
+automation:
+  - id: hitzeschutz_solarwaerme_regeln
+    alias: Hitzeschutz Solarwaerme und Ueberhitzung regeln
+    description: Wendet im Heizmodus raumbezogene Fahrentscheidungen mit Temperaturtrend und Sonnenindikator unter den bestehenden Sperren an.
+    triggers:
+      - trigger: state
+        entity_id: sensor.hitzeschutz_thermik
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.heizen_kuehlen_rueckmeldung
+        state: "on"
+      - condition: state
+        entity_id: sun.sun
+        state: above_horizon
+    actions:
+      - action: script.hitzeschutz_jalousien_checks_pruefen
+        data:
+          checks: >-
+            {% from 'solar_thermal.jinja' import cover_automation_permitted %}
+            {% set permitted = cover_automation_permitted | as_function %}
+            {% set ns = namespace(checks=[]) %}
+            {% for cover, decision in (state_attr('sensor.hitzeschutz_thermik', 'decisions') | default({}, true)).items() %}
+              {% if decision.ready and decision.action in ['open', 'close'] and permitted(cover, decision.action) %}
+                {% set ns.checks = ns.checks + [{
+                  'facade_name': decision.facade_name,
+                  'facade_display_name': decision.facade_display_name ~ ' / ' ~ decision.reason,
+                  'action_id': decision.action,
+                  'cover_entities': [cover],
+                  'allow_automation': true
+                }] %}
+              {% endif %}
+            {% endfor %}
+            {{ ns.checks }}
+    mode: single
+    max_exceeded: silent
+
+  - id: hitzeschutz_kuehlmodus_uebernehmen
+    alias: Hitzeschutz bei Wechsel auf Kuehlen pruefen
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.heizen_kuehlen_rueckmeldung
+        to: "off"
+    conditions:
+      - condition: state
+        entity_id: sun.sun
+        state: above_horizon
+    actions:
+      - action: script.hitzeschutz_jalousien_fassadenstatus_pruefen
+        data:
+          facade_state: "on"
+          action_id: close
+          allow_automation: true
+          min_facade_state_seconds: 600
+      - action: script.hitzeschutz_jalousien_fassadenstatus_pruefen
+        data:
+          facade_state: "off"
+          action_id: open
+          allow_automation: true
+          min_facade_state_seconds: 1800
+    mode: single

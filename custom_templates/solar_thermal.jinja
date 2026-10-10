@@ -1,0 +1,210 @@
+{# Solarwaerme im Heizmodus; Fahrbefehle bleiben in den vorhandenen Sperr-Scripts. #}
+{% macro room_configs(returns) %}
+  {% do returns({
+    'eg_arbeitszimmer': ['cover.eg_arbeitszimmer_garten', 'cover.eg_arbeitszimmer_vorgarten'],
+    'eg_arbeitszimmer_flur': ['cover.eg_arbeitszimmer_garten', 'cover.eg_arbeitszimmer_vorgarten'],
+    'eg_wohnzimmer': ['cover.eg_wohnzimmer_panorama', 'cover.eg_wohnzimmer_balkon'],
+    'eg_kueche': ['cover.eg_kueche_balkon', 'cover.eg_kueche_seite', 'cover.eg_kueche_nebeneingang'],
+    'og_schlafzimmer': ['cover.og_schlafzimmer_front', 'cover.og_schlafzimmer_panorama_aussen'],
+    'og_bad': ['cover.og_bad_balkon', 'cover.og_bad_balkon_innen', 'cover.og_bad_panorama_aussen'],
+    'og_buro': ['cover.og_buro_fenster'],
+    'og_ankleide': ['cover.og_ankleide_fenster'],
+    'kg_zimmer_sinja': ['cover.kg_zimmer_sinja_jalousie'],
+    'kg_zimmer_silas': ['cover.kg_zimmer_silas_jalousie']
+  }) %}
+{% endmacro %}
+
+{% macro clear_sky_lux(returns) %}
+  {# Haurwitz-Referenz; 141.907197 lx/(W/m2) aus Recorder + ERA5 kalibriert.
+     Nachweis und Zeitabgleich: docs/hitzeschutz_solar_kalibrierung.json. #}
+  {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
+  {% if elevation >= 5 %}
+    {% set s = (elevation * pi / 180) | sin %}
+    {% do returns(141.907197 * 1098 * s * (e ** (-0.059 / s))) %}
+  {% else %}
+    {% do returns(none) %}
+  {% endif %}
+{% endmacro %}
+
+{% macro clear_sky_index(returns) %}
+  {% set reference = clear_sky_lux | as_function %}
+  {% set expected = reference() %}
+  {% set source = states.sensor.aussenbereich_wetterstation_helligkeit %}
+  {% if expected is number and is_number(source.state) and (as_timestamp(now()) - as_timestamp(source.last_updated)) < 5400 %}
+    {% do returns([2, [0, source.state | float / expected] | max] | min) %}
+  {% else %}
+    {% do returns(none) %}
+  {% endif %}
+{% endmacro %}
+
+{% macro controller_snapshot(previous, returns) %}
+  {% from 'heat_protection.jinja' import facade_configs, facade_sun_exposed, facade_active, sun_lux %}
+  {% set configs = room_configs | as_function %}
+  {% set facades = facade_configs | as_function %}
+  {% set exposed = facade_sun_exposed | as_function %}
+  {% set legacy_active = facade_active | as_function %}
+  {% set lux = sun_lux | as_function %}
+  {% set index_fn = clear_sky_index | as_function %}
+  {% set index = index_fn() %}
+  {% set timestamp = as_timestamp(now()) %}
+  {% set heating = is_state('binary_sensor.heizen_kuehlen_rueckmeldung', 'on') %}
+  {% set old_samples = previous.get('samples', {}) %}
+  {% set old_rooms = previous.get('rooms', {}) %}
+  {% set old_decisions = previous.get('decisions', {}) %}
+  {% set ns = namespace(samples={}, rooms={}, decisions={}) %}
+  {% set outside = states('sensor.aussenbereich_wetterstation_temperatur') | float(none) %}
+  {% for room in configs() %}
+    {% set current_entity = 'sensor.' ~ room ~ '_thermostat_ist_temp' %}
+    {% set target_entity = 'sensor.' ~ room ~ '_thermostat_soll_temp' %}
+    {% set current = states(current_entity) | float(none) %}
+    {% set target = states(target_entity) | float(none) %}
+    {% set source = states[current_entity] %}
+    {% set valid = current is number and target is number and 5 <= current <= 40 and 7 <= target <= 32 and (timestamp - as_timestamp(source.last_updated)) < 5400 %}
+    {% set sample = namespace(items=[]) %}
+    {% for item in old_samples.get(room, []) %}
+      {% if valid and timestamp - 1800 <= item[0] < timestamp and item[2] == target %}
+        {% set sample.items = sample.items + [item] %}
+      {% endif %}
+    {% endfor %}
+    {% if valid %}
+      {% set sample.items = sample.items + [[timestamp, current, target]] %}
+    {% endif %}
+    {% set ns.samples = dict(ns.samples, **{room: sample.items}) %}
+    {% set trend_valid = sample.items | count >= 10 and timestamp - sample.items[0][0] >= 1200 if valid else false %}
+    {# Regressionsgerade ueber Minutenwerte statt Extrapolation einzelner Spruenge. #}
+    {% set sums = namespace(x=0, y=0, xx=0, xy=0) %}
+    {% if trend_valid %}
+      {% for item in sample.items %}
+        {% set x = (item[0] - timestamp) / 3600 %}
+        {% set sums.x = sums.x + x %}
+        {% set sums.y = sums.y + item[1] %}
+        {% set sums.xx = sums.xx + x * x %}
+        {% set sums.xy = sums.xy + x * item[1] %}
+      {% endfor %}
+    {% endif %}
+    {% set n = sample.items | count %}
+    {% set denominator = n * sums.xx - sums.x * sums.x %}
+    {% set slope = (n * sums.xy - sums.x * sums.y) / denominator if trend_valid and denominator > 0 else 0 %}
+    {% set slope = ([0, slope, 2] | sort)[1] %}
+    {% set projected = current + slope * 0.5 if valid else none %}
+    {# Bei milder Aussenluft den Puffer von 0.3 auf 0.1 K reduzieren.
+       Fehlende Aussenwerte: kleiner Puffer, keine erfundene Nulltemperatur. #}
+    {% set warm_fraction = ([0, (outside - target + 5) / 5, 1] | sort)[1] if outside is number and valid else 1 %}
+    {% set margin = 0.3 - 0.2 * warm_fraction %}
+    {% set blocked = old_rooms.get(room, {}).get('overheated', false) %}
+    {% if valid and heating %}
+      {% if current >= target + margin or (trend_valid and slope >= 0.1 and projected >= target + margin) %}
+        {% set blocked = true %}
+      {% elif current <= target - 0.3 and projected <= target %}
+        {% set blocked = false %}
+      {% endif %}
+    {% elif not heating %}
+      {% set blocked = false %}
+    {% endif %}
+    {% set ns.rooms = dict(ns.rooms, **{room: {
+      'valid': valid, 'temperature': current, 'target': target,
+      'trend_valid': trend_valid, 'rise_per_hour': slope | round(3),
+      'projected_temperature': projected | round(3) if valid else none,
+      'shade_margin': margin | round(3), 'overheated': blocked
+    }}) %}
+  {% endfor %}
+  {% set lux_source = states.sensor.aussenbereich_wetterstation_helligkeit %}
+  {% set sun_valid = is_number(state_attr('sun.sun', 'elevation')) and is_number(state_attr('sun.sun', 'azimuth')) and states('sun.sun') in ['above_horizon', 'below_horizon'] %}
+  {% set lux_valid = is_number(lux_source.state) and timestamp - as_timestamp(lux_source.last_updated) < 5400 %}
+  {% for facade_key, facade in facades().items() %}
+    {% for cover in facade.covers %}
+      {% set mapped = namespace(rooms=[], valid=true, blocked=false) %}
+      {% for room, covers in configs().items() if cover in covers %}
+        {% set mapped.rooms = mapped.rooms + [room] %}
+        {% set mapped.valid = mapped.valid and ns.rooms[room].valid %}
+        {% set mapped.blocked = mapped.blocked or ns.rooms[room].overheated %}
+      {% endfor %}
+      {% if mapped.rooms | count > 0 %}
+        {% set old = old_decisions.get(cover, {}) %}
+        {% set sun_on = old.get('sun_active', false) %}
+        {% set sunny = exposed(facade_key) if sun_valid else false %}
+        {% set threshold_lux = 7000 if sun_on else 10000 %}
+        {% set threshold_index = 0.45 if sun_on else 0.6 %}
+        {% set sun_on = sunny and lux_valid and lux() >= threshold_lux and (index >= threshold_index if index is number else lux() >= (30000 if sun_on else 40000)) %}
+        {# Ein niedriger Index darf den bisherigen Hitzeschutz nicht aufheben. #}
+        {% set protection_sun = sunny and lux_valid and (sun_on or legacy_active(facade_key)) %}
+        {% set action = 'none' %}
+        {% set reason = 'keine Heizfreigabe' %}
+        {% set delay = 0 %}
+        {% if heating and mapped.valid and sun_valid and lux_valid and is_state('sun.sun', 'above_horizon') %}
+          {% if protection_sun and mapped.blocked %}
+            {% set action = 'close' %}
+            {% set reason = 'Ueberhitzungsschutz' %}
+            {% set delay = 120 %}
+          {% elif sun_on %}
+            {% set action = 'open' %}
+            {% set reason = 'Solarwaerme nutzen' %}
+            {% set delay = 600 %}
+          {% elif not sunny %}
+            {% set action = 'open' %}
+            {% set reason = 'Fassade ohne Sonne' %}
+          {% else %}
+            {% set action = 'open' %}
+            {% set reason = 'Sonne zu schwach' %}
+            {% set delay = 1800 %}
+          {% endif %}
+        {% endif %}
+        {% set since = old.get('since', timestamp) if old.get('action') == action and old.get('reason') == reason else timestamp %}
+        {% set ns.decisions = dict(ns.decisions, **{cover: {
+          'action': action, 'reason': reason, 'since': since,
+          'ready': action != 'none' and timestamp - since >= delay,
+          'sun_active': sun_on, 'rooms': mapped.rooms,
+          'facade_name': facade.name, 'facade_display_name': facade.display_name
+        }}) %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+  {% do returns({'samples': ns.samples, 'rooms': ns.rooms, 'decisions': ns.decisions}) %}
+{% endmacro %}
+
+{% macro cover_action_allowed(cover, action, returns) %}
+  {% set configs = room_configs | as_function %}
+  {% set mapped = namespace(found=false) %}
+  {% for covers in configs().values() if cover in covers %}
+    {% set mapped.found = true %}
+  {% endfor %}
+  {% set mode = states('binary_sensor.heizen_kuehlen_rueckmeldung') %}
+  {% if mode not in ['on', 'off'] %}
+    {% do returns(action == 'close') %}
+  {% elif mode == 'off' or not mapped.found %}
+    {% do returns(true) %}
+  {% else %}
+    {% set controller = states.sensor.hitzeschutz_thermik %}
+    {% set decisions = controller.attributes.get('decisions', {}) %}
+    {% set decision = decisions.get(cover, {}) %}
+    {% set fresh = controller.state not in ['unknown', 'unavailable'] and as_timestamp(now()) - as_timestamp(controller.last_updated) < 180 %}
+    {# Ohne gueltige Thermik keine solare Oeffnung; bestehendes Schliessen bleibt moeglich. #}
+    {% if not fresh or decision.get('action', 'none') == 'none' %}
+      {% do returns(action == 'close') %}
+    {% else %}
+      {% do returns(decision.get('ready', false) and decision.action == action) %}
+    {% endif %}
+  {% endif %}
+{% endmacro %}
+
+{% macro cover_automation_permitted(cover, action, allow_automation=true, respect_switch=true, require_marker=true, ignore_manual=false, respect_tv=true, returns=none) %}
+  {% from 'manual_control.jinja' import manual_override_seconds %}
+  {% set override_seconds = manual_override_seconds | as_function %}
+  {% set thermal_allowed = cover_action_allowed | as_function %}
+  {% set position = state_attr(cover, 'current_position') %}
+  {% set cover_state = states(cover) %}
+  {% set needs_change = ((position is number and position > 25) or (position is not number and cover_state in ['open', 'opening'])) if action == 'close' else ((position is number and position < 80) or (position is not number and cover_state in ['closed', 'closing'])) %}
+  {% set marked = expand('group.hitzeschutz_automatik_jalousien') | map(attribute='entity_id') | list %}
+  {% set last_manual = (state_attr('sensor.hitzeschutz_manueller_jalousie_block', 'blocked_since') | default({}, true)).get(cover, '') | as_timestamp(0) %}
+  {% set manual_ok = ignore_manual or last_manual <= 0 or as_timestamp(now()) - last_manual >= override_seconds() %}
+  {% set tv_active = states('media_player.wohnzimmer_samsung_fernseher') not in ['off', 'unknown', 'unavailable'] %}
+  {% do returns(
+    needs_change and cover_state not in ['unknown', 'unavailable']
+    and not ((action == 'open' and cover_state == 'opening') or (action == 'close' and cover_state == 'closing'))
+    and allow_automation and (not respect_switch or is_state('switch.hitzeschutz_og_automatik', 'on'))
+    and (not require_marker or cover in marked)
+    and not (action == 'open' and now().hour < 10 and cover in floor_entities('obergeschoss'))
+    and not (respect_tv and tv_active and cover in ['cover.eg_wohnzimmer_panorama', 'cover.eg_wohnzimmer_balkon'])
+    and manual_ok and thermal_allowed(cover, action)
+  ) %}
+{% endmacro %}

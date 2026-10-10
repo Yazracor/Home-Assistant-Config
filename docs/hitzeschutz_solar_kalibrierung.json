@@ -1,0 +1,133 @@
+{
+  "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=50.1026602&longitude=8.2715918&start_date=2026-05-30&end_date=2026-10-04&hourly=cloud_cover,shortwave_radiation,direct_normal_irradiance&timezone=UTC&models=era5",
+  "weather_sha256": "d1d5bd6786de02d9f6b15252468097343216b2601fcf25bb93715da2630cf7dd",
+  "requested_location": {
+    "latitude": 50.1026602,
+    "longitude": 8.2715918
+  },
+  "weather_grid_location": {
+    "latitude": 50.0,
+    "longitude": 8.25,
+    "elevation": 244.0
+  },
+  "period": [
+    "2026-05-30",
+    "2026-10-04"
+  ],
+  "hour_alignment": "Recorder start = weather timestamp minus 1h",
+  "method": "Median local hourly mean lux / hourly mean Haurwitz irradiance; NOAA solar position approximation",
+  "clear_selection": {
+    "maximum_cloud_percent": 20,
+    "minimum_dni_w_m2": 400,
+    "minimum_elevation_degrees": 5
+  },
+  "daylight_hours": 1682,
+  "clear_hours": 371,
+  "calibration_clear_hours": 57,
+  "calibration_period": [
+    "2026-09-01",
+    "2026-10-04"
+  ],
+  "calibration_daylight_hours": 375,
+  "lux_per_watt": 141.90719721603637,
+  "monthly_clear_lux_per_watt": {
+    "6": 56.42485352101249,
+    "7": 60.211577699921186,
+    "8": 80.6536904244746,
+    "9": 139.73504729483136,
+    "10": 182.18222664178148
+  },
+  "altitude_groups": [
+    {
+      "elevation_range_degrees": [
+        5,
+        15
+      ],
+      "clear_hours": 27,
+      "median_lux_per_watt": 97.02534508566066
+    },
+    {
+      "elevation_range_degrees": [
+        15,
+        25
+      ],
+      "clear_hours": 73,
+      "median_lux_per_watt": 89.11619917555879
+    },
+    {
+      "elevation_range_degrees": [
+        25,
+        35
+      ],
+      "clear_hours": 77,
+      "median_lux_per_watt": 66.30272627525198
+    },
+    {
+      "elevation_range_degrees": [
+        35,
+        45
+      ],
+      "clear_hours": 70,
+      "median_lux_per_watt": 65.95448918142691
+    },
+    {
+      "elevation_range_degrees": [
+        45,
+        65
+      ],
+      "clear_hours": 124,
+      "median_lux_per_watt": 71.78189279396227
+    }
+  ],
+  "cloud_groups": [
+    {
+      "cloud_range_percent": [
+        0,
+        20
+      ],
+      "hours": 63,
+      "median_lux_index": 1.0115914160954063
+    },
+    {
+      "cloud_range_percent": [
+        20,
+        60
+      ],
+      "hours": 93,
+      "median_lux_index": 0.7888626908332975
+    },
+    {
+      "cloud_range_percent": [
+        60,
+        90
+      ],
+      "hours": 95,
+      "median_lux_index": 0.7025795269320946
+    },
+    {
+      "cloud_range_percent": [
+        90,
+        101
+      ],
+      "hours": 124,
+      "median_lux_index": 0.4206205138231808
+    }
+  ],
+  "temporal_validation": {
+    "training_clear_hours": 19,
+    "training_lux_per_watt": 123.87951635350763,
+    "holdout_period": [
+      "2026-09-15",
+      "2026-10-04"
+    ],
+    "holdout_clear_hours": 38,
+    "holdout_median_index": 1.2242385464564451
+  },
+  "limitations": [
+    "ERA5 grid data are modeled and not measured at the window.",
+    "Lux reference is a proxy, not an irradiance measurement or cloud percentage.",
+    "Low-sun and winter calibration coverage is limited; fall back to existing lux threshold below 5 degrees.",
+    "Strong summer-to-autumn drift: use recent autumn data, not a common annual coefficient.",
+    "Calibration coefficients vary with solar altitude and local sensor exposure."
+  ]
+}
