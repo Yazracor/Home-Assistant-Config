@@ -52,8 +52,9 @@ async def main():
     assert not state['decisions'][cover]['ready']
     state = snapshot(state, 10)
     assert state['decisions'][cover]['ready']
-    assert len(state['decisions']) == 16
-    assert 'cover.og_flur_fenster' not in state['decisions']
+    assert len(state['decisions']) == 18
+    for shared_cover in ('cover.og_flur_fenster', 'cover.og_treppe'):
+        assert state['decisions'][shared_cover]['rooms'] == ['og_schlafzimmer']
     assert 'cover.aussenbereich_balkon_sonnensegel' not in state['decisions']
     hass.states.async_set('sensor.eg_wohnzimmer_thermostat_ist_temp', '21.4')
     state = snapshot(state, 11)
@@ -143,6 +144,22 @@ async def main():
     assert not render(allowed_text, cover=cover, action='open')
     assert render(allowed_text, cover=cover, action='close')
 
+    # Shared bedroom temperatures control each cover at its own facade direction.
+    hass.states.async_set('binary_sensor.heizen_kuehlen_rueckmeldung', 'on')
+    hass.states.async_set('sensor.aussenbereich_wetterstation_helligkeit', '60000')
+    hass.states.async_set('sensor.og_schlafzimmer_thermostat_soll_temp', '21')
+    for shared_cover, azimuth in (('cover.og_flur_fenster', 295), ('cover.og_treppe', 115)):
+        hass.states.async_set('sun.sun', 'above_horizon', {'azimuth': azimuth, 'elevation': 25})
+        hass.states.async_set('sensor.og_schlafzimmer_thermostat_ist_temp', '21.5')
+        hot = snapshot()
+        assert hot['decisions'][shared_cover]['action'] == 'close'
+        assert snapshot(hot, 2)['decisions'][shared_cover]['ready']
+        hass.states.async_set('sensor.og_schlafzimmer_thermostat_ist_temp', '20.5')
+        cold = snapshot(hot, 3)
+        assert cold['decisions'][shared_cover]['action'] == 'open'
+        assert snapshot(cold, 13)['decisions'][shared_cover]['ready']
+    hass.states.async_set('sun.sun', 'above_horizon', {'azimuth': 205, 'elevation': 25})
+
     # Last-moment guard: switch, marker, TV, cooldown, position and queued mode.
     hass.states.async_set('binary_sensor.heizen_kuehlen_rueckmeldung', 'on')
     hass.states.async_set('sensor.hitzeschutz_thermik', timestamp.isoformat(), {'decisions': {cover: {'action':'open', 'ready':True}}})
@@ -190,7 +207,12 @@ async def main():
         target = by_entity['sensor.' + room_id + '_thermostat_soll_temp']
         assert temp['area_id'] == target['area_id']
         for entity in covers:
-            assert by_entity[entity]['area_id'] == temp['area_id'], (room_id, entity)
+            if entity in ('cover.og_flur_fenster', 'cover.og_treppe'):
+                assert room_id == 'og_schlafzimmer'
+                assert by_entity[entity]['area_id'] == ('flur_og' if entity == 'cover.og_flur_fenster' else 'treppe_og')
+                assert 'Schlafzimmer-Ist-/Solltemperatur' in by_entity[entity]['notes']
+            else:
+                assert by_entity[entity]['area_id'] == temp['area_id'], (room_id, entity)
     for block in package['template']:
         for entity in block.get('sensor', []):
             row = by_entity[entity['default_entity_id']]

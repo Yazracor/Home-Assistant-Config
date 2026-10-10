@@ -74,9 +74,12 @@ python3 tools/calibrate_solar_lux.py --fetch --weather-json /tmp/solar-weather.j
 
 ## Fahrbefehle und vorhandene Sperren
 
-16 Jalousien sind eindeutig Thermostaten zugeordnet. Flur OG, Treppe OG, WC OG
-und Sonnensegel verwenden mangels eindeutiger Raumfühler-Zuordnung weiterhin die
-vorhandenen Regeln. Die Raumzuordnungen wurden gegen `area_assignments.csv` geprüft.
+18 Jalousien sind Thermostaten zugeordnet. Flur OG und Treppe OG verwenden auf
+ausdrücklichen Wunsch die Ist-/Solltemperatur und den Temperaturtrend des
+Schlafzimmers. Ihre eigenen Fassadenrichtungen und physischen Raumzuordnungen
+bleiben erhalten. WC OG und Sonnensegel verwenden weiterhin die vorhandenen
+Regeln. Die Zuordnungen wurden gegen `area_assignments.csv` geprüft; die beiden
+bewussten Verknüpfungen über Raumgrenzen sind dort dokumentiert.
 
 Alle normalen Fahrbefehle respektieren Automatik-Schalter, Automatik-Gruppe,
 manuellen Override von vier Stunden, TV-Sperre und OG-Öffnung erst ab 10 Uhr.
