@@ -32,7 +32,7 @@ template:
           controller: >-
             {% from 'solar_thermal.jinja' import controller_snapshot %}
             {% set snapshot = controller_snapshot | as_function %}
-            {{ snapshot(this.attributes if this is defined else {}) }}
+            {{ snapshot(states.sensor.hitzeschutz_thermik.attributes | default({}, true)) }}
     sensor:
       - name: Hitzeschutz Thermik
         unique_id: hitzeschutz_thermik

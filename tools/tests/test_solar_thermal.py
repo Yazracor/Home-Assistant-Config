@@ -9,10 +9,11 @@ import csv
 import shutil
 import tempfile
 from datetime import timedelta
-from types import SimpleNamespace
 from unittest.mock import patch
 
-from homeassistant.core import HomeAssistant
+from homeassistant.core import Context, HomeAssistant
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers.script import Script, async_validate_actions_config
 from homeassistant.helpers.template import Template, async_load_custom_templates
 from homeassistant.helpers import device_registry as dr, entity_registry as er, area_registry as ar, floor_registry as fr
 from homeassistant.util import dt as dt_util
@@ -194,10 +195,42 @@ async def main():
     # Check the actual trigger-template action and its rendered entity attributes.
     package = yaml.safe_load(open('/config/virtual/solar_thermal.yaml'))
     block = package['template'][1]
-    rendered = render(block['actions'][0]['variables']['controller'], this=SimpleNamespace(attributes={}))
+    hass.states.async_remove('sensor.hitzeschutz_thermik')
+    rendered = render(block['actions'][0]['variables']['controller'])
     assert isinstance(rendered['rooms'], dict)
     for value in block['sensor'][0]['attributes'].values():
         assert isinstance(render(value, controller=rendered), dict)
+    # Run the configured actions without an injected `this`, as the trigger
+    # coordinator does. Persist the resulting sensor attributes between ticks.
+    hass.states.async_set('binary_sensor.heizen_kuehlen_rueckmeldung', 'on')
+    hass.states.async_set('sun.sun', 'above_horizon', {'azimuth': 224.3, 'elevation': 21.6})
+    hass.states.async_set('sensor.og_bad_thermostat_ist_temp', '23.82')
+    hass.states.async_set('sensor.og_bad_thermostat_soll_temp', '22')
+    action_config = await async_validate_actions_config(hass, cv.SCRIPT_SCHEMA(block['actions']))
+    actions = Script(hass, action_config, 'Thermal state retention check', 'template')
+    bad_cover = 'cover.og_bad_panorama_aussen'
+    since = None
+    for minute in range(23):
+        if minute == 22:
+            hass.states.async_set('sensor.og_bad_thermostat_ist_temp', '22')
+        with patch('homeassistant.util.dt.now', return_value=timestamp + timedelta(minutes=minute)):
+            result = await actions.async_run({}, Context())
+        assert result is not None
+        controller = result.variables['controller']
+        decision = controller['decisions'][bad_cover]
+        if since is None:
+            since = decision['since']
+        assert decision['action'] == 'close'
+        assert decision['since'] == since, (minute, decision)
+        assert decision['ready'] == (minute >= 2), (minute, decision)
+        assert len(controller['samples']['og_bad']) == minute + 1
+        assert controller['rooms']['og_bad']['trend_valid'] == (minute >= 20)
+        assert controller['rooms']['og_bad']['overheated']
+        attributes = {
+            key: render(value, controller=controller)
+            for key, value in block['sensor'][0]['attributes'].items()
+        }
+        hass.states.async_set('sensor.hitzeschutz_thermik', str(minute), attributes)
     # Validate durable metadata and all cover-to-thermostat room mappings.
     with open('/config/area_assignments.csv', newline='') as stream:
         assignments = list(csv.DictReader(stream))
