@@ -3,6 +3,7 @@ input_boolean:
     name: "Intern Hitzeschutz OG Automatik"
     icon: mdi:blinds
     initial: true
+  # Kompatibilitaet: bestehende Entity behalten, nicht mehr zur Ereignisfilterung nutzen.
   hitzeschutz_automatik_fahrbefehl_aktiv:
     name: "Intern Hitzeschutz Automatik Fahrbefehl"
     icon: mdi:blinds-horizontal

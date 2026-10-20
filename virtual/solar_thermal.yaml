@@ -63,7 +63,7 @@ automation:
       - action: script.hitzeschutz_jalousien_checks_pruefen
         data:
           checks: >-
-            {% from 'solar_thermal.jinja' import cover_automation_permitted %}
+            {% from 'cover_control.jinja' import cover_automation_permitted %}
             {% set permitted = cover_automation_permitted | as_function %}
             {% set ns = namespace(checks=[]) %}
             {% for cover, decision in (state_attr('sensor.hitzeschutz_thermik', 'decisions') | default({}, true)).items() %}

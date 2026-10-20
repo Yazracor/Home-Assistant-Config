@@ -2,6 +2,30 @@
   {% do returns(4 * 3600) %}
 {% endmacro %}
 
+{% macro cover_manual_blocked(cover, returns) %}
+  {% from 'hitzeschutz_manual_generated.jinja' import related_covers %}
+  {% set related = related_covers | as_function %}
+  {% set duration = manual_override_seconds | as_function %}
+  {% set entries = state_attr('sensor.hitzeschutz_manueller_jalousie_block', 'blocked_since') | default({}, true) %}
+  {% set ns = namespace(blocked=states('sensor.hitzeschutz_manueller_jalousie_block') in ['unknown', 'unavailable']) %}
+  {% for entity in related().get(cover, [cover]) %}
+    {% set last_manual = entries.get(entity, '') | as_timestamp(0) %}
+    {% set ns.blocked = ns.blocked or (last_manual > 0 and as_timestamp(now()) - last_manual < duration()) %}
+  {% endfor %}
+  {% do returns(ns.blocked) %}
+{% endmacro %}
+
+{% macro manual_cover_entities(trigger_id, event_data, context_user_id, context_id, returns) %}
+  {% from 'hitzeschutz_manual_generated.jinja' import knx_cover_map %}
+  {% set knx_map = knx_cover_map | as_function %}
+  {% set touched = touched_entities | as_function %}
+  {% set covers = states.cover | map(attribute='entity_id') | reject('eq', 'cover.aussenbereich_garage_garagentor') | list %}
+  {% set command = states.script.hitzeschutz_jalousie_automatisieren %}
+  {# Auch explizit vom Benutzer gestartete Automatik-Scripts erzeugen eigene Serviceaufrufe. #}
+  {% set own_service = trigger_id == 'service' and command is not none and command.state == 'on' and context_id == command.context.id %}
+  {% do returns([] if own_service else touched(trigger_id, event_data, context_user_id, covers, knx_map(), 'cover', false)) %}
+{% endmacro %}
+
 {% macro touched_entities(trigger_id, event_data, context_user_id, allowed_entities, knx_map, domain, require_brightness, returns) %}
   {% set ns = namespace(items=[]) %}
   {% set allowed = allowed_entities | from_json(default=allowed_entities) if allowed_entities is string else allowed_entities %}

@@ -186,25 +186,3 @@
     {% endif %}
   {% endif %}
 {% endmacro %}
-
-{% macro cover_automation_permitted(cover, action, allow_automation=true, respect_switch=true, require_marker=true, ignore_manual=false, respect_tv=true, returns=none) %}
-  {% from 'manual_control.jinja' import manual_override_seconds %}
-  {% set override_seconds = manual_override_seconds | as_function %}
-  {% set thermal_allowed = cover_action_allowed | as_function %}
-  {% set position = state_attr(cover, 'current_position') %}
-  {% set cover_state = states(cover) %}
-  {% set needs_change = ((position is number and position > 25) or (position is not number and cover_state in ['open', 'opening'])) if action == 'close' else ((position is number and position < 80) or (position is not number and cover_state in ['closed', 'closing'])) %}
-  {% set marked = expand('group.hitzeschutz_automatik_jalousien') | map(attribute='entity_id') | list %}
-  {% set last_manual = (state_attr('sensor.hitzeschutz_manueller_jalousie_block', 'blocked_since') | default({}, true)).get(cover, '') | as_timestamp(0) %}
-  {% set manual_ok = ignore_manual or last_manual <= 0 or as_timestamp(now()) - last_manual >= override_seconds() %}
-  {% set tv_active = states('media_player.wohnzimmer_samsung_fernseher') not in ['off', 'unknown', 'unavailable'] %}
-  {% do returns(
-    needs_change and cover_state not in ['unknown', 'unavailable']
-    and not ((action == 'open' and cover_state == 'opening') or (action == 'close' and cover_state == 'closing'))
-    and allow_automation and (not respect_switch or is_state('switch.hitzeschutz_og_automatik', 'on'))
-    and (not require_marker or cover in marked)
-    and not (action == 'open' and now().hour < 10 and cover in floor_entities('obergeschoss'))
-    and not (respect_tv and tv_active and cover in ['cover.eg_wohnzimmer_panorama', 'cover.eg_wohnzimmer_balkon'])
-    and manual_ok and thermal_allowed(cover, action)
-  ) %}
-{% endmacro %}

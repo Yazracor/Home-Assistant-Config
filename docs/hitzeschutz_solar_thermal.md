@@ -81,18 +81,36 @@ bleiben erhalten. WC OG und Sonnensegel verwenden weiterhin die vorhandenen
 Regeln. Die Zuordnungen wurden gegen `area_assignments.csv` geprüft; die beiden
 bewussten Verknüpfungen über Raumgrenzen sind dort dokumentiert.
 
-Alle normalen Fahrbefehle respektieren Automatik-Schalter, Automatik-Gruppe,
-manuellen Override von vier Stunden, TV-Sperre und OG-Öffnung erst ab 10 Uhr.
-Auch das bestehende Script „Auto Jalousien“ berücksichtigt die Wärmeentscheidung;
-seine ausdrücklichen Ausnahmen für die anderen Sperren bleiben erhalten.
+Alle normalen Fahrbefehle laufen pro Jalousie durch
+`script.hitzeschutz_jalousie_automatisieren`. Fassaden- und Sammel-Scripts
+verteilen nur die Aufrufe; die Rueckmeldung des zentralen Scripts bestimmt,
+ob eine Fahrt als ausgeloest gemeldet wird. Die gemeinsame Funktion
+`cover_automation_status` in `custom_templates/cover_control.jinja` prueft
+Position, Bewegungsrichtung, Automatik-Schalter, Automatik-Gruppe, OG-Zeitgrenze,
+Fernseher, Heiz-/Kuehlmodus, thermische Freigabe und manuelle Sperre.
+Die Planung verwendet dieselbe Funktion. Im Warteschlangen-Script erfolgt die
+Pruefung erst bei Ausfuehrung, damit zwischenzeitliche manuelle Bedienung auch
+bereits eingeplante Fahrten verhindert.
 
-Die Fahrbefehle werden nacheinander ausgeführt, damit das gemeinsame Kennzeichen
-für Automatikfahrten während der fünf Sekunden Nachlauf nicht durch eine andere
-Fahrt vorzeitig gelöscht wird. Direkt vor der Fahrt werden Sperren, Position,
-Wärmeentscheidung und unveränderter Heiz-/Kühlmodus erneut geprüft. Die minütliche
-Regelung überspringt blockierte oder bereits bewegte Jalousien ohne wiederholte
-Benachrichtigung. Im Kühlmodus wirken weiter die vorhandenen Fassadenregeln;
-ein Wechsel auf Kühlen löst zusätzlich einen Nachcheck aus.
+`cover_manual_blocked` in `custom_templates/manual_control.jinja` liefert die
+zentrale vierstuendige manuelle Sperre pro Jalousie. Fehlender Sperrstatus
+verhindert normale Automatikfahrten. Manuelle eingehende KNX-Telegramme,
+HomeKit-Befehle und Cover-Serviceaufrufe mit Benutzerkontext werden auch waehrend
+laufender Automatikfahrten erfasst. Eigene KNX-Telegramme werden anhand von
+Richtung und Quelle, eigene Serviceaufrufe anhand des fehlenden Benutzerkontexts
+unterschieden. Bei benutzergestarteten Automatik-Scripts werden eigene
+Serviceaufrufe am Kontext des laufenden zentralen Jalousien-Scripts erkannt.
+Die generierte Zuordnung `related_covers` verbindet virtuelle Sammeljalousien
+mit ihren Einzeljalousien, damit eine manuelle Sperre nicht ueber einen anderen
+Zugriff auf denselben Antrieb umgangen wird. Der alte globale Fahrbefehl-Helper bleibt als ungenutzte
+Kompatibilitaets-Entity erhalten; er darf keine manuellen Ereignisse ausblenden.
+Der ausdrueckliche Aufruf von `auto_jalousien` setzt weiterhin die manuellen
+Sperren zurueck und kann Automatik-Schalter, Gruppenmarkierung und TV-Sperre
+uebergehen. Die OG-Zeitgrenze und die thermische Freigabe gelten weiterhin.
+
+Die minuetliche Regelung ueberspringt blockierte oder bereits bewegte Jalousien
+vor der Sammelpruefung. Im Kuehlmodus wirken die vorhandenen Fassadenregeln;
+ein Wechsel auf Kuehlen loest zusaetzlich einen Nachcheck aus.
 
 ## Prüfung und Auswertung des realen Tests
 

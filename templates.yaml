@@ -23,14 +23,10 @@
         {% if trigger.id in ['init', 'reset'] %}
           {{ true }}
         {% else %}
-          {% from 'hitzeschutz_manual_generated.jinja' import knx_cover_map %}
-          {% from 'manual_control.jinja' import touched_entities %}
-          {% set knx_cover_map = knx_cover_map | as_function %}
-          {% set touched_entities = touched_entities | as_function %}
-          {% set cover_entities = states.cover | map(attribute='entity_id') | reject('eq', 'cover.aussenbereich_garage_garagentor') | list %}
+          {% from 'manual_control.jinja' import manual_cover_entities %}
+          {% set touched = manual_cover_entities | as_function %}
           {{
-            is_state('input_boolean.hitzeschutz_automatik_fahrbefehl_aktiv', 'off')
-            and touched_entities(trigger.id, trigger.event.data, trigger.event.context.user_id, cover_entities, knx_cover_map(), 'cover', false) | count > 0
+            touched(trigger.id, trigger.event.data, trigger.event.context.user_id, trigger.event.context.id) | count > 0
           }}
         {% endif %}
   sensor:
@@ -50,13 +46,10 @@
           {% elif trigger.id == 'reset' %}
             {{ {} | to_json }}
           {% else %}
-            {% from 'hitzeschutz_manual_generated.jinja' import knx_cover_map %}
-            {% from 'manual_control.jinja' import manual_override_seconds, touched_entities %}
-            {% set knx_cover_map = knx_cover_map | as_function %}
+            {% from 'manual_control.jinja' import manual_override_seconds, manual_cover_entities %}
             {% set manual_override_seconds = manual_override_seconds | as_function %}
-            {% set touched_entities = touched_entities | as_function %}
-            {% set cover_entities = states.cover | map(attribute='entity_id') | reject('eq', 'cover.aussenbereich_garage_garagentor') | list %}
-            {% set touched = touched_entities(trigger.id, trigger.event.data, trigger.event.context.user_id, cover_entities, knx_cover_map(), 'cover', false) %}
+            {% set touched_entities = manual_cover_entities | as_function %}
+            {% set touched = touched_entities(trigger.id, trigger.event.data, trigger.event.context.user_id, trigger.event.context.id) %}
             {% set cutoff = (now() | as_timestamp) - manual_override_seconds() %}
             {% set ns = namespace(entries=[]) %}
             {% for entity, timestamp in previous.items() if entity not in touched and timestamp | as_timestamp(0) >= cutoff %}

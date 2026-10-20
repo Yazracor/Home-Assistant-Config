@@ -1,0 +1,52 @@
+{# Gemeinsame Freigabe fuer Planung, Benachrichtigung und den letzten Check vor der Fahrt. #}
+{% macro cover_automation_status(cover, action, allow_automation=true, respect_switch=true, require_marker=true, ignore_manual=false, respect_tv=true, expected_mode=none, returns=none) %}
+  {% from 'manual_control.jinja' import cover_manual_blocked %}
+  {% from 'solar_thermal.jinja' import cover_action_allowed %}
+  {% set manual_blocked = cover_manual_blocked | as_function %}
+  {% set thermal_allowed = cover_action_allowed | as_function %}
+  {% set position = state_attr(cover, 'current_position') %}
+  {% set cover_state = states(cover) %}
+  {% set needs_change = ((position is number and position > 25) or (position is not number and cover_state in ['open', 'opening'])) if action == 'close' else ((position is number and position < 80) or (position is not number and cover_state in ['closed', 'closing'])) %}
+  {% set marked = expand('group.hitzeschutz_automatik_jalousien') | map(attribute='entity_id') | list %}
+  {% set tv_active = states('media_player.wohnzimmer_samsung_fernseher') not in ['off', 'unknown', 'unavailable'] %}
+  {% set ns = namespace(reasons=[]) %}
+  {% if action not in ['open', 'close'] %}
+    {% set ns.reasons = ns.reasons + ['unbekannte Aktion'] %}
+  {% endif %}
+  {% if cover_state in ['unknown', 'unavailable'] %}
+    {% set ns.reasons = ns.reasons + ['Jalousie nicht verfuegbar'] %}
+  {% endif %}
+  {% if not needs_change %}
+    {% set ns.reasons = ns.reasons + ['Zielposition bereits erreicht'] %}
+  {% endif %}
+  {% if (action == 'open' and cover_state == 'opening') or (action == 'close' and cover_state == 'closing') %}
+    {% set ns.reasons = ns.reasons + ['Jalousie faehrt bereits'] %}
+  {% endif %}
+  {% if not allow_automation or (respect_switch and not is_state('switch.hitzeschutz_og_automatik', 'on')) %}
+    {% set ns.reasons = ns.reasons + ['Automatik aus'] %}
+  {% endif %}
+  {% if require_marker and cover not in marked %}
+    {% set ns.reasons = ns.reasons + ['nicht im Automatik-Tag'] %}
+  {% endif %}
+  {% if action == 'open' and now().hour < 10 and cover in floor_entities('obergeschoss') %}
+    {% set ns.reasons = ns.reasons + ['Obergeschoss vor 10:00'] %}
+  {% endif %}
+  {% if respect_tv and tv_active and cover in ['cover.eg_wohnzimmer_panorama', 'cover.eg_wohnzimmer_balkon'] %}
+    {% set ns.reasons = ns.reasons + ['Fernseher im Wohnzimmer an'] %}
+  {% endif %}
+  {% if not ignore_manual and manual_blocked(cover) %}
+    {% set ns.reasons = ns.reasons + ['manueller Override aktiv'] %}
+  {% endif %}
+  {% if not thermal_allowed(cover, action) %}
+    {% set ns.reasons = ns.reasons + ['thermische Freigabe fehlt'] %}
+  {% endif %}
+  {% if expected_mode is not none and states('binary_sensor.heizen_kuehlen_rueckmeldung') != expected_mode %}
+    {% set ns.reasons = ns.reasons + ['Heiz-/Kuehlmodus geaendert'] %}
+  {% endif %}
+  {% do returns({'allowed': ns.reasons | count == 0, 'reasons': ns.reasons, 'needs_change': needs_change, 'position': position, 'state': cover_state}) %}
+{% endmacro %}
+
+{% macro cover_automation_permitted(cover, action, allow_automation=true, respect_switch=true, require_marker=true, ignore_manual=false, respect_tv=true, returns=none) %}
+  {% set status = cover_automation_status | as_function %}
+  {% do returns(status(cover, action, allow_automation, respect_switch, require_marker, ignore_manual, respect_tv).allowed) %}
+{% endmacro %}

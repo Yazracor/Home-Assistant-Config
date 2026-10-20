@@ -9,9 +9,10 @@ import csv
 import shutil
 import tempfile
 from datetime import timedelta
+from types import SimpleNamespace
 from unittest.mock import patch
 
-from homeassistant.core import Context, HomeAssistant
+from homeassistant.core import Context, HomeAssistant, SupportsResponse
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.script import Script, async_validate_actions_config
 from homeassistant.helpers.template import Template, async_load_custom_templates
@@ -168,7 +169,8 @@ async def main():
     hass.states.async_set('group.hitzeschutz_automatik_jalousien', 'closed', {'entity_id': [cover]})
     hass.states.async_set('switch.hitzeschutz_og_automatik', 'on')
     hass.states.async_set('media_player.wohnzimmer_samsung_fernseher', 'off')
-    permitted_text = "{% from 'solar_thermal.jinja' import cover_automation_permitted %}{% set f=cover_automation_permitted|as_function %}{{ f(cover, 'open') }}"
+    hass.states.async_set('sensor.hitzeschutz_manueller_jalousie_block', timestamp.isoformat(), {'blocked_since': {}})
+    permitted_text = "{% from 'cover_control.jinja' import cover_automation_permitted %}{% set f=cover_automation_permitted|as_function %}{{ f(cover, 'open') }}"
     assert render(permitted_text, cover=cover)
     hass.states.async_set('switch.hitzeschutz_og_automatik', 'off')
     assert not render(permitted_text, cover=cover)
@@ -186,10 +188,10 @@ async def main():
     hass.states.async_set(cover, 'closed', {'current_position': 0})
     # The guard in the actual command script rejects a queued command after mode change.
     script = yaml.safe_load(open('/config/scripts.yaml'))['hitzeschutz_jalousie_automatisieren']
-    guard = script['sequence'][0]['value_template']
-    assert render(guard, cover_entity=cover, action_id='open', expected_mode='on')
+    guard = script['sequence'][0]['variables']['result']
+    assert render(guard, cover_entity=cover, action_id='open', expected_mode='on')['allowed']
     hass.states.async_set('binary_sensor.heizen_kuehlen_rueckmeldung', 'off')
-    assert not render(guard, cover_entity=cover, action_id='open', expected_mode='on')
+    assert not render(guard, cover_entity=cover, action_id='open', expected_mode='on')['allowed']
     assert script['mode'] == 'queued'
 
     # Check the actual trigger-template action and its rendered entity attributes.
@@ -268,6 +270,128 @@ async def main():
         assert not render(permitted_text, cover=upstairs)
     with patch('homeassistant.util.dt.now', return_value=timestamp.replace(hour=10)):
         assert render(permitted_text, cover=upstairs)
+
+    # Reproduce the real failure: physical central-button commands arrive while
+    # an unrelated automatic drive is active. Test the configured sensor filter
+    # and attribute template, not an injected manual block alone.
+    manual_template = yaml.safe_load(open('/config/templates.yaml'))[0]
+    sensor = manual_template['sensor'][0]
+    manual_condition = manual_template['condition'][0]['value_template']
+    block_template = sensor['attributes']['blocked_since']
+    all_covers = {entity for entities in configs.values() for entity in entities}
+    all_covers.update(['cover.og_bad_balkon_links', 'cover.og_bad_balkon_mitte', 'cover.og_bad_balkon_rechts'])
+    for entity_id in all_covers:
+        hass.states.async_set(entity_id, 'closed', {'current_position': 0})
+    hass.states.async_set('input_boolean.hitzeschutz_automatik_fahrbefehl_aktiv', 'on')
+    auto_context = Context(user_id='automatic-script-started-by-user')
+    hass.states.async_set('script.hitzeschutz_jalousie_automatisieren', 'on', context=auto_context)
+
+    def manual_trigger(kind, data, context=None):
+        return SimpleNamespace(id=kind, event=SimpleNamespace(data=data, context=context or Context()))
+
+    touched_text = "{% from 'manual_control.jinja' import manual_cover_entities %}{% set f=manual_cover_entities|as_function %}{{ f(trigger.id, trigger.event.data, trigger.event.context.user_id, trigger.event.context.id) }}"
+    manual_text = "{% from 'manual_control.jinja' import cover_manual_blocked %}{% set f=cover_manual_blocked|as_function %}{{ f(cover) }}"
+    central = manual_trigger('knx', {'destination': '1/2/6', 'source': '1.1.43', 'direction': 'Incoming', 'data': 1})
+    assert render(manual_condition, trigger=central)
+    affected = render(touched_text, trigger=central)
+    assert 'cover.og_bad_panorama_aussen' in affected
+    assert 'cover.og_buro_fenster' in affected
+    assert 'cover.eg_kueche_balkon' not in affected
+    entries = render(block_template, trigger=central, this=SimpleNamespace(attributes={'blocked_since': {}}))
+    if isinstance(entries, str):
+        import json
+        entries = json.loads(entries)
+    hass.states.async_set('sensor.hitzeschutz_manueller_jalousie_block', timestamp.isoformat(), {'blocked_since': entries})
+    assert render(manual_text, cover='cover.og_bad_panorama_aussen')
+    assert not render(manual_text, cover='cover.eg_kueche_balkon')
+    for direction, source in [('Outgoing', '15.15.250'), ('Incoming', '15.15.250'), ('Incoming', '1.1.15')]:
+        own_knx = manual_trigger('knx', {'destination': '1/2/6', 'source': source, 'direction': direction})
+        assert not render(manual_condition, trigger=own_knx)
+    homekit = manual_trigger('homekit', {'entity_id': cover})
+    assert render(manual_condition, trigger=homekit)
+    service = {'domain': 'cover', 'service': 'close_cover', 'service_data': {'entity_id': [cover]}}
+    assert render(manual_condition, trigger=manual_trigger('service', service, Context(user_id='manual-user')))
+    assert not render(manual_condition, trigger=manual_trigger('service', service))
+    assert not render(manual_condition, trigger=manual_trigger('service', service, auto_context))
+    # Each managed blind has the same four-hour manual lock, independent of floor.
+    entries = {entity: timestamp.isoformat() for entity in all_covers}
+    hass.states.async_set('sensor.hitzeschutz_manueller_jalousie_block', timestamp.isoformat(), {'blocked_since': entries})
+    for entity in all_covers:
+        assert render(manual_text, cover=entity)
+        with patch('homeassistant.util.dt.now', return_value=timestamp + timedelta(hours=4)):
+            assert not render(manual_text, cover=entity)
+    # A child lock vetoes the virtual parent; a parent lock vetoes its children.
+    for locked, checked in [('cover.og_bad_balkon_links', 'cover.og_bad_balkon'), ('cover.og_bad_balkon', 'cover.og_bad_balkon_rechts')]:
+        hass.states.async_set('sensor.hitzeschutz_manueller_jalousie_block', timestamp.isoformat(), {'blocked_since': {locked: timestamp.isoformat()}})
+        assert render(manual_text, cover=checked)
+        assert not render(manual_text, cover='cover.og_bad_panorama_aussen')
+    hass.states.async_set('sensor.hitzeschutz_manueller_jalousie_block', 'unavailable')
+    assert render(manual_text, cover=cover)
+
+    # Run the real queued command script against fake services only. A manual
+    # lock acquired after enqueueing must veto the second drive when it starts.
+    hass.states.async_set('sensor.hitzeschutz_manueller_jalousie_block', timestamp.isoformat(), {'blocked_since': {}})
+    hass.states.async_set('binary_sensor.heizen_kuehlen_rueckmeldung', 'off')
+    second_cover = 'cover.kg_zimmer_sinja_jalousie'
+    hass.states.async_set('group.hitzeschutz_automatik_jalousien', 'closed', {'entity_id': [cover, second_cover]})
+    started, release = asyncio.Event(), asyncio.Event()
+    calls = []
+
+    async def fake_cover_service(call):
+        calls.append(call.data['entity_id'])
+        started.set()
+        await release.wait()
+
+    hass.services.async_register('cover', 'open_cover', fake_cover_service)
+    hass.services.async_register('cover', 'close_cover', fake_cover_service)
+    actions = await async_validate_actions_config(hass, cv.SCRIPT_SCHEMA(script['sequence']))
+    command = Script(hass, actions, 'Central cover regression check', 'script', script_mode=script['mode'], max_runs=script['max'])
+    first = asyncio.create_task(command.async_run({'cover_entity': cover, 'action_id': 'open', 'expected_mode': 'off'}, Context()))
+    await asyncio.wait_for(started.wait(), timeout=5)
+    queued = asyncio.create_task(command.async_run({'cover_entity': second_cover, 'action_id': 'open', 'expected_mode': 'off'}, Context()))
+    # Yield until the second run is queued behind the blocked fake service.
+    for _ in range(10):
+        if command.runs == 2:
+            break
+        await asyncio.sleep(0)
+    assert command.runs == 2
+    hass.states.async_set('sensor.hitzeschutz_manueller_jalousie_block', timestamp.isoformat(), {'blocked_since': {second_cover: timestamp.isoformat()}})
+    release.set()
+    first_result, queued_result = await asyncio.wait_for(asyncio.gather(first, queued), timeout=5)
+    assert first_result.service_response['performed']
+    assert not queued_result.service_response['performed']
+    assert 'manueller Override aktiv' in queued_result.service_response['reasons']
+    assert len(calls) == 1
+    hass.states.async_set(cover, 'opening', {'current_position': 1})
+    repeated = await command.async_run({'cover_entity': cover, 'action_id': 'open'}, Context())
+    assert not repeated.service_response['performed'] and len(calls) == 1
+    # The batch path calls the same command per blind and reports its actual
+    # result, including a manual lock, rather than predicting successful drives.
+    notifications = []
+
+    async def dispatch_cover(call):
+        result = await command.async_run(dict(call.data), call.context)
+        return result.service_response
+
+    async def capture_notification(call):
+        notifications.append(call.data['notification_payload'])
+
+    hass.services.async_register('script', 'hitzeschutz_jalousie_automatisieren', dispatch_cover, supports_response=SupportsResponse.OPTIONAL)
+    hass.services.async_register('script', 'hitzeschutz_jalousien_sammel_benachrichtigen', capture_notification)
+    hass.states.async_set(cover, 'closed', {'current_position': 0})
+    scripts = yaml.safe_load(open('/config/scripts.yaml'))
+    batch_actions = await async_validate_actions_config(hass, cv.SCRIPT_SCHEMA(scripts['hitzeschutz_jalousien_checks_pruefen']['sequence']))
+    batch = Script(hass, batch_actions, 'Batch cover regression check', 'script')
+    await batch.async_run({'checks': [{'facade_name': 'Regression', 'action_id': 'open', 'cover_entities': [second_cover, cover]}]}, Context())
+    assert len(calls) == 2
+    assert len(notifications) == 1, notifications
+    details = notifications[0]['details']
+    assert len(details) == 2 and 'manueller Override aktiv' in details[0], details
+    assert 'Oeffnen ausgeloest' in details[1], details
+    # Metadata of all changed entities remains consistent with the definitions.
+    row = by_entity['script.hitzeschutz_jalousie_automatisieren']
+    assert row['name'] == script['alias'] and row['unique_id'] == 'hitzeschutz_jalousie_automatisieren'
+    assert by_entity['sensor.hitzeschutz_manueller_jalousie_block']['unique_id'] == sensor['unique_id']
 
     print('Solar thermal behavior checks passed')
     await hass.async_stop()
