@@ -147,29 +147,9 @@ hitzeschutz_jalousien_sammel_benachrichtigen:
       required: true
       selector:
         object:
+  description: Kompatibilitaetsaufruf ohne Push-Versand; Verschattungs-Statusmeldungen sind abgeschaltet.
   sequence:
-    - variables:
-        payload: "{{ notification_payload | from_json if notification_payload is string else notification_payload }}"
-        summaries: "{{ payload['summaries'] }}"
-        details: "{{ payload['details'] }}"
-        lux: "{{ states('sensor.aussenbereich_wetterstation_helligkeit') | float(0) }}"
-        outside_temp: "{{ states('sensor.aussenbereich_wetterstation_temperatur') | float(0) }}"
-        azimuth: "{{ state_attr('sun.sun', 'azimuth') | float(0) }}"
-        elevation: "{{ state_attr('sun.sun', 'elevation') | float(0) }}"
-    - action: notify.mobile_app_torbens_iphone
-      metadata: {}
-      data:
-        title: "Jalousien: Hitzeschutz"
-        message: >-
-          Hitzeschutz: {{ summaries | join(', ') }}
-          {{ details | join('\n') }}
-
-          Helligkeit: {{ lux | round(0) }} lx, aussen: {{ outside_temp | round(1) }} °C,
-          Sonne: {{ elevation | round(1) }}° / {{ azimuth | round(0) }}°.
-        data:
-          push:
-            sound:
-              name: default
+    - stop: Verschattungs-Statusmeldungen sind abgeschaltet
 
 hitzeschutz_jalousien_checks_pruefen:
   alias: Hitzeschutz Jalousien Checks pruefen
@@ -183,8 +163,6 @@ hitzeschutz_jalousien_checks_pruefen:
     - variables:
         check_items: "{{ checks | from_json if checks is string else checks }}"
         expected_mode: "{{ states('binary_sensor.heizen_kuehlen_rueckmeldung') }}"
-        summaries: []
-        details: []
     - repeat:
         for_each: "{{ check_items }}"
         sequence:
@@ -203,31 +181,6 @@ hitzeschutz_jalousien_checks_pruefen:
                     require_automation_marker: "{{ check.require_automation_marker | default(true) }}"
                     ignore_manual_cooldown: "{{ check.ignore_manual_cooldown | default(false) }}"
                     respect_living_room_tv: "{{ check.respect_living_room_tv | default(true) }}"
-                  response_variable: outcome
-                - if:
-                    - condition: template
-                      value_template: >-
-                        {{ outcome.performed or (
-                          outcome.needs_change
-                          and 'thermische Freigabe fehlt' not in outcome.reasons
-                          and 'Jalousie faehrt bereits' not in outcome.reasons
-                        ) }}
-                  then:
-                    - variables:
-                        label: "{{ check.facade_display_name | default(check.facade_name, true) }}"
-                        summaries: "{{ (summaries + [label]) | unique | list }}"
-                        details: >-
-                          {% set name = state_attr(repeat.item, 'friendly_name') | default(repeat.item, true) %}
-                          {% set action_text = 'Schliessen' if check.action_id == 'close' else 'Oeffnen' %}
-                          {% set result_text = 'ausgeloest' if outcome.performed else 'nicht ausgeloest: ' ~ (outcome.reasons | join(', ')) %}
-                          {{ details + ['- ' ~ label ~ ': ' ~ name ~ ' ' ~ action_text ~ ' ' ~ result_text] }}
-    - if:
-        - condition: template
-          value_template: "{{ details | count > 0 }}"
-      then:
-        - action: script.hitzeschutz_jalousien_sammel_benachrichtigen
-          data:
-            notification_payload: "{{ {'summaries': summaries, 'details': details} }}"
 
 hitzeschutz_jalousien_fassadenstatus_pruefen:
   alias: Hitzeschutz Jalousien Fassadenstatus pruefen

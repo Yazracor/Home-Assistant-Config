@@ -365,8 +365,8 @@ async def main():
     hass.states.async_set(cover, 'opening', {'current_position': 1})
     repeated = await command.async_run({'cover_entity': cover, 'action_id': 'open'}, Context())
     assert not repeated.service_response['performed'] and len(calls) == 1
-    # The batch path calls the same command per blind and reports its actual
-    # result, including a manual lock, rather than predicting successful drives.
+    # The batch path retains the central per-blind authorization, but sends
+    # no status notifications for successful drives or expected manual locks.
     notifications = []
 
     async def dispatch_cover(call):
@@ -384,10 +384,13 @@ async def main():
     batch = Script(hass, batch_actions, 'Batch cover regression check', 'script')
     await batch.async_run({'checks': [{'facade_name': 'Regression', 'action_id': 'open', 'cover_entities': [second_cover, cover]}]}, Context())
     assert len(calls) == 2
-    assert len(notifications) == 1, notifications
-    details = notifications[0]['details']
-    assert len(details) == 2 and 'manueller Override aktiv' in details[0], details
-    assert 'Oeffnen ausgeloest' in details[1], details
+    assert notifications == [], notifications
+    # Existing callers of the compatibility script must also remain silent.
+    hass.services.async_register('notify', 'mobile_app_torbens_iphone', capture_notification)
+    silent_actions = await async_validate_actions_config(hass, cv.SCRIPT_SCHEMA(scripts['hitzeschutz_jalousien_sammel_benachrichtigen']['sequence']))
+    silent = Script(hass, silent_actions, 'Silent cover notification compatibility check', 'script')
+    await silent.async_run({'notification_payload': {'summaries': ['Regression'], 'details': ['Oeffnen ausgeloest']}}, Context())
+    assert notifications == [], notifications
     # Metadata of all changed entities remains consistent with the definitions.
     row = by_entity['script.hitzeschutz_jalousie_automatisieren']
     assert row['name'] == script['alias'] and row['unique_id'] == 'hitzeschutz_jalousie_automatisieren'
