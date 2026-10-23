@@ -1,4 +1,19 @@
 command_line:
+  # Internal monitoring helpers intentionally have no room assignment.
+  - sensor:
+      name: Home Assistant Recorder probe
+      unique_id: home_assistant_recorder_probe
+      command: python3 /config/tools/recorder_health.py
+      command_timeout: 10
+      value_template: "{{ value_json.ok }}"
+      json_attributes:
+        - checked_at
+        - heartbeat_age_s
+        - query_ms
+        - database_mib
+        - wal_mib
+        - error
+      scan_interval: 60
   - sensor:
       name: Home Assistant config update pending
       unique_id: home_assistant_config_update_pending
@@ -30,3 +45,43 @@ zabbix:
     entities:
       - sensor.home_assistant_config_update_pending
       - sensor.home_assistant_area_update_running
+      - sensor.home_assistant_recorder_probe
+      - sensor.home_assistant_recorder_heartbeat_age
+      - sensor.home_assistant_recorder_query_time
+      - sensor.home_assistant_recorder_database_size
+      - sensor.home_assistant_recorder_wal_size
+
+template:
+  - sensor:
+      - name: Home Assistant Recorder heartbeat age
+        unique_id: home_assistant_recorder_heartbeat_age
+        default_entity_id: sensor.home_assistant_recorder_heartbeat_age
+        unit_of_measurement: s
+        device_class: duration
+        state_class: measurement
+        availability: "{{ states('sensor.home_assistant_recorder_probe') == '1' }}"
+        state: "{{ state_attr('sensor.home_assistant_recorder_probe', 'heartbeat_age_s') }}"
+      - name: Home Assistant Recorder query time
+        unique_id: home_assistant_recorder_query_time
+        default_entity_id: sensor.home_assistant_recorder_query_time
+        unit_of_measurement: ms
+        device_class: duration
+        state_class: measurement
+        availability: "{{ states('sensor.home_assistant_recorder_probe') == '1' }}"
+        state: "{{ state_attr('sensor.home_assistant_recorder_probe', 'query_ms') }}"
+      - name: Home Assistant Recorder database size
+        unique_id: home_assistant_recorder_database_size
+        default_entity_id: sensor.home_assistant_recorder_database_size
+        unit_of_measurement: MiB
+        device_class: data_size
+        state_class: measurement
+        availability: "{{ states('sensor.home_assistant_recorder_probe') == '1' }}"
+        state: "{{ state_attr('sensor.home_assistant_recorder_probe', 'database_mib') }}"
+      - name: Home Assistant Recorder WAL size
+        unique_id: home_assistant_recorder_wal_size
+        default_entity_id: sensor.home_assistant_recorder_wal_size
+        unit_of_measurement: MiB
+        device_class: data_size
+        state_class: measurement
+        availability: "{{ states('sensor.home_assistant_recorder_probe') == '1' }}"
+        state: "{{ state_attr('sensor.home_assistant_recorder_probe', 'wal_mib') }}"
