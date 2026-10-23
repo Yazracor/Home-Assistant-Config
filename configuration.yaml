@@ -2,6 +2,9 @@
 # Loads default set of integrations. Do not remove.
 default_config:
 
+recorder:
+  purge_keep_days: 365
+
 homeassistant:
   packages: !include_dir_named virtual
 
