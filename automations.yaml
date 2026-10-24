@@ -1023,6 +1023,29 @@
         temperature: 22
         hvac_mode: cool
   mode: single
+- id: garage_ohne_praesenz_heizung_und_licht_aus
+  alias: Garage ohne Präsenz Heizung und Licht aus
+  description: Schaltet nach fünf Minuten ohne Präsenz die Heizung sowie Garagenlicht und Werkbanklicht aus.
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.garage_prasenz
+    to: 'off'
+    for:
+      minutes: 5
+  conditions: []
+  actions:
+  - action: switch.turn_off
+    continue_on_error: true
+    target:
+      entity_id: switch.garage_heizung
+  - action: light.turn_off
+    continue_on_error: true
+    target:
+      entity_id: light.aussenbereich_garage_licht
+  - action: switch.turn_off
+    target:
+      entity_id: switch.garage_licht_werkbank
+  mode: single
 - id: '1781723252042'
   alias: Garagenlicht Zigbee
   description: ''
