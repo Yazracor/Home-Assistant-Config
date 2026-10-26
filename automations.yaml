@@ -1023,6 +1023,28 @@
         temperature: 22
         hvac_mode: cool
   mode: single
+- id: garage_bei_praesenz_licht_und_steckdosen_ein
+  alias: Garage bei Präsenz Licht und Steckdosen ein
+  description: Schaltet beim Wechsel von keiner zu erkannter Präsenz das Garagenlicht sowie die Steckdosen für Werkbanklicht und Heizung ein.
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.garage_prasenz
+    from: 'off'
+    to: 'on'
+  conditions: []
+  actions:
+  - action: light.turn_on
+    continue_on_error: true
+    target:
+      entity_id: light.aussenbereich_garage_licht
+  - action: switch.turn_on
+    continue_on_error: true
+    target:
+      entity_id: switch.garage_licht_werkbank
+  - action: switch.turn_on
+    target:
+      entity_id: switch.garage_heizung
+  mode: single
 - id: garage_ohne_praesenz_heizung_und_licht_aus
   alias: Garage ohne Präsenz Heizung und Licht aus
   description: Schaltet nach fünf Minuten ohne Präsenz die Heizung sowie Garagenlicht und Werkbanklicht aus.
