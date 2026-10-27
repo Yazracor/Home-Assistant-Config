@@ -1,0 +1,68 @@
+{# Observe actual high-humidity intervals, never socket last_changed timestamps.
+   Sample once per minute; keep one extra minute to cover each rolling window.
+   Restart/reload, missing values and sampling gaps invalidate elapsed evidence.
+   General warning: >60% continuously for 3h and <3 percentage points below
+   the highest reading in the last 3h. A successful drop from a peak counts.
+   Boost warning: both devices and >60% continuously for 1h, rising >=1 point
+   over the last hour. Each warning is latched independently by its automation.
+   Recovery matches boost shutdown: <=58% continuously for 45 minutes.
+#}
+{% macro drying_snapshot(previous, reset, timestamp, humidity, ttk, ttr, returns) %}
+  {% set previous = previous if previous is mapping else {} %}
+  {% set last = previous.get('updated_at', 0) | float(0) %}
+  {% if reset or timestamp < last or timestamp - last > 150 %}
+    {% set previous = {} %}
+  {% endif %}
+  {% set valid = is_number(humidity) and 0 <= humidity | float <= 100
+    and ttk in ['on', 'off'] and ttr in ['on', 'off'] %}
+  {% set h = humidity | float(0) %}
+  {% set high = valid and h > 60 and (ttk == 'on' or ttr == 'on') %}
+  {% set boost = high and ttk == 'on' and ttr == 'on' %}
+  {% set low = valid and h <= 58 %}
+  {% set high_since = (previous.get('high_since') or timestamp) if high else none %}
+  {% set boost_since = (previous.get('boost_since') or timestamp) if boost else none %}
+  {% set low_since = (previous.get('low_since') or timestamp) if low else none %}
+  {% set phase_start = previous.get('phase_start_humidity', h) if high and previous.get('high_since') else h %}
+  {% set boost_start = previous.get('boost_start_humidity', h) if boost and previous.get('boost_since') else h %}
+  {% set ns = namespace(samples=[], boost_samples=[]) %}
+  {% if high %}
+    {% for point in previous.get('samples', []) if point[0] >= timestamp - 10860 %}
+      {% set ns.samples = ns.samples + [point] %}
+    {% endfor %}
+    {% if ns.samples | count == 0 or timestamp - ns.samples[-1][0] >= 59 %}
+      {% set ns.samples = ns.samples + [[timestamp, h]] %}
+    {% endif %}
+  {% endif %}
+  {% if boost %}
+    {% for point in previous.get('boost_samples', []) if point[0] >= timestamp - 3660 %}
+      {% set ns.boost_samples = ns.boost_samples + [point] %}
+    {% endfor %}
+    {% if ns.boost_samples | count == 0 or timestamp - ns.boost_samples[-1][0] >= 59 %}
+      {% set ns.boost_samples = ns.boost_samples + [[timestamp, h]] %}
+    {% endif %}
+  {% endif %}
+  {% set general_ready = high and timestamp - high_since >= 10800
+    and ns.samples | count > 1 and ns.samples[0][0] <= timestamp - 10800 %}
+  {% set boost_ready = boost and timestamp - boost_since >= 3600
+    and ns.boost_samples | count > 1 and ns.boost_samples[0][0] <= timestamp - 3600 %}
+  {% set window = namespace(values=[h], boost_reference=none) %}
+  {% for point in ns.samples if point[0] >= timestamp - 10800 %}
+    {% set window.values = window.values + [point[1]] %}
+  {% endfor %}
+  {% for point in ns.boost_samples if point[0] <= timestamp - 3600 %}
+    {% set window.boost_reference = point[1] %}
+  {% endfor %}
+  {% set reference = window.values | max if high else none %}
+  {% set boost_reference = window.boost_reference %}
+  {% do returns(dict(
+    updated_at=timestamp, valid=valid, humidity=h if valid else none,
+    high_since=high_since, boost_since=boost_since, low_since=low_since,
+    phase_start_humidity=phase_start if high else none,
+    boost_start_humidity=boost_start if boost else none,
+    samples=ns.samples, boost_samples=ns.boost_samples,
+    reference_humidity=reference, boost_reference_humidity=boost_reference,
+    drying_warning=general_ready and (reference - h) | round(3) < 3,
+    boost_warning=boost_ready and (h - boost_reference) | round(3) >= 1,
+    recovered=low and timestamp - low_since >= 2700
+  )) %}
+{% endmacro %}

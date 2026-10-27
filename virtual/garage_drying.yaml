@@ -1,6 +1,16 @@
+# The rolling buffers belong to the internal observer, not the yearly Recorder
+# history. Raw humidity/temperature, warning flags and notifications stay recorded.
+recorder:
+  exclude:
+    entities:
+      - sensor.garage_entfeuchtung_verlauf
+
 input_boolean:
   garage_entfeuchtung_warnung_aktiv:
     name: "Garage Entfeuchtung Warnung aktiv"
+    icon: mdi:alert-circle-outline
+  garage_entfeuchtung_boost_warnung_aktiv:
+    name: "Garage Entfeuchtung Boost Warnung aktiv"
     icon: mdi:alert-circle-outline
 
 input_number:
@@ -19,6 +29,57 @@ input_number:
     unit_of_measurement: "%"
     icon: mdi:water-percent
 template:
+  - triggers:
+      - trigger: time_pattern
+        minutes: "*"
+        id: sample
+      - trigger: state
+        entity_id:
+          - switch.entfeuchter
+          - switch.ttr_57_entfeuchter
+          - binary_sensor.garage_feuchte_ueber_60
+          - binary_sensor.garage_feuchte_unter_58
+        to: null
+        id: source
+      - trigger: homeassistant
+        event: start
+        id: reset
+      - trigger: event
+        event_type: event_template_reloaded
+        id: reset
+    actions:
+      - variables:
+          drying: >-
+            {% from 'garage_drying.jinja' import drying_snapshot %}
+            {{ (drying_snapshot | as_function)(
+              states.sensor.garage_entfeuchtung_verlauf.attributes | default({}, true),
+              trigger.id == 'reset', as_timestamp(now()),
+              states('sensor.wifi_smart_switch_humidity'),
+              states('switch.entfeuchter'), states('switch.ttr_57_entfeuchter')) }}
+    sensor:
+      - name: "Garage Entfeuchtung Verlauf"
+        unique_id: garage_entfeuchtung_verlauf
+        default_entity_id: sensor.garage_entfeuchtung_verlauf
+        device_class: timestamp
+        icon: mdi:chart-timeline-variant
+        state: "{{ now().isoformat() }}"
+        attributes:
+          updated_at: "{{ drying.updated_at }}"
+          valid: "{{ drying.valid }}"
+          humidity: "{{ drying.humidity }}"
+          high_since: "{{ drying.high_since }}"
+          boost_since: "{{ drying.boost_since }}"
+          low_since: "{{ drying.low_since }}"
+          phase_start_humidity: "{{ drying.phase_start_humidity }}"
+          boost_start_humidity: "{{ drying.boost_start_humidity }}"
+          samples: "{{ drying.samples }}"
+          boost_samples: "{{ drying.boost_samples }}"
+          reference_humidity: "{{ drying.reference_humidity }}"
+          boost_reference_humidity: "{{ drying.boost_reference_humidity }}"
+          drying_warning: "{{ drying.drying_warning }}"
+          boost_warning: "{{ drying.boost_warning }}"
+          recovered: "{{ drying.recovered }}"
+
   - sensor:
       - name: "Sonoff SNZB-02WD Temperatur Eingangsbereich"
         unique_id: sonoff_snzb_02wd_temperature_entrance
@@ -102,6 +163,7 @@ template:
       - name: "Garage Feuchte ueber 60"
         unique_id: garage_feuchte_ueber_60
         device_class: moisture
+        availability: "{{ is_number(states('sensor.wifi_smart_switch_humidity')) }}"
         state: "{{ states('sensor.wifi_smart_switch_humidity') | float(0) > 60 }}"
       # Keep unique_id stable for existing HomeKit/entity-registry mappings.
       - name: "Garage Feuchte ueber 63"
@@ -112,10 +174,12 @@ template:
         unique_id: garage_feuchte_unter_55
         device_class: moisture
         state: "{{ states('sensor.wifi_smart_switch_humidity') | float(999) < 55 }}"
-      - name: "Garage Feuchte unter 58"
+      - name: "Garage Feuchte bis 58"
         unique_id: garage_feuchte_unter_58
+        default_entity_id: binary_sensor.garage_feuchte_unter_58
         device_class: moisture
-        state: "{{ states('sensor.wifi_smart_switch_humidity') | float(999) < 58 }}"
+        availability: "{{ is_number(states('sensor.wifi_smart_switch_humidity')) }}"
+        state: "{{ states('sensor.wifi_smart_switch_humidity') | float(999) <= 58 }}"
       - name: "Garage Feuchte bis 59"
         unique_id: garage_feuchte_unter_60
         device_class: moisture
