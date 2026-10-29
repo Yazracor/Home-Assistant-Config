@@ -849,7 +849,7 @@
   max: 10
 - id: solar_heat_protection_blind_notification_periodic
   alias: Hitzeschutz Jalousien Nachcheck Schließen
-  description: Prüft bei Tageslicht stündlich geöffnete, markierte Jalousien an aktiven Hitzeschutz-Fassaden und schließt sie ohne aktiven manuellen Override automatisch.
+  description: Wiederholt bei Tageslicht stündlich Schliessbefehle für markierte Jalousien an aktiven Hitzeschutz-Fassaden auch bei gemeldeter geschlossener Endlage; thermische Freigabe und manuelle Sperren bleiben wirksam.
   triggers:
   - trigger: time_pattern
     minutes: "0"
@@ -864,6 +864,7 @@
       action_id: close
       allow_automation: true
       min_facade_state_seconds: 600
+      recheck_closed: true
   mode: single
 - id: solar_heat_protection_blind_open_notification_hourly
   alias: Hitzeschutz Jalousien Nachcheck Öffnen

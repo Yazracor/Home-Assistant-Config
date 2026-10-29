@@ -92,6 +92,17 @@ Die Planung verwendet dieselbe Funktion. Im Warteschlangen-Script erfolgt die
 Pruefung erst bei Ausfuehrung, damit zwischenzeitliche manuelle Bedienung auch
 bereits eingeplante Fahrten verhindert.
 
+Der stuendliche Schliess-Nachcheck setzt `recheck_closed: true`: An weiterhin
+aktiven Fassaden wird der Schliessbefehl auch bei gemeldeter geschlossener
+Endlage wiederholt. Anlass waren am 29.10.2026 physisch offene Aussenrolllaeden
+(Schlafzimmer Panorama und Bad Balkon), die HA und KNX bereits als geschlossen
+meldeten und die auf einen erneuten Schliessbefehl herunterfuhren. Die Ursache
+der abweichenden Aktor-Rueckmeldung ist damit noch nicht geklaert. Die Wiederholung
+umgeht ausschliesslich die Positionspruefung fuer das Schliessen; Bewegung,
+Verfuegbarkeit, manuelle Sperren, Automatik-, TV- und Thermikfreigaben bleiben
+wirksam. Minuetliche Regelung und Oeffnungsbefehle wiederholen keine bereits
+erreichten Ziele. Eine Aktor-Rueckmeldung ersetzt keine physische Kontrolle.
+
 `cover_manual_blocked` in `custom_templates/manual_control.jinja` liefert die
 zentrale vierstuendige manuelle Sperre pro Jalousie. Fehlender Sperrstatus
 verhindert normale Automatikfahrten. Manuelle eingehende KNX-Telegramme,

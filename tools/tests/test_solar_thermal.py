@@ -391,6 +391,83 @@ async def main():
     silent = Script(hass, silent_actions, 'Silent cover notification compatibility check', 'script')
     await silent.async_run({'notification_payload': {'summaries': ['Regression'], 'details': ['Oeffnen ausgeloest']}}, Context())
     assert notifications == [], notifications
+
+    # Physical tests found raised shutters despite HA/KNX reporting 0 percent.
+    # The hourly close recheck must traverse the real facade/batch/command path,
+    # while ordinary minute ticks and every other guard retain their behavior.
+    baseline = len(calls)
+    hass.states.async_set('sensor.hitzeschutz_manueller_jalousie_block', timestamp.isoformat(), {'blocked_since': {}})
+    hass.states.async_set('binary_sensor.heizen_kuehlen_rueckmeldung', 'on')
+    hass.states.async_set('sensor.hitzeschutz_thermik', timestamp.isoformat(), {'decisions': {cover: {'action': 'close', 'ready': True}}})
+    hass.states.async_set(cover, 'closed', {'current_position': 0})
+    request = {'cover_entity': cover, 'action_id': 'close', 'expected_mode': 'on'}
+    ordinary = await command.async_run(request, Context())
+    assert not ordinary.service_response['performed'] and len(calls) == baseline
+    retry_request = dict(request, recheck_closed=True)
+    retried = await command.async_run(retry_request, Context())
+    assert retried.service_response['performed'] and len(calls) == baseline + 1
+
+    async def rejected_retry(reason):
+        before = len(calls)
+        result = await command.async_run(retry_request, Context())
+        assert not result.service_response['performed'], result.service_response
+        assert reason in result.service_response['reasons'], result.service_response
+        assert len(calls) == before
+
+    for moving in ['opening', 'closing']:
+        hass.states.async_set(cover, moving, {'current_position': 0})
+        await rejected_retry('Jalousie faehrt bereits')
+    hass.states.async_set(cover, 'unavailable')
+    await rejected_retry('Jalousie nicht verfuegbar')
+    hass.states.async_set(cover, 'closed', {'current_position': 0})
+    hass.states.async_set('sensor.hitzeschutz_manueller_jalousie_block', timestamp.isoformat(), {'blocked_since': {cover: timestamp.isoformat()}})
+    await rejected_retry('manueller Override aktiv')
+    hass.states.async_set('sensor.hitzeschutz_manueller_jalousie_block', timestamp.isoformat(), {'blocked_since': {}})
+    hass.states.async_set('switch.hitzeschutz_og_automatik', 'off')
+    await rejected_retry('Automatik aus')
+    hass.states.async_set('switch.hitzeschutz_og_automatik', 'on')
+    hass.states.async_set('group.hitzeschutz_automatik_jalousien', 'closed', {'entity_id': []})
+    await rejected_retry('nicht im Automatik-Tag')
+    hass.states.async_set('group.hitzeschutz_automatik_jalousien', 'closed', {'entity_id': [cover]})
+    hass.states.async_set('media_player.wohnzimmer_samsung_fernseher', 'on')
+    await rejected_retry('Fernseher im Wohnzimmer an')
+    hass.states.async_set('media_player.wohnzimmer_samsung_fernseher', 'off')
+    hass.states.async_set('sensor.hitzeschutz_thermik', timestamp.isoformat(), {'decisions': {cover: {'action': 'open', 'ready': True}}})
+    await rejected_retry('thermische Freigabe fehlt')
+    hass.states.async_set('sensor.hitzeschutz_thermik', timestamp.isoformat(), {'decisions': {cover: {'action': 'close', 'ready': False}}})
+    await rejected_retry('thermische Freigabe fehlt')
+    hass.states.async_set('sensor.hitzeschutz_thermik', timestamp.isoformat(), {'decisions': {cover: {'action': 'close', 'ready': True}}})
+    hass.states.async_set('binary_sensor.heizen_kuehlen_rueckmeldung', 'off')
+    await rejected_retry('Heiz-/Kuehlmodus geaendert')
+    hass.states.async_set('binary_sensor.heizen_kuehlen_rueckmeldung', 'on')
+    hass.states.async_set(cover, 'open', {'current_position': 100})
+    opening = await command.async_run(dict(retry_request, action_id='open'), Context())
+    assert not opening.service_response['performed']
+    assert 'Zielposition bereits erreicht' in opening.service_response['reasons']
+    hass.states.async_set(cover, 'closed', {'current_position': 0})
+
+    async def dispatch_batch(call):
+        await batch.async_run(dict(call.data), call.context)
+
+    hass.services.async_register('script', 'hitzeschutz_jalousien_checks_pruefen', dispatch_batch)
+    facades = render("{% from 'heat_protection.jinja' import facade_configs %}{% set f=facade_configs|as_function %}{{ f() }}")
+    for facade in facades.values():
+        hass.states.async_set(facade['sensor'], 'off')
+    hass.states.async_set('binary_sensor.hitzeschutz_fassade_sud', 'on')
+    facade_actions = await async_validate_actions_config(hass, cv.SCRIPT_SCHEMA(scripts['hitzeschutz_jalousien_fassadenstatus_pruefen']['sequence']))
+    facade_script = Script(hass, facade_actions, 'Hourly close facade regression check', 'script')
+    automations = yaml.safe_load(open('/config/automations.yaml'))
+    hourly = next(a for a in automations if a['id'] == 'solar_heat_protection_blind_notification_periodic')
+    assert hourly['triggers'] == [{'trigger': 'time_pattern', 'minutes': '0'}]
+    hourly_data = hourly['actions'][0]['data']
+    assert hourly_data['recheck_closed'] is True and hourly_data['min_facade_state_seconds'] == 600
+    # Skip facade debounce in this isolated call; its timestamp was just seeded.
+    before = len(calls)
+    await facade_script.async_run(dict(hourly_data, min_facade_state_seconds=0), Context())
+    assert len(calls) == before + 1
+    assert calls[-1] == [cover]
+    hourly_open = next(a for a in automations if a['id'] == 'solar_heat_protection_blind_open_notification_hourly')
+    assert 'recheck_closed' not in hourly_open['actions'][0]['data']
     # Metadata of all changed entities remains consistent with the definitions.
     row = by_entity['script.hitzeschutz_jalousie_automatisieren']
     assert row['name'] == script['alias'] and row['unique_id'] == 'hitzeschutz_jalousie_automatisieren'

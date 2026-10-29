@@ -27,7 +27,8 @@ hitzeschutz_jalousie_automatisieren:
             require_automation_marker | default(true),
             ignore_manual_cooldown | default(false),
             respect_living_room_tv | default(true),
-            expected_mode | default(none)
+            expected_mode | default(none),
+            recheck_closed | default(false)
           ) %}
           {{ dict(decision, performed=false) }}
     - if:
@@ -181,6 +182,7 @@ hitzeschutz_jalousien_checks_pruefen:
                     require_automation_marker: "{{ check.require_automation_marker | default(true) }}"
                     ignore_manual_cooldown: "{{ check.ignore_manual_cooldown | default(false) }}"
                     respect_living_room_tv: "{{ check.respect_living_room_tv | default(true) }}"
+                    recheck_closed: "{{ check.recheck_closed | default(false) }}"
 
 hitzeschutz_jalousien_fassadenstatus_pruefen:
   alias: Hitzeschutz Jalousien Fassadenstatus pruefen
@@ -238,6 +240,11 @@ hitzeschutz_jalousien_fassadenstatus_pruefen:
       default: false
       selector:
         boolean:
+    recheck_closed:
+      description: Wiederholt nur Schliessbefehle trotz gemeldeter Endlage; alle anderen Freigaben bleiben wirksam.
+      default: false
+      selector:
+        boolean:
   sequence:
     - variables:
         checks: >-
@@ -262,7 +269,8 @@ hitzeschutz_jalousien_fassadenstatus_pruefen:
                 'respect_automation_switch': respect_automation_switch | default(true),
                 'require_automation_marker': require_automation_marker | default(true),
                 'ignore_manual_cooldown': ignore_manual_cooldown | default(false),
-                'respect_living_room_tv': respect_living_room_tv | default(true)
+                'respect_living_room_tv': respect_living_room_tv | default(true),
+                'recheck_closed': recheck_closed | default(false)
               }] %}
             {% endif %}
           {% endfor %}

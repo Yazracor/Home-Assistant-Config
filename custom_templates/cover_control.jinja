@@ -1,5 +1,5 @@
 {# Gemeinsame Freigabe fuer Planung, Benachrichtigung und den letzten Check vor der Fahrt. #}
-{% macro cover_automation_status(cover, action, allow_automation=true, respect_switch=true, require_marker=true, ignore_manual=false, respect_tv=true, expected_mode=none, returns=none) %}
+{% macro cover_automation_status(cover, action, allow_automation=true, respect_switch=true, require_marker=true, ignore_manual=false, respect_tv=true, expected_mode=none, recheck_closed=false, returns=none) %}
   {% from 'manual_control.jinja' import cover_manual_blocked %}
   {% from 'solar_thermal.jinja' import cover_action_allowed %}
   {% set manual_blocked = cover_manual_blocked | as_function %}
@@ -10,16 +10,19 @@
   {% set marked = expand('group.hitzeschutz_automatik_jalousien') | map(attribute='entity_id') | list %}
   {% set tv_active = states('media_player.wohnzimmer_samsung_fernseher') not in ['off', 'unknown', 'unavailable'] %}
   {% set ns = namespace(reasons=[]) %}
+  {# Endlagen koennen trotz offenem Behang als geschlossen gemeldet werden.
+     Nur der stuendliche Schliess-Nachcheck darf diese Positionssperre umgehen. #}
+  {% set close_recheck = recheck_closed and action == 'close' %}
   {% if action not in ['open', 'close'] %}
     {% set ns.reasons = ns.reasons + ['unbekannte Aktion'] %}
   {% endif %}
   {% if cover_state in ['unknown', 'unavailable'] %}
     {% set ns.reasons = ns.reasons + ['Jalousie nicht verfuegbar'] %}
   {% endif %}
-  {% if not needs_change %}
+  {% if not needs_change and not close_recheck %}
     {% set ns.reasons = ns.reasons + ['Zielposition bereits erreicht'] %}
   {% endif %}
-  {% if (action == 'open' and cover_state == 'opening') or (action == 'close' and cover_state == 'closing') %}
+  {% if (close_recheck and cover_state in ['opening', 'closing']) or (action == 'open' and cover_state == 'opening') or (action == 'close' and cover_state == 'closing') %}
     {% set ns.reasons = ns.reasons + ['Jalousie faehrt bereits'] %}
   {% endif %}
   {% if not allow_automation or (respect_switch and not is_state('switch.hitzeschutz_og_automatik', 'on')) %}
