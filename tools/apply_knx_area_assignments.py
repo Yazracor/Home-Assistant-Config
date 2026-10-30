@@ -345,8 +345,10 @@ def apply_entity_areas(storage: Path, assignments_csv: Path, dry_run: bool) -> t
             e['name'] = desired_name
             e['modified_at'] = t
             name_changed += 1
-        if e.get('area_id') != a['area_id']:
-            e['area_id'] = a['area_id']
+        # Main device entities can inherit their device's area (HA 2026.10+).
+        entity_area = None if note_value(a, 'entity_area') == 'none' else a['area_id']
+        if e.get('area_id') != entity_area:
+            e['area_id'] = entity_area
             e['modified_at'] = t
             changed += 1
         hidden_by = desired_hidden_by(a)
