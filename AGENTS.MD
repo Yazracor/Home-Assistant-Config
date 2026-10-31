@@ -8,6 +8,20 @@ and pushing them to `origin/main` at that URL without asking for destination
 confirmation again. Verify that `origin` still points to this URL before pushing.
 This authorization does not include unrelated changes or force pushes.
 
+Before committing and pushing, update and validate the applicable CSV files
+(especially `area_assignments.csv`) to reflect the intended configuration and
+registry changes, and include those CSV changes in the same commit. The
+automatic server workflow applies the committed CSV contents; it does not
+prepare or correct CSV entries for agents.
+
+Configuration changes pushed to `origin/main` are automatically pulled and
+applied on the HA server by the existing server-side workflow, including CSV
+assignments. Commit and push are the complete publication process; no additional
+manual deployment, copying, workflow invocation, or takeover step is required.
+Do not tell the user that pushed changes still need to be manually applied.
+Distinguish a successful push from independently verified runtime behavior;
+missing runtime verification does not mean an additional deployment is needed.
+
 Always validate using:
 
 ```bash
@@ -21,8 +35,9 @@ unique ID and preserve existing entity IDs and unique IDs unless the user
 explicitly requests a change. Follow the existing CSV conventions. Agents must
 maintain and validate the CSV files locally, not run
 `tools/apply_knx_area_assignments.py` locally or edit `.storage` directly.
-The CSV assignments are applied on the HA server by the server-side workflow;
-editing the CSV does not authorize running that workflow or deploying changes.
+The CSV assignments are applied automatically on the HA server after push by
+the server-side workflow described above. Editing the CSV alone does not
+authorize a push or manually running that workflow.
 Internal helpers that do not need an assignment
 may be omitted. Before considering the change complete, verify that all added
 or changed entities have been checked and that applicable CSV entries are
