@@ -1,0 +1,182 @@
+{# Reine Darstellung vorhandener Entitäten; keine eigenen Steuerentscheidungen. #}
+{% macro house_notes() -%}
+  {%- from 'manual_control.jinja' import cover_manual_blocked -%}
+  {%- set manual_blocked = cover_manual_blocked | as_function -%}
+  {%- set ns = namespace(lines=[], blocked=[]) -%}
+  {%- set door = states('cover.aussenbereich_garage_garagentor') -%}
+  {%- if door in ['open', 'opening'] -%}
+    {%- set rain = ' bei Regen' if is_state('binary_sensor.aussenbereich_wetterstation_niederschlag', 'on') else '' -%}
+    {%- set ns.lines = ns.lines + ['- [**Garage offen' ~ rain ~ '**](/mein-zuhause/garage)'] -%}
+  {%- elif door in ['unknown', 'unavailable'] -%}
+    {%- set ns.lines = ns.lines + ['- [Garagentor: Status nicht verfügbar](/mein-zuhause/garage)'] -%}
+  {%- endif -%}
+  {%- for entity, label in {
+    'input_boolean.garage_entfeuchtung_warnung_aktiv': 'Entfeuchtungswarnung aktiv',
+    'input_boolean.garage_entfeuchtung_boost_warnung_aktiv': 'Boost-Warnung aktiv'
+  }.items() -%}
+    {%- if is_state(entity, 'on') -%}
+      {%- set ns.lines = ns.lines + ['- [**Garage: ' ~ label ~ '**](/mein-zuhause/garage)'] -%}
+    {%- elif states(entity) in ['unknown', 'unavailable'] -%}
+      {%- set ns.lines = ns.lines + ['- [Garage: Warnstatus nicht verfügbar](/mein-zuhause/garage)'] -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- set humidity = states('sensor.wifi_smart_switch_humidity') | float(none) -%}
+  {%- if humidity is number and humidity > 65 -%}
+    {%- set ns.lines = ns.lines + ['- [Garage feucht: ' ~ (humidity | round(1)) ~ ' %](/mein-zuhause/garage)'] -%}
+  {%- elif humidity is not number -%}
+    {%- set ns.lines = ns.lines + ['- [Garagenfeuchte nicht verfügbar](/mein-zuhause/garage)'] -%}
+  {%- endif -%}
+  {%- set outdoor_lights = states.light | selectattr('entity_id', 'match', '^light[.]aussenbereich_') | selectattr('state', 'eq', 'on') | list -%}
+  {%- if outdoor_lights | count > 0 -%}
+    {%- set ns.lines = ns.lines + ['- [Außenlicht noch an: ' ~ (outdoor_lights | map(attribute='name') | join(', ')) ~ '](/mein-zuhause/raeume)'] -%}
+  {%- endif -%}
+  {%- if not is_state('switch.hitzeschutz_og_automatik', 'on') -%}
+    {%- set label = 'Verschattungsautomatik ausgeschaltet' if is_state('switch.hitzeschutz_og_automatik', 'off') else 'Verschattungsautomatik: Status nicht verfügbar' -%}
+    {%- set ns.lines = ns.lines + ['- [' ~ label ~ '](/mein-zuhause/sonne)'] -%}
+  {%- endif -%}
+  {%- if states('sensor.hitzeschutz_manueller_jalousie_block') in ['unknown', 'unavailable'] -%}
+    {%- set ns.lines = ns.lines + ['- [Manuelle Jalousiesperren: Status nicht verfügbar](/mein-zuhause/sonne)'] -%}
+  {%- else -%}
+    {%- for cover in expand('group.hitzeschutz_automatik_jalousien') if manual_blocked(cover.entity_id) -%}
+      {%- set ns.blocked = ns.blocked + [cover.name] -%}
+    {%- endfor -%}
+    {%- if ns.blocked -%}
+      {%- set ns.lines = ns.lines + ['- [Manuell gesperrt: ' ~ (ns.blocked | join(', ')) ~ '](/mein-zuhause/sonne)'] -%}
+    {%- endif -%}
+  {%- endif -%}
+  {{ ns.lines | unique | join('\n\n') if ns.lines else 'Aktuell keine Hinweise zu Garage, Außenlicht oder Verschattung.' }}
+{%- endmacro %}
+
+{% macro garage_air() -%}
+  {%- set inside = states('sensor.wifi_smart_switch_humidity') | float(none) -%}
+  {%- set outside = states('sensor.garage_aussenluft_feuchte_bei_garagentemperatur') | float(none) -%}
+  {%- if inside is number and outside is number -%}
+    {{ '**Außenluft bei Garagentemperatur: ' ~ (outside | round(1)) ~ ' %**\n\n' }}
+    {%- if outside < inside -%}
+      Außenluft enthält im Vergleich weniger Feuchtigkeit und hat Trocknungspotenzial.
+    {%- elif outside > inside -%}
+      Außenluft enthält im Vergleich mehr Feuchtigkeit.
+    {%- else -%}
+      Innen- und Außenluft liegen im Feuchtevergleich gleichauf.
+    {%- endif -%}
+  {%- else -%}
+    Feuchtevergleich nicht verfügbar – Innen- oder Außenmesswert fehlt.
+  {%- endif -%}
+{%- endmacro %}
+
+{% macro garage_drying() -%}
+  {%- set observer = states.sensor.garage_entfeuchtung_verlauf -%}
+  {%- if observer is none or observer.state in ['unknown', 'unavailable'] or
+      as_timestamp(now()) - as_timestamp(observer.last_updated) >= 180 or not observer.attributes.get('valid', false) -%}
+    Trocknungsverlauf: keine gültige aktuelle Beobachtung. Die Warnanzeigen oben zeigen den gespeicherten Warnstatus.
+  {%- else -%}
+    {%- set ref = observer.attributes.get('reference_humidity') | float(none) -%}
+    {%- set current = observer.attributes.get('humidity') | float(none) -%}
+    {%- if ref is number and current is number -%}
+      {{ 'Feuchteänderung im aktuellen Beobachtungsfenster: **' ~ ('%+.1f' | format(current - ref)) ~ ' Prozentpunkte**.' }}
+    {%- else -%}
+      Trocknungsverlauf: Referenzfenster wird aufgebaut.
+    {%- endif -%}
+  {%- endif -%}
+{%- endmacro %}
+
+{% macro shading_summary() -%}
+  {%- set mode = states('binary_sensor.heizen_kuehlen_rueckmeldung') -%}
+  {%- set ns = namespace(lines=[]) -%}
+  {%- if mode == 'on' -%}
+    {%- set ns.lines = ['**Heizbetrieb:** Solare Wärme nutzen und Überhitzung vermeiden.'] -%}
+  {%- elif mode == 'off' -%}
+    {%- set ns.lines = ['**Kühlbetrieb:** Fassaden-Hitzeschutz ist maßgeblich.'] -%}
+  {%- else -%}
+    {%- set ns.lines = ['**Heiz-/Kühlmodus nicht verfügbar.** Keine verlässliche thermische Einordnung.'] -%}
+  {%- endif -%}
+  {%- if states('sun.sun') == 'below_horizon' -%}
+    {%- set ns.lines = ns.lines + ['Aktuell Nacht: keine solare Heizentscheidung.'] -%}
+  {%- elif states('sun.sun') not in ['above_horizon', 'below_horizon'] -%}
+    {%- set ns.lines = ns.lines + ['Sonnenstand nicht verfügbar.'] -%}
+  {%- endif -%}
+  {%- set ns.lines = ns.lines + ['Manuelle Bedienung sperrt die betroffenen Jalousien vier Stunden. Automatisches Öffnen im OG ist vor 10 Uhr gesperrt.', 'Die Freigabe unten ist eine Momentaufnahme. Ausführung und Wartezeiten bleiben bei den vorhandenen Automationen.'] -%}
+  {{ ns.lines | join('\n\n') }}
+{%- endmacro %}
+
+{% macro room_temperatures() -%}
+  {%- set names = {
+    'eg_arbeitszimmer': 'Arbeitszimmer', 'eg_arbeitszimmer_flur': 'Arbeitszimmer Flur',
+    'eg_gaestebad': 'Gästebad', 'eg_flur': 'Flur EG', 'eg_gaeste_wc': 'Gäste-WC',
+    'eg_garderobe': 'Garderobe', 'eg_technik': 'Schuhschrank / Technik',
+    'eg_kueche': 'Küche', 'eg_wohnzimmer': 'Wohnzimmer',
+    'og_schlafzimmer': 'Schlafzimmer', 'og_bad': 'Bad OG', 'og_buro': 'Büro OG',
+    'og_ankleide': 'Ankleide', 'kg_flur': 'Flur KG', 'kg_gast_hobby': 'Gast/Hobby',
+    'kg_kinderbad': 'Kinderbad', 'kg_zimmer_sinja': 'Zimmer Sinja', 'kg_zimmer_silas': 'Zimmer Silas'
+  } -%}
+  {%- set source = states.sensor.hitzeschutz_thermik -%}
+  {%- set fresh = source is not none and source.state not in ['unknown', 'unavailable'] and as_timestamp(now()) - as_timestamp(source.last_updated) < 180 -%}
+  {%- set rooms = state_attr('sensor.hitzeschutz_thermik', 'rooms') | default({}, true) -%}
+  {%- set ns = namespace(lines=['Raum | Ist °C | Soll °C | Trend °C/h', '--- | ---: | ---: | ---:']) -%}
+  {%- for room, name in names.items() -%}
+    {%- set current = states('sensor.' ~ room ~ '_thermostat_ist_temp') | float(none) -%}
+    {%- set target = states('sensor.' ~ room ~ '_thermostat_soll_temp') | float(none) -%}
+    {%- set data = rooms.get(room, {}) -%}
+    {%- set trend = data.get('rise_per_hour') | float(none) -%}
+    {%- set trend_valid = fresh and data.get('valid', false) and data.get('trend_valid', false) and trend is number -%}
+    {%- set ns.lines = ns.lines + [name ~ ' | ' ~ ('%.1f' | format(current) if current is number else '—') ~ ' | ' ~ ('%.1f' | format(target) if target is number else '—') ~ ' | ' ~ ('%+.1f' | format(trend) if trend_valid else '—')] -%}
+  {%- endfor -%}
+  {{ ns.lines | join('\n') }}
+{%- endmacro %}
+
+{% macro shading_decisions() -%}
+  {%- from 'heat_protection.jinja' import facade_configs -%}
+  {%- from 'solar_thermal.jinja' import room_configs -%}
+  {%- from 'cover_control.jinja' import cover_automation_status -%}
+  {%- set facades = facade_configs | as_function -%}
+  {%- set status = cover_automation_status | as_function -%}
+  {%- set configs = room_configs | as_function -%}
+  {%- set thermal_covers = configs().values() | sum(start=[]) -%}
+  {%- set controller = states.sensor.hitzeschutz_thermik -%}
+  {%- set fresh = controller is not none and controller.state not in ['unknown', 'unavailable'] and as_timestamp(now()) - as_timestamp(controller.last_updated) < 180 -%}
+  {%- set decisions = state_attr('sensor.hitzeschutz_thermik', 'decisions') | default({}, true) -%}
+  {%- set mode = states('binary_sensor.heizen_kuehlen_rueckmeldung') -%}
+  {%- set ns = namespace(lines=[]) -%}
+  {%- for facade in facades().values() -%}
+    {%- set ns.lines = ns.lines + ['### ' ~ facade.display_name] -%}
+    {%- for cover in facade.covers -%}
+      {%- set decision = decisions.get(cover, {}) -%}
+      {%- set action = decision.get('action', 'none') if mode == 'on' and fresh else 'none' -%}
+      {%- set reason = decision.get('reason', '') | replace('Ueberhitzung', 'Überhitzung') | replace('Solarwaerme', 'Solarwärme') -%}
+      {%- if mode == 'off' or cover not in thermal_covers -%}
+        {%- set action = 'close' if is_state(facade.sensor, 'on') else 'open' if is_state(facade.sensor, 'off') else 'none' -%}
+        {%- set reason = 'Fassaden-Hitzeschutz' if action == 'close' else 'Fassade ohne Hitzeschutz' if action == 'open' else 'Fassadenstatus fehlt' -%}
+      {%- elif not fresh or not decision -%}
+        {%- set action = 'none' -%}
+        {%- set reason = 'Thermikdaten fehlen oder sind veraltet' -%}
+      {%- endif -%}
+      {%- if mode not in ['on', 'off'] -%}
+        {%- set action = 'none' -%}
+        {%- set reason = 'Heiz-/Kühlmodus fehlt' -%}
+      {%- elif is_state('sun.sun', 'below_horizon') -%}
+        {%- set action = 'none' -%}
+        {%- set reason = 'Keine solare Fahrtentscheidung bei Nacht' -%}
+      {%- elif not is_state('sun.sun', 'above_horizon') -%}
+        {%- set action = 'none' -%}
+        {%- set reason = 'Sonnenstand fehlt' -%}
+      {%- endif -%}
+      {%- set name = state_attr(cover, 'friendly_name') | default(cover, true) -%}
+      {%- set position = state_attr(cover, 'current_position') -%}
+      {%- set title = '**' ~ name ~ '**' ~ (' · ' ~ position ~ ' % offen' if position is number else '') -%}
+      {%- set label = 'Öffnen' if action == 'open' else 'Schließen' if action == 'close' else 'Keine thermische Fahrt' -%}
+      {%- set text = label ~ ' · ' ~ reason -%}
+      {%- if action in ['open', 'close'] -%}
+        {%- set gate = status(cover, action) -%}
+        {%- set reasons = gate.reasons | reject('eq', 'thermische Freigabe fehlt') | list -%}
+        {%- if mode == 'on' and decision and fresh and not decision.get('ready', false) -%}
+          {%- set reasons = reasons + ['thermische Wartezeit läuft'] -%}
+        {%- elif 'thermische Freigabe fehlt' in gate.reasons -%}
+          {%- set reasons = reasons + ['thermische Freigabe fehlt'] -%}
+        {%- endif -%}
+        {%- set text = text ~ ' — ' ~ (reasons | join('; ') if reasons else 'aktuell freigegeben') -%}
+      {%- endif -%}
+      {%- set ns.lines = ns.lines + [title ~ '  \n' ~ text] -%}
+    {%- endfor -%}
+  {%- endfor -%}
+  {{ ns.lines | join('\n\n') }}
+{%- endmacro %}

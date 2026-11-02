@@ -1,0 +1,111 @@
+title: Sonne & Raumklima
+path: sonne
+icon: mdi:weather-sunny
+type: sections
+max_columns: 3
+sections:
+  - type: grid
+    cards:
+      - type: heading
+        heading: Automatik verstehen
+        icon: mdi:blinds-horizontal
+      - type: tile
+        entity: switch.hitzeschutz_og_automatik
+        name: Verschattungsautomatik
+      - type: tile
+        entity: binary_sensor.heizen_kuehlen_rueckmeldung
+        name: Heizbetrieb
+      - type: markdown
+        grid_options:
+          columns: full
+        content: >-
+          {% from 'dashboard_home.jinja' import shading_summary %}
+          {{ shading_summary() }}
+      - type: entities
+        title: Sonne & Wetter
+        show_header_toggle: false
+        grid_options:
+          columns: full
+        entities:
+          - entity: sensor.aussenbereich_wetterstation_temperatur
+            name: Außentemperatur
+          - entity: sensor.aussenbereich_wetterstation_helligkeit
+            name: Helligkeit
+          - entity: sensor.aussenbereich_wetterstation_wind
+            name: Wind
+          - entity: sensor.hitzeschutz_clear_sky_index
+            name: Sonnenindikator (Lux-Proxy)
+      - type: entities
+        title: Fassaden-Hitzeschutz
+        show_header_toggle: false
+        grid_options:
+          columns: full
+        entities:
+          - entity: binary_sensor.hitzeschutz_fassade_west
+            name: West
+          - entity: binary_sensor.hitzeschutz_fassade_wohnzimmer_panorama
+            name: Wohnzimmer Panorama
+          - entity: binary_sensor.hitzeschutz_fassade_ost
+            name: Ost
+          - entity: binary_sensor.hitzeschutz_fassade_sud
+            name: Süd
+          - entity: binary_sensor.hitzeschutz_fassade_nord
+            name: Nord
+          - entity: binary_sensor.hitzeschutz_sonnensegel
+            name: Sonnensegel
+  - type: grid
+    cards:
+      - type: heading
+        heading: Raumtemperaturen & Trend
+        icon: mdi:home-thermometer
+      - type: markdown
+        grid_options:
+          columns: full
+        content: >-
+          {% from 'dashboard_home.jinja' import room_temperatures %}
+          {{ room_temperatures() }}
+      - type: history-graph
+        title: Wohnen · Temperatur und Sollwert
+        hours_to_show: 24
+        grid_options:
+          columns: full
+        entities:
+          - entity: sensor.eg_wohnzimmer_thermostat_ist_temp
+            name: Wohnzimmer Ist
+          - entity: sensor.eg_wohnzimmer_thermostat_soll_temp
+            name: Wohnzimmer Soll
+          - entity: sensor.eg_kueche_thermostat_ist_temp
+            name: Küche Ist
+          - entity: sensor.eg_kueche_thermostat_soll_temp
+            name: Küche Soll
+      - type: history-graph
+        title: Obergeschoss · Temperatur und Sollwert
+        hours_to_show: 24
+        grid_options:
+          columns: full
+        entities:
+          - entity: sensor.og_schlafzimmer_thermostat_ist_temp
+            name: Schlafzimmer Ist
+          - entity: sensor.og_schlafzimmer_thermostat_soll_temp
+            name: Schlafzimmer Soll
+          - entity: sensor.og_bad_thermostat_ist_temp
+            name: Bad Ist
+          - entity: sensor.og_bad_thermostat_soll_temp
+            name: Bad Soll
+  - type: grid
+    cards:
+      - type: heading
+        heading: Jalousie → Entscheidung → Grund
+        icon: mdi:information-outline
+      - type: markdown
+        grid_options:
+          columns: full
+        content: >-
+          {% from 'dashboard_home.jinja' import shading_decisions %}
+          {{ shading_decisions() }}
+      - type: heading
+        heading: Jalousien direkt bedienen
+        icon: mdi:floor-plan
+        tap_action:
+          action: navigate
+          navigation_path: /mein-zuhause/raeume

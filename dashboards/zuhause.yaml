@@ -1,0 +1,105 @@
+title: Zuhause
+path: zuhause
+icon: mdi:home-heart
+type: sections
+max_columns: 3
+sections:
+  - type: grid
+    cards:
+      - type: heading
+        heading: Jetzt wichtig
+        icon: mdi:bell-outline
+      - type: markdown
+        grid_options:
+          columns: full
+        content: >-
+          {% from 'dashboard_home.jinja' import house_notes %}
+          {{ house_notes() }}
+      - type: heading
+        heading: Wer ist da?
+        icon: mdi:account-group
+      - type: tile
+        entity: binary_sensor.person_zuhause
+        name: Familie zuhause
+      - type: tile
+        entity: binary_sensor.praesenz
+        name: Präsenz im Haus
+      - type: tile
+        entity: binary_sensor.gast_im_haus
+        name: Gäste
+      - type: tile
+        entity: binary_sensor.haushaltshilfe_anwesend
+        name: Haushaltshilfe
+  - type: grid
+    cards:
+      - type: heading
+        heading: Draußen
+        icon: mdi:weather-partly-cloudy
+      - type: weather-forecast
+        entity: weather.forecast_home
+        show_current: true
+        show_forecast: true
+        forecast_type: daily
+        grid_options:
+          columns: full
+      - type: tile
+        entity: sensor.aussenbereich_wetterstation_temperatur
+        name: Außentemperatur
+      - type: tile
+        entity: binary_sensor.aussenbereich_wetterstation_niederschlag
+        name: Regen am Haus
+      - type: tile
+        entity: sensor.aussenbereich_wetterstation_wind
+        name: Wind
+      - type: tile
+        entity: sensor.aussenbereich_wetterstation_helligkeit
+        name: Helligkeit
+  - type: grid
+    cards:
+      - type: heading
+        heading: Schnell erreichbar
+        icon: mdi:gesture-tap
+      - type: tile
+        entity: switch.schlafmodus
+        name: Schlafmodus
+      - type: tile
+        entity: switch.hitzeschutz_og_automatik
+        name: Verschattungsautomatik
+      - type: tile
+        entity: light.eg_wohnzimmer_decke_mitte
+        name: Wohnzimmer Mitte
+      - type: tile
+        entity: light.eg_kueche_decke
+        name: Küche
+      - type: heading
+        heading: Garage & Werkstatt
+        icon: mdi:garage
+        tap_action:
+          action: navigate
+          navigation_path: /mein-zuhause/garage
+      - type: tile
+        entity: cover.aussenbereich_garage_garagentor
+        name: Garagentor
+        icon_tap_action:
+          action: more-info
+        tap_action:
+          action: navigate
+          navigation_path: /mein-zuhause/garage
+      - type: tile
+        entity: sensor.wifi_smart_switch_humidity
+        name: Garagenfeuchte
+        tap_action:
+          action: navigate
+          navigation_path: /mein-zuhause/garage
+      - type: heading
+        heading: Sonne & Raumklima
+        icon: mdi:weather-sunny
+        tap_action:
+          action: navigate
+          navigation_path: /mein-zuhause/sonne
+      - type: heading
+        heading: Alle Räume bedienen
+        icon: mdi:floor-plan
+        tap_action:
+          action: navigate
+          navigation_path: /mein-zuhause/raeume

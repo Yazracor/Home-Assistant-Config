@@ -1,0 +1,141 @@
+title: Garage & Werkstatt
+path: garage
+icon: mdi:garage
+type: sections
+max_columns: 3
+sections:
+  - type: grid
+    cards:
+      - type: heading
+        heading: Tor & Werkstatt
+        icon: mdi:tools
+      - type: tile
+        entity: cover.aussenbereich_garage_garagentor
+        name: Torstatus
+        icon_tap_action:
+          action: more-info
+      # Das Tor kennt nur Impulse, keine getrennten Auf-/Zu-Befehle.
+      - type: button
+        name: Garagentor-Impuls
+        icon: mdi:garage
+        tap_action:
+          action: perform-action
+          perform_action: script.garagentor_impuls
+          confirmation:
+            text: Garagentor per Impuls bewegen oder stoppen?
+      - type: tile
+        entity: binary_sensor.garage_prasenz
+        name: Präsenz
+      - type: tile
+        entity: light.aussenbereich_garage_licht
+        name: Garagenlicht
+      - type: tile
+        entity: switch.garage_licht_werkbank
+        name: Werkbanklicht
+      - type: tile
+        entity: switch.garage_heizung
+        name: Heizung
+      - type: entities
+        title: Leistungsaufnahme
+        show_header_toggle: false
+        grid_options:
+          columns: full
+        entities:
+          - entity: sensor.garage_heizung_power
+            name: Heizung
+          - entity: sensor.garage_licht_werkbank_power
+            name: Werkbanklicht
+  - type: grid
+    cards:
+      - type: heading
+        heading: Trocken bleiben
+        icon: mdi:water-percent
+      - type: tile
+        entity: sensor.wifi_smart_switch_humidity
+        name: Feuchte innen
+      - type: tile
+        entity: sensor.wifi_smart_switch_temperature
+        name: Temperatur innen
+      - type: markdown
+        grid_options:
+          columns: full
+        content: >-
+          {% from 'dashboard_home.jinja' import garage_air %}
+          {{ garage_air() }}
+      - type: tile
+        entity: switch.entfeuchter
+        name: TTK 75 Eco
+      - type: tile
+        entity: switch.ttr_57_entfeuchter
+        name: TTR 57 / Boost
+      - type: entities
+        title: Entfeuchtung
+        show_header_toggle: false
+        grid_options:
+          columns: full
+        entities:
+          - entity: sensor.entfeuchter_power
+            name: TTK Leistung
+          - entity: sensor.ttr_57_entfeuchter_leistung
+            name: TTR Leistung
+          - entity: input_boolean.garage_entfeuchtung_warnung_aktiv
+            name: Trocknungswarnung
+            type: simple-entity
+          - entity: input_boolean.garage_entfeuchtung_boost_warnung_aktiv
+            name: Boost-Warnung
+            type: simple-entity
+      - type: markdown
+        grid_options:
+          columns: full
+        content: >-
+          {% from 'dashboard_home.jinja' import garage_drying %}
+          {{ garage_drying() }}
+  - type: grid
+    cards:
+      - type: heading
+        heading: Verlauf · 24 Stunden
+        icon: mdi:chart-line
+      - type: history-graph
+        title: Feuchtevergleich
+        hours_to_show: 24
+        grid_options:
+          columns: full
+        entities:
+          - entity: sensor.wifi_smart_switch_humidity
+            name: Garage
+          - entity: sensor.garage_aussenluft_feuchte_bei_garagentemperatur
+            name: Außenluft bei Garagentemperatur
+      - type: history-graph
+        title: Temperatur
+        hours_to_show: 24
+        grid_options:
+          columns: full
+        entities:
+          - entity: sensor.wifi_smart_switch_temperature
+            name: Garage
+          - entity: sensor.sonoff_snzb_02wd_temperatur_eingangsbereich
+            name: Außenluft
+      - type: history-graph
+        title: Leistung der Entfeuchter
+        hours_to_show: 24
+        grid_options:
+          columns: full
+        entities:
+          - entity: sensor.entfeuchter_power
+            name: TTK
+          - entity: sensor.ttr_57_entfeuchter_leistung
+            name: TTR
+      - type: history-graph
+        title: Tor, Präsenz und Betrieb
+        hours_to_show: 24
+        grid_options:
+          columns: full
+        entities:
+          - entity: binary_sensor.aussenbereich_garage_garagentor_status
+            name: Tor offen
+          - entity: binary_sensor.garage_prasenz
+            name: Präsenz
+          - entity: switch.entfeuchter
+            name: TTK
+          - entity: switch.ttr_57_entfeuchter
+            name: TTR

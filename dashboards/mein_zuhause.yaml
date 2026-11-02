@@ -1,0 +1,7 @@
+# Ausschließlich native Karten; keine zusätzlichen Frontend-Ressourcen nötig.
+title: Mein Zuhause
+views:
+  - !include zuhause.yaml
+  - !include garage.yaml
+  - !include sonne.yaml
+  - !include raeume.yaml

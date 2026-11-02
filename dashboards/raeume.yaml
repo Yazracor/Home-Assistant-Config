@@ -1,0 +1,427 @@
+# Bestehende Entitäten, nach Stockwerk und Raum geordnet.
+title: Räume
+path: raeume
+icon: mdi:floor-plan
+type: sections
+max_columns: 4
+sections:
+- type: grid
+  cards:
+  - type: heading
+    heading: Erdgeschoss
+    icon: mdi:home-floor-0
+  - type: entities
+    title: Arbeitszimmer
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: climate.eg_arbeitszimmer_flur_thermostat
+      name: Temperatur Flur
+    - entity: climate.eg_arbeitszimmer_thermostat
+      name: Temperatur
+    - entity: light.eg_arbeitszimmer_decke
+      name: Decke
+    - entity: light.eg_arbeitszimmer_flur
+      name: Arbeitszimmer Flur
+    - entity: cover.eg_arbeitszimmer_garten
+      name: Arbeitszimmer Garten
+    - entity: cover.eg_arbeitszimmer_vorgarten
+      name: Arbeitszimmer Vorgarten
+  - type: entities
+    title: Gästebad
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: climate.eg_gaestebad_thermostat
+      name: Temperatur
+    - entity: light.eg_gaestebad_decke
+      name: Gästebad Decke
+  - type: entities
+    title: Flur EG
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: climate.eg_flur_thermostat
+      name: Temperatur
+    - entity: light.eg_flur_decke
+      name: Flur EG Decke
+    - entity: light.eg_flur_galerie
+      name: Flur EG Galerie
+  - type: entities
+    title: Treppe EG/KG
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: light.eg_kg_treppe
+      name: Treppe EG/KG
+  - type: entities
+    title: Gäste-WC
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: climate.eg_gaeste_wc_thermostat
+      name: Temperatur
+    - entity: light.eg_gaeste_wc_decke
+      name: Gäste-WC Decke
+  - type: entities
+    title: Garderobe
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: climate.eg_garderobe_thermostat
+      name: Temperatur
+    - entity: light.eg_garderobe_decke
+      name: Garderobe Decke
+  - type: entities
+    title: Schuhschrank
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: climate.eg_technik_thermostat
+      name: Temperatur
+    - entity: light.eg_garderobe_schuhschrank
+      name: Garderobe Schuhschrank
+  - type: entities
+    title: Küche
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: climate.eg_kueche_thermostat
+      name: Temperatur
+    - entity: light.eg_kueche_decke
+      name: Küche Decke
+    - entity: cover.eg_kueche_balkon
+      name: Küche Balkon
+    - entity: cover.eg_kueche_nebeneingang
+      name: Küche Nebeneingang
+    - entity: cover.eg_kueche_seite
+      name: Küche Seite
+    - entity: media_player.homepod_kuche
+      name: Homepod
+    - entity: media_player.verstarker_wohnzimmer_zone2
+      name: Wohnzimmer zone2
+  - type: entities
+    title: Wohnzimmer
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: climate.eg_wohnzimmer_thermostat
+      name: Temperatur
+    - entity: light.eg_wohnzimmer_decke_mitte
+      name: Wohnzimmer Decke Mitte
+    - entity: light.eg_wohnzimmer_decke_seiten
+      name: Wohnzimmer Decke Seiten
+    - entity: cover.eg_wohnzimmer_balkon
+      name: Wohnzimmer Balkon
+    - entity: cover.eg_wohnzimmer_panorama
+      name: Wohnzimmer Panorama
+    - entity: media_player.verstarker
+      name: Verstärker
+    - entity: media_player.wohnzimmer_3
+      name: Sonos
+    - entity: media_player.wohnzimmer_samsung_fernseher
+      name: Fernseher
+  - type: entities
+    title: Vorratsraum
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: light.eg_vorratsraum_decke
+      name: Vorratsraum Decke
+- type: grid
+  cards:
+  - type: heading
+    heading: Obergeschoss
+    icon: mdi:home-floor-1
+  - type: entities
+    title: Büro OG
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: climate.og_buro_thermostat
+      name: Temperatur
+    - entity: light.og_buro_decke
+      name: Büro OG Decke
+    - entity: cover.og_buro_fenster
+      name: Büro OG Fenster
+  - type: entities
+    title: Flur OG
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: light.og_flur_decke
+      name: Flur OG Decke
+    - entity: cover.og_flur_fenster
+      name: Flur OG Fenster
+  - type: entities
+    title: Treppe OG
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: light.og_treppe
+      name: Treppe OG
+    - entity: cover.og_treppe
+      name: Treppe OG
+  - type: entities
+    title: Schlafzimmer
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: climate.og_schlafzimmer_thermostat
+      name: Temperatur
+    - entity: climate.schlafzimmer
+      name: Klimaanlage
+    - entity: light.og_schlafzimmer_decke
+      name: Schlafzimmer Decke
+    - entity: cover.og_schlafzimmer_front
+      name: Schlafzimmer Front
+    - entity: cover.og_schlafzimmer_panorama_aussen
+      name: Schlafzimmer Panorama außen
+    - entity: cover.og_schlafzimmer_panorama_innen
+      name: Schlafzimmer Panorama innen
+    - entity: media_player.schlafzimmer_airport_schlafzimmer
+      name: AirPlay Schlafzimmer
+  - type: entities
+    title: Ankleide
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: climate.og_ankleide_thermostat
+      name: Temperatur
+    - entity: light.og_ankleide_decke
+      name: Ankleide Decke
+    - entity: cover.og_ankleide_fenster
+      name: Ankleide Fenster
+  - type: entities
+    title: Bad OG
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: climate.og_bad_thermostat
+      name: Temperatur
+    - entity: light.og_bad_decke
+      name: Bad OG Decke
+    - entity: light.og_bad_waschtisch
+      name: Bad OG Waschtisch
+    - entity: cover.og_bad_balkon
+      name: Bad OG Balkon
+    - entity: cover.og_bad_balkon_innen
+      name: Bad OG Balkon innen
+    - entity: cover.og_bad_panorama_aussen
+      name: Bad OG Panorama außen
+  - type: entities
+    title: WC OG
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: light.og_wc_decke
+      name: WC OG Decke
+    - entity: cover.og_wc_fenster
+      name: WC OG Fenster
+- type: grid
+  cards:
+  - type: heading
+    heading: Kellergeschoss
+    icon: mdi:home-floor-negative-1
+  - type: entities
+    title: Sauna
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: light.kg_sauna_decke
+      name: Sauna Decke
+  - type: entities
+    title: Gast/Hobby
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: climate.kg_gast_hobby_thermostat
+      name: Temperatur
+    - entity: light.kg_gast_hobby_decke
+      name: Gast/Hobby Decke
+    - entity: media_player.medienzimmer
+      name: Medienzimmer
+  - type: entities
+    title: Zimmer Sinja
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: climate.kg_zimmer_sinja_thermostat
+      name: Temperatur
+    - entity: light.kg_zimmer_sinja_decke
+      name: Zimmer Sinja Decke
+    - entity: cover.kg_zimmer_sinja_jalousie
+      name: Zimmer Sinja Jalousie
+    - entity: media_player.sinja_homepod
+      name: Sinja HomePod
+  - type: entities
+    title: Zimmer Silas
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: climate.kg_zimmer_silas_thermostat
+      name: Temperatur
+    - entity: light.kg_zimmer_silas_decke
+      name: Zimmer Silas Decke
+    - entity: cover.kg_zimmer_silas_jalousie
+      name: Zimmer Silas Jalousie
+    - entity: media_player.silas_homepod
+      name: Silas HomePod
+  - type: entities
+    title: Flur KG
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: climate.kg_flur_thermostat
+      name: Temperatur
+    - entity: light.kg_flur_decke
+      name: Flur KG Decke
+  - type: entities
+    title: Kinderbad
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: climate.kg_kinderbad_thermostat
+      name: Temperatur
+    - entity: light.kg_kinderbad_decke
+      name: Kinderbad Decke
+  - type: entities
+    title: Waschküche
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: light.kg_waschkueche_decke
+      name: Waschküche Decke
+  - type: entities
+    title: Keller
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: light.kg_keller_hinten
+      name: Keller hinten
+    - entity: light.kg_keller_klein
+      name: Keller klein
+    - entity: light.kg_keller_vorn
+      name: Keller vorn
+- type: grid
+  cards:
+  - type: heading
+    heading: Außenbereich
+    icon: mdi:tree
+  - type: entities
+    title: Balkon
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: light.aussenbereich_balkon_balken
+      name: Balkon Balken
+    - entity: light.aussenbereich_balkon_licht
+      name: Balkon Licht
+    - entity: cover.aussenbereich_balkon_sonnensegel
+      name: Sonnensegel
+  - type: entities
+    title: Balkon Obergeschoss
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: light.aussenbereich_balkon_obergeschoss_licht
+      name: Balkon Obergeschoss Licht
+  - type: entities
+    title: Terrasse
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: light.aussenbereich_terrasse_licht
+      name: Terrasse Licht
+  - type: entities
+    title: Garage
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: light.aussenbereich_garage_licht
+      name: Garage Licht
+    - entity: cover.aussenbereich_garage_garagentor
+      name: Garagentor
+      type: simple-entity
+    - entity: switch.entfeuchter
+      name: TTK 75 Eco Entfeuchter
+    - entity: switch.garage_heizung
+      name: Heizung
+    - entity: switch.garage_licht_werkbank
+      name: Werkbanklicht
+    - entity: switch.ttr_57_entfeuchter
+      name: TTR 57 Entfeuchter
+    - type: button
+      name: Tor per Impuls bewegen / stoppen
+      icon: mdi:garage
+      action_name: Impuls
+      tap_action:
+        action: perform-action
+        perform_action: script.garagentor_impuls
+        confirmation:
+          text: Garagentor per Impuls bewegen oder stoppen?
+  - type: entities
+    title: Eingangsbereich
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: light.aussenbereich_eingangsbereich
+      name: Eingangsbereich
+    - entity: light.aussenbereich_eingangsbereich_eingang_vordach
+      name: Eingang Vordach
+    - entity: light.aussenbereich_eingangsbereich_hof_bega_baumstrahler
+      name: Hof Bega Baumstrahler
+    - entity: light.aussenbereich_eingangsbereich_treppe_und_garage
+      name: Treppe und Garage
+  - type: entities
+    title: Teich
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: light.aussenbereich_teich_licht
+      name: Licht Teich
+    - entity: light.aussenbereich_teich_unterwasserstrahler
+      name: Unterwasserstrahler
+  - type: entities
+    title: Garten
+    show_header_toggle: false
+    grid_options:
+      columns: full
+    entities:
+    - entity: light.aussenbereich_garten_aussenleuchten_links
+      name: Aussenleuchten links
+    - entity: light.aussenbereich_garten_aussenleuchten_rechts
+      name: Aussenleuchten rechts
+    - entity: light.aussenbereich_garten_wegebeleuchtung_nach_oben
+      name: Wegebeleuchtung nach oben
