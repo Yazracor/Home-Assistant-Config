@@ -1,0 +1,37 @@
+{# Gemeinsame, rein lesende Texte fuer das iPhone-Details-Widget. #}
+{% macro headline() -%}
+  {%- set door = states('cover.aussenbereich_garage_garagentor') -%}
+  {%- set rain = states('binary_sensor.aussenbereich_wetterstation_niederschlag') -%}
+  {%- set drying = states('input_boolean.garage_entfeuchtung_warnung_aktiv') -%}
+  {%- set boost = states('input_boolean.garage_entfeuchtung_boost_warnung_aktiv') -%}
+  {%- set shading = states('switch.hitzeschutz_og_automatik') -%}
+  {%- if door in ['open', 'opening'] -%}
+    {{ '⚠ Garage offen bei Regen' if rain == 'on' else '⚠ Garage offen' }}
+  {%- elif boost == 'on' -%}
+    ⚠ Entfeuchtungs-Boost prüfen
+  {%- elif drying == 'on' -%}
+    ⚠ Entfeuchtung prüfen
+  {%- elif shading == 'off' -%}
+    ⚠ Jalousie-Automatik aus
+  {%- elif door != 'closed' or drying != 'off' or boost != 'off' or shading != 'on' -%}
+    Status unvollständig
+  {%- else -%}
+    Keine wichtigen Hinweise
+  {%- endif -%}
+{%- endmacro %}
+
+{% macro garage_line() -%}
+  {%- set humidity = states('sensor.wifi_smart_switch_humidity') | float(none) -%}
+  {%- set temperature = states('sensor.wifi_smart_switch_temperature') | float(none) -%}
+  {%- set h = (humidity | round(0) | int) ~ ' %' if humidity is number and 0 <= humidity <= 100 else 'Feuchte fehlt' -%}
+  {%- set t = ('%.1f' | format(temperature) | replace('.', ',')) ~ ' °C' if temperature is number else 'Temperatur fehlt' -%}
+  {{ 'Garage · ' ~ h ~ ' · ' ~ t }}
+{%- endmacro %}
+
+{% macro weather_line() -%}
+  {%- set temperature = states('sensor.aussenbereich_wetterstation_temperatur') | float(none) -%}
+  {%- set rain = states('binary_sensor.aussenbereich_wetterstation_niederschlag') -%}
+  {%- set t = ('%.1f' | format(temperature) | replace('.', ',')) ~ ' °C' if temperature is number else 'Temperatur fehlt' -%}
+  {%- set r = 'Regen' if rain == 'on' else 'kein Regen' if rain == 'off' else 'Regenstatus fehlt' -%}
+  {{ 'Außen · ' ~ t ~ ' · ' ~ r }}
+{%- endmacro %}

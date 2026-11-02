@@ -1,0 +1,21 @@
+# Ueber homeassistant.packages automatisch eingebunden.
+# Kein unavailable-Zustand: Auch fehlende Quellen sollen als Text sichtbar sein.
+template:
+  - sensor:
+      - name: iPhone Hausstatus
+        unique_id: iphone_hausstatus
+        default_entity_id: sensor.iphone_hausstatus
+        icon: mdi:cellphone-information
+        state: >-
+          {% from 'iphone_widgets.jinja' import headline %}
+          {{ headline() }}
+        attributes:
+          upper_text: >-
+            {% from 'iphone_widgets.jinja' import headline %}
+            {{ headline() }}
+          lower_text: >-
+            {% from 'iphone_widgets.jinja' import garage_line %}
+            {{ garage_line() }}
+          details_text: >-
+            {% from 'iphone_widgets.jinja' import weather_line %}
+            {{ weather_line() }}
