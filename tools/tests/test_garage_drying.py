@@ -117,6 +117,73 @@ async def main():
         assert not tick(state, 181, 62, ttr='on', reset=True)['drying_warning']
         assert not tick(state, 184, 62, ttr='on')['drying_warning']
 
+        # Power monitoring must exempt only the observed eight-hour cycle,
+        # while retaining ten-minute warnings for other failures.
+        power_template = """{% from 'garage_ttr_power.jinja' import ttr_power_snapshot %}
+          {{ (ttr_power_snapshot | as_function)(previous, reset, timestamp, switch, power) }}"""
+
+        def power_tick(previous, minute, watts=710, switch='on', reset=False):
+            return render(power_template, previous=previous, reset=reset,
+                          timestamp=(epoch + timedelta(minutes=minute)).timestamp(),
+                          switch=switch, power=watts)
+
+        idle = {}
+        for minute in range(11):
+            idle = power_tick(idle, minute, 0)
+            assert idle['warning'] == (minute == 10)
+            assert not idle['scheduled_pause']  # An on socket proves no runtime.
+
+        operating = {}
+        for minute in range(480):
+            operating = power_tick(operating, minute)
+            assert not operating['warning']
+            if minute == 119:
+                early = operating
+        for minute in range(120, 131):
+            early = power_tick(early, minute, 0)
+            assert early['warning'] == (minute == 130)
+            assert not early['scheduled_pause']
+
+        paused = power_tick(operating, 480, 0)
+        assert paused['scheduled_pause'] and not paused['warning']
+        for minute in range(481, 513):
+            paused = power_tick(paused, minute, 0)
+            assert paused['warning'] == (minute == 512), (minute, paused)
+            if minute == 509:
+                before_restart = paused
+        # Resumption after the regular 30-minute pause begins a fresh cycle.
+        resumed = power_tick(before_restart, 510, 71)
+        assert resumed['low_since'] is None and resumed['pause_until'] is None
+        assert resumed['running_since'] == (epoch + timedelta(minutes=510)).timestamp()
+        for minute in range(511, 990):
+            resumed = power_tick(resumed, minute)
+        second_pause = power_tick(resumed, 990, 0)
+        assert second_pause['scheduled_pause'] and not second_pause['warning']
+
+        # Timing tolerance covers fan transitions; it is bounded on both sides.
+        for duration, eligible in [(474, False), (475, True), (485, True), (486, False)]:
+            previous = dict(operating,
+                            updated_at=(epoch + timedelta(minutes=duration - 1)).timestamp())
+            candidate = power_tick(previous, duration, 0)
+            assert candidate['scheduled_pause'] == eligible, (duration, candidate)
+
+        # No delayed exemption after an early failure; no inherited exemption
+        # after a reset, outage, invalid power, switch-off or sampling gap.
+        for minute in range(131, 491):
+            early = power_tick(early, minute, 0)
+        assert early['warning'] and not early['scheduled_pause']
+        for kwargs in [{'reset': True}, {'watts': 'unavailable'},
+                       {'watts': 'unknown'}, {'watts': -1}, {'switch': 'off'},
+                       {'switch': 'unavailable'}]:
+            interrupted = power_tick(operating, 480, **({'watts': 0} | kwargs))
+            assert interrupted['running_since'] is None
+            assert not interrupted['scheduled_pause'] and not interrupted['warning']
+            for minute in range(481, 492):
+                interrupted = power_tick(interrupted, minute, 0)
+            assert interrupted['warning'] and not interrupted['scheduled_pause']
+        gap = power_tick(operating, 483, 0)
+        assert gap['running_since'] is None and not gap['scheduled_pause']
+
         package = yaml.safe_load(open('/config/virtual/garage_drying.yaml'))
         automations = {a['id']: a for a in yaml.safe_load(open('/config/automations.yaml'))}
         block = package['template'][0]
@@ -139,6 +206,34 @@ async def main():
             runtime.states.async_set(observer_id, str(minute), attributes)
             assert attributes['drying_warning'] == (minute == 180)
         assert observer_id in package['recorder']['exclude']['entities']
+
+        # Exercise the configured power observer, its attributes and the real
+        # automation trigger. The observer already times failures, so the
+        # trigger must not add another ten minutes after a pause overrun.
+        power_block = package['template'][1]
+        power_observer = power_block['sensor'][0]
+        power_id = power_observer['default_entity_id']
+        power_actions = Script(runtime, await async_validate_actions_config(
+            runtime, cv.SCRIPT_SCHEMA(power_block['actions'])), 'TTR power test', 'template')
+        power_warning = automations['garage_entfeuchter_ohne_leistung_warnung']
+        triggers = {t['id']: t for t in power_warning['triggers']}
+        assert triggers['ttk']['for'] == {'hours': 0, 'minutes': 10, 'seconds': 0}
+        assert 'for' not in triggers['ttr']
+        runtime.states.async_set(power_id, 'running', operating)
+        runtime.states.async_set('sensor.ttr_57_entfeuchter_leistung', '0')
+        for minute, expected in [(480, False), (511, False), (512, True)]:
+            # Minute 511 uses the continuous pause from the macro test above.
+            if minute == 511:
+                current = power_tick(before_restart, 510, 0)
+                runtime.states.async_set(power_id, 'paused', current)
+            with patch('homeassistant.util.dt.now', return_value=epoch + timedelta(minutes=minute)):
+                result = await power_actions.async_run({'trigger': SimpleNamespace(id='sample')}, Context())
+            power = result.variables['power']
+            attributes = {key: render(value, power=power)
+                          for key, value in power_observer['attributes'].items()}
+            runtime.states.async_set(power_id, str(minute), attributes)
+            assert render(triggers['ttr']['value_template']) == expected, (minute, attributes)
+        assert power_id in package['recorder']['exclude']['entities']
 
         # Real configured conditions/actions: independent warning latches,
         # exactly one notification per type, one joint recovery, no short rearm.
@@ -232,12 +327,13 @@ async def main():
         assert len(by_entity) == len(assignments)
         identified = [r for r in assignments if r['unique_id']]
         assert len({(r['domain'], r['unique_id']) for r in identified}) == len(identified)
-        for entity in (observer, low_sensor,
+        for entity in (observer, power_observer, low_sensor,
                        next(e for b in package['template'] for e in b.get('binary_sensor', [])
                             if e['unique_id'] == 'garage_feuchte_ueber_60')):
             row = next(r for r in assignments if r['unique_id'] == entity['unique_id'])
             assert row['name'] == entity['name'] and row['area_id'] == 'garage'
         for aid in ('garage_ttr_entfeuchter_boost_an', 'garage_ttr_entfeuchter_boost_aus',
+                    'garage_entfeuchter_ohne_leistung_warnung',
                     'garage_entfeuchter_startfeuchte_merker',
                     'garage_entfeuchter_boost_startfeuchte_merken', warn_id, boost_id, ok_id):
             row = next(r for r in assignments if r['domain'] == 'automation' and r['unique_id'] == aid)
@@ -246,6 +342,8 @@ async def main():
         # the unchanged whole-house digest deliberately has no garage assignment.
         print('Garage drying: time windows, peak progress, recovery/rebound, invalid input,')
         print('template state retention, independent notifications and CSV identity checks passed.')
+        print('TTR power: ten-minute failures, eight-hour cycle, bounded safety pause,')
+        print('restart/invalid input handling and configured trigger integration passed.')
 
 
 asyncio.run(main())

@@ -4,6 +4,7 @@ recorder:
   exclude:
     entities:
       - sensor.garage_entfeuchtung_verlauf
+      - sensor.garage_ttr_leistungsueberwachung
 
 input_boolean:
   garage_entfeuchtung_warnung_aktiv:
@@ -79,6 +80,47 @@ template:
           drying_warning: "{{ drying.drying_warning }}"
           boost_warning: "{{ drying.boost_warning }}"
           recovered: "{{ drying.recovered }}"
+
+  - triggers:
+      - trigger: time_pattern
+        minutes: "*"
+        id: sample
+      - trigger: state
+        entity_id:
+          - switch.ttr_57_entfeuchter
+          - sensor.ttr_57_entfeuchter_leistung
+        to: null
+        id: source
+      - trigger: homeassistant
+        event: start
+        id: reset
+      - trigger: event
+        event_type: event_template_reloaded
+        id: reset
+    actions:
+      - variables:
+          power: >-
+            {% from 'garage_ttr_power.jinja' import ttr_power_snapshot %}
+            {{ (ttr_power_snapshot | as_function)(
+              states.sensor.garage_ttr_leistungsueberwachung.attributes | default({}, true),
+              trigger.id == 'reset', as_timestamp(now()),
+              states('switch.ttr_57_entfeuchter'),
+              states('sensor.ttr_57_entfeuchter_leistung')) }}
+    sensor:
+      - name: "Garage TTR Leistungsueberwachung"
+        unique_id: garage_ttr_leistungsueberwachung
+        default_entity_id: sensor.garage_ttr_leistungsueberwachung
+        device_class: timestamp
+        icon: mdi:timer-check-outline
+        state: "{{ now().isoformat() }}"
+        attributes:
+          updated_at: "{{ power.updated_at }}"
+          valid: "{{ power.valid }}"
+          running_since: "{{ power.running_since }}"
+          low_since: "{{ power.low_since }}"
+          pause_until: "{{ power.pause_until }}"
+          scheduled_pause: "{{ power.scheduled_pause }}"
+          warning: "{{ power.warning }}"
 
   - sensor:
       - name: "Sonoff SNZB-02WD Temperatur Eingangsbereich"

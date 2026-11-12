@@ -1,0 +1,42 @@
+{# TTR 57 E: 30-minute safety pause after eight hours of continuous operation.
+   >=20 W counts as operation, including fan startup/shutdown. Allow five minutes
+   of cycle timing variation and two minutes of pause/sampling tolerance.
+   Only the first low-power transition can qualify; waiting without power never
+   earns an exemption. Ordinary failures warn after ten minutes, an overdue
+   scheduled pause after 32 minutes total (not another ten minutes later).
+   Missing/invalid observations, restart/reload and gaps >150 s reset evidence.
+#}
+{% macro ttr_power_snapshot(previous, reset, timestamp, switch, power, returns) %}
+  {% set previous = previous if previous is mapping else {} %}
+  {% set last = previous.get('updated_at', 0) | float(0) %}
+  {% if reset or timestamp < last or timestamp - last > 150 %}
+    {% set previous = {} %}
+  {% endif %}
+  {% set valid = switch in ['on', 'off'] and is_number(power) and power | float >= 0 %}
+  {% set running_since = none %}
+  {% set low_since = none %}
+  {% set pause_until = none %}
+  {% set warning = false %}
+  {% if valid and switch == 'on' %}
+    {% if power | float >= 20 %}
+      {% set running_since = previous.get('running_since')
+        if previous.get('low_since') is none else none %}
+      {% set running_since = running_since if running_since is not none else timestamp %}
+    {% else %}
+      {% set running_since = previous.get('running_since') %}
+      {% set low_since = previous.get('low_since') %}
+      {% set low_since = low_since if low_since is not none else timestamp %}
+      {% if running_since is not none and 28500 <= low_since - running_since <= 29100 %}
+        {% set pause_until = low_since + 1920 %}
+      {% endif %}
+      {% set warning = timestamp - low_since >= 600
+        and (pause_until is none or timestamp >= pause_until) %}
+    {% endif %}
+  {% endif %}
+  {% do returns(dict(
+    updated_at=timestamp, valid=valid, running_since=running_since,
+    low_since=low_since, pause_until=pause_until,
+    scheduled_pause=pause_until is not none and timestamp < pause_until,
+    warning=warning
+  )) %}
+{% endmacro %}

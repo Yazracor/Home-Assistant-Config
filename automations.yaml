@@ -246,7 +246,7 @@
 
 - id: garage_entfeuchter_ohne_leistung_warnung
   alias: Garage Entfeuchter ohne Leistung Warnung
-  description: Meldet, wenn ein Entfeuchter eingeschaltet ist, aber keine relevante Leistung zieht.
+  description: Meldet eingeschaltete Entfeuchter nach 10 Minuten ohne relevante Leistung. Nur beim TTR wird die 30-minuetige Sicherheitspause nach acht Stunden gemessenem Betrieb ausgenommen; die Leistungsueberwachung beruecksichtigt Zeit- und Messtoleranzen.
   triggers:
   - trigger: template
     value_template: >-
@@ -262,13 +262,8 @@
   - trigger: template
     value_template: >-
       {{
-        is_state('switch.ttr_57_entfeuchter', 'on')
-        and states('sensor.ttr_57_entfeuchter_leistung') | float(0) < 20
+        state_attr('sensor.garage_ttr_leistungsueberwachung', 'warning') == true
       }}
-    for:
-      hours: 0
-      minutes: 10
-      seconds: 0
     id: ttr
   actions:
   - action: notify.mobile_app_torbens_iphone
