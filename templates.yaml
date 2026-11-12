@@ -196,13 +196,13 @@
       state: >-
         {{
           is_state('person.torben', 'home')
-          or is_state('person.julia', 'home')
+          or is_state('person.julia_van_hees', 'home')
           or is_state('person.sinja', 'home')
           or is_state('person.silas', 'home')
         }}
       attributes:
         torben: "{{ states('person.torben') }}"
-        julia: "{{ states('person.julia') }}"
+        julia: "{{ states('person.julia_van_hees') }}"
         sinja: "{{ states('person.sinja') }}"
         silas: "{{ states('person.silas') }}"
 

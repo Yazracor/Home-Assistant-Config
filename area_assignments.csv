@@ -208,7 +208,7 @@ sensor,Intern Sonoff SNZB-02WD Feuchte Rohwert,sensor.sonoff_snzb_02wd_humidity,
 sensor,Sonoff SNZB-02WD Temperatur Eingangsbereich,sensor.sonoff_snzb_02wd_temperatur_eingangsbereich,sonoff_snzb_02wd_temperature_entrance,eingangsbereich,Eingangsbereich,aussenbereich,Außenbereich,virtual template,Virtueller Temperaturwert des spaeteren Aussensensors im Eingangsbereich.
 sensor,Sonoff SNZB-02WD Feuchte korrigiert,sensor.sonoff_snzb_02wd_feuchte_korrigiert,sonoff_snzb_02wd_humidity_corrected,eingangsbereich,Eingangsbereich,aussenbereich,Außenbereich,virtual template,Korrigierter Feuchtewert des spaeteren Aussensensors im Eingangsbereich.
 binary_sensor,Präsenz,binary_sensor.praesenz,praesenz,technik,Technik,,,virtual template,Hausweiter Präsenzstatus aus Personen Companion App WLAN/RADIUS und manueller Bedienung.
-binary_sensor,Person zuhause,binary_sensor.person_zuhause,person_zuhause,technik,Technik,,,virtual template,Familien-Präsenz aus Home-Assistant-Personen.
+binary_sensor,Person zuhause,binary_sensor.person_zuhause,person_zuhause,technik,Technik,,,virtual template,Familien-Präsenz aus Home-Assistant-Personen; Julia ueber person.julia_van_hees mit device_tracker.iphone_julia.
 binary_sensor,Haushaltshilfe anwesend,binary_sensor.haushaltshilfe_anwesend,haushaltshilfe_anwesend,technik,Technik,,,virtual template,WLAN/RADIUS-Präsenz der Haushaltshilfe.
 binary_sensor,Gast im Haus,binary_sensor.gast_im_haus,gast_im_haus,technik,Technik,,,virtual template,WLAN/RADIUS-Präsenz unbekannter Accounts ohne Familie und Haushaltshilfe.
 binary_sensor,Manuelle Bedienung aktiv,binary_sensor.manuelle_bedienung_aktiv,manuelle_bedienung_aktiv,technik,Technik,,,virtual template,Präsenzimpuls aus KNX-Tastern HomeKit oder HA-Bedienung mit dynamischem Nachlauf.
